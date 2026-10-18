@@ -1120,12 +1120,13 @@
   function detectLang(q){
     if(/[\u0A00-\u0A7F]/.test(q)) return 'pa';        /* Gurmukhi script → Punjabi */
     if(/[\u0600-\u06FF]/.test(q)) return 'ur';        /* Arabic script → Urdu */
-    var t = ' ' + q.toLowerCase() + ' ';
-    var paWords = ['tusi','tussi','tenu','menu','kiven','kinna','kinne','kidda','kidaan','sat sri akal','tuhada','tuhadi','saada','sada ','assi','hanji','paaji','karde ho','kama'];
-    var urWords = ['kya','kia','hai','hain','mujhe','mujhy','chahiye','chahye','kitne','kitna','kitni','batao','bataein','kaise','kesy','kab','kyun','kiun','mera','meri','mere','aap','shukriya','theek','acha','bhai','karna','krna','pooch','sawal','qeemat','dukan','bana','chay'];
+    var t = ' ' + q.toLowerCase().replace(/[^a-z\s]/g, ' ').replace(/\s+/g, ' ') + ' ';
+    var paWords = ['tusi','tussi','tenu','menu','kiven','kinna','kinne','kidda','kidaan','sat sri akal','tuhada','tuhadi','saada','sada','assi','hanji','paaji','karde ho','kama','chahida','chahidi','dasso','haal','kithe'];
+    var urWords = ['kya','kia','hai','hain','mujhe','mujhy','chahiye','chahye','kitne','kitna','kitni','batao','bataein','kaise','kesy','kab','kyun','kiun','mera','meri','mere','aap','shukriya','theek','acha','bhai','karna','krna','pooch','sawal','qeemat','dukan','bana','chay','banwana','banwani','banani','lagenge','lagega','milega','haal','kaisa','kaisi','bhaijan','wala','wali','krdo','bata do','kese','kesa','hoga','hogi','hoge','salam','assalam','assalamualaikum','walaikum','aoa'];
     var paScore = 0, urScore = 0, i;
-    for(i = 0; i < paWords.length; i++){ if(t.indexOf(paWords[i]) > -1) paScore++; }
-    for(i = 0; i < urWords.length; i++){ if(t.indexOf(urWords[i]) > -1) urScore++; }
+    /* whole-word matching only — so "assistant" can't score as Punjabi "assi" */
+    for(i = 0; i < paWords.length; i++){ if(t.indexOf(' ' + paWords[i].trim() + ' ') > -1) paScore++; }
+    for(i = 0; i < urWords.length; i++){ if(t.indexOf(' ' + urWords[i].trim() + ' ') > -1) urScore++; }
     if(paScore > 0 && paScore >= urScore) return 'par';  /* Roman Punjabi */
     if(urScore > 0) return 'ru';                          /* Roman Urdu */
     return 'en';
@@ -1262,6 +1263,62 @@
       pa:'ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ! <b>Wynvera</b> ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ। ਮੈਂ ਤੁਹਾਨੂੰ ਸਾਡੀਆਂ ਸੇਵਾਵਾਂ, ਕੀਮਤਾਂ, ਟਾਈਮਲਾਈਨ ਜਾਂ ਪ੍ਰਕਿਰਿਆ ਬਾਰੇ ਦੱਸ ਸਕਦਾ ਹਾਂ — ਜਾਂ ਆਪਣਾ ਕੋਈ ਵੀ ਸਵਾਲ ਲਿਖ ਦਿਓ।',
       par:'Sat Sri Akal! <b>Wynvera</b> vich ji aayan nu. Main tuhanu sadian services, qeemat, timeline ya process bare dass sakda haan — ya apna koi vi sawal likh deo.'
     },
+    va: {
+      en:'We offer two virtual-assistant plans, both <span class="price-line">$200/month</span>, month-to-month:<ul><li><b>TikTok Shop VA</b> — listings, orders, inventory, promotions &amp; creator outreach</li><li><b>eBay VA</b> — listings, price &amp; stock monitoring, orders &amp; buyer messages</li></ul>Both include a weekly summary in plain language. Want details on one of them? Just say TikTok or eBay.',
+      ur:'ہم دو ورچوئل اسسٹنٹ پلانز دیتے ہیں — دونوں <span class="price-line">$200/ماہانہ</span>، ماہ بہ ماہ:<ul><li><b>TikTok Shop VA</b> — لسٹنگز، آرڈرز، انوینٹری، پروموشنز اور کریئیٹر آؤٹ ریچ</li><li><b>eBay VA</b> — لسٹنگز، پرائس و اسٹاک مانیٹرنگ، آرڈرز اور خریداروں کے پیغامات</li></ul>دونوں میں ہفتہ وار رپورٹ آسان زبان میں شامل ہے۔ کسی ایک کی تفصیل چاہیے تو بس TikTok یا eBay لکھ دیں۔',
+      ru:'Hum do virtual assistant plans dete hain — dono <span class="price-line">$200/month</span>, month-to-month:<ul><li><b>TikTok Shop VA</b> — listings, orders, inventory, promotions aur creator outreach</li><li><b>eBay VA</b> — listings, price aur stock monitoring, orders aur buyer messages</li></ul>Dono mein weekly summary simple language mein shamil hai. Kisi ek ki details chahiye to bas TikTok ya eBay likh dein.',
+      pa:'ਅਸੀਂ ਦੋ ਵਰਚੁਅਲ ਅਸਿਸਟੈਂਟ ਪਲਾਨ ਦਿੰਦੇ ਹਾਂ — ਦੋਵੇਂ <span class="price-line">$200/ਮਹੀਨਾ</span>, ਮਹੀਨਾ-ਦਰ-ਮਹੀਨਾ:<ul><li><b>TikTok Shop VA</b> — ਲਿਸਟਿੰਗਾਂ, ਆਰਡਰ, ਇਨਵੈਂਟਰੀ, ਪ੍ਰੋਮੋਸ਼ਨਾਂ ਤੇ creator outreach</li><li><b>eBay VA</b> — ਲਿਸਟਿੰਗਾਂ, ਕੀਮਤ ਤੇ ਸਟਾਕ ਮਾਨੀਟਰਿੰਗ, ਆਰਡਰ ਤੇ ਖਰੀਦਦਾਰ ਸੁਨੇਹੇ</li></ul>ਦੋਵਾਂ ਵਿੱਚ ਹਫ਼ਤਾਵਾਰ ਰਿਪੋਰਟ ਸੌਖੀ ਭਾਸ਼ਾ ਵਿੱਚ ਸ਼ਾਮਲ ਹੈ। ਕਿਸੇ ਇੱਕ ਦੀ ਜਾਣਕਾਰੀ ਚਾਹੀਦੀ ਹੈ ਤਾਂ ਬਸ TikTok ਜਾਂ eBay ਲਿਖ ਦਿਓ।',
+      par:'Assi do virtual assistant plans dinde haan — dovein <span class="price-line">$200/month</span>, month-to-month:<ul><li><b>TikTok Shop VA</b> — listings, orders, inventory, promotions te creator outreach</li><li><b>eBay VA</b> — listings, price te stock monitoring, orders te buyer messages</li></ul>Dovein vich weekly summary asaan language vich shamil ha. Kise ek di details chahidi ha ta bas TikTok ya eBay likh deo.'
+    },
+    store: {
+      en:'Yes — building online stores is exactly what we do. A brand-new <b>Shopify store</b> is <span class="price-line">$200 one-time</span> (ready in 10–14 days), and if you already have a store, a <b>redesign</b> is <span class="price-line">$150–$250</span> (5–7 days). Which fits you — a new store, or improving an existing one?',
+      ur:'جی ہاں — آن لائن اسٹور بنانا ہی ہمارا کام ہے۔ نیا <b>Shopify اسٹور</b> <span class="price-line">$200 (ایک بار)</span> میں بنتا ہے (10–14 دن میں تیار)، اور اگر اسٹور پہلے سے موجود ہے تو <b>ری ڈیزائن</b> <span class="price-line">$150–$250</span> میں ہوتا ہے (5–7 دن)۔ آپ کے لیے کون سا مناسب ہے — نیا اسٹور، یا موجودہ اسٹور کی بہتری؟',
+      ru:'Ji haan — online store banana hi hamara kaam hai. Naya <b>Shopify store</b> <span class="price-line">$200 (one-time)</span> mein banta hai (10–14 din mein ready), aur agar store pehle se hai to <b>redesign</b> <span class="price-line">$150–$250</span> mein hota hai (5–7 din). Aap ke liye konsa theek hai — naya store, ya existing store ki improvement?',
+      pa:'ਜੀ ਹਾਂ — ਆਨਲਾਈਨ ਸਟੋਰ ਬਣਾਉਣਾ ਹੀ ਸਾਡਾ ਕੰਮ ਹੈ। ਨਵਾਂ <b>Shopify ਸਟੋਰ</b> <span class="price-line">$200 (ਇੱਕ ਵਾਰ)</span> ਵਿੱਚ ਬਣਦਾ ਹੈ (10–14 ਦਿਨਾਂ ਵਿੱਚ ਤਿਆਰ), ਅਤੇ ਜੇ ਸਟੋਰ ਪਹਿਲਾਂ ਤੋਂ ਹੈ ਤਾਂ <b>ਰੀਡਿਜ਼ਾਈਨ</b> <span class="price-line">$150–$250</span> ਵਿੱਚ ਹੁੰਦਾ ਹੈ (5–7 ਦਿਨ)। ਤੁਹਾਡੇ ਲਈ ਕਿਹੜਾ ਠੀਕ ਹੈ — ਨਵਾਂ ਸਟੋਰ, ਜਾਂ ਮੌਜੂਦਾ ਸਟੋਰ ਦਾ ਸੁਧਾਰ?',
+      par:'Ji haan — online store banana hi sada kaam ha. Nava <b>Shopify store</b> <span class="price-line">$200 (ik vaar)</span> vich banda ha (10–14 din vich ready), te je store pehlan ton ha ta <b>redesign</b> <span class="price-line">$150–$250</span> vich hunda ha (5–7 din). Tuhade lai kehda theek ha — nava store, ya existing store da sudhaar?'
+    },
+    portfolio: {
+      en:'The storefront preview in the hero of this page is a live sample of our design standard — clean layout, clear pricing, mobile-first. On a free discovery call we walk through exactly what your build would include, and you get a written proposal with a fixed quote within 48 hours.',
+      ur:'اس پیج کے اوپر (hero) میں موجود اسٹور کا نمونہ ہمارے ڈیزائن کے معیار کی زندہ مثال ہے — صاف لے آؤٹ، واضح قیمتیں، موبائل فرسٹ۔ مفت ڈسکوری کال پر ہم تفصیل سے بتاتے ہیں کہ آپ کے پروجیکٹ میں کیا کیا شامل ہوگا، اور 48 گھنٹوں میں تحریری پروپوزل و فکسڈ کوٹ مل جاتا ہے۔',
+      ru:'Is page ke hero mein jo storefront preview hai, woh hamare design standard ki live misaal hai — clean layout, clear pricing, mobile-first. Free discovery call par hum tafseel se batate hain ke aap ke project mein kya kya shamil hoga, aur 48 hours mein written proposal aur fixed quote mil jata hai.',
+      pa:'ਇਸ ਪੇਜ ਦੇ hero ਵਿੱਚ ਸਟੋਰਫਰੰਟ ਪ੍ਰੀਵਿਊ ਸਾਡੇ ਡਿਜ਼ਾਈਨ ਸਟੈਂਡਰਡ ਦੀ ਲਾਈਵ ਮਿਸਾਲ ਹੈ — ਸਾਫ਼ ਲੇਆਉਟ, ਸਪਸ਼ਟ ਕੀਮਤਾਂ, ਮੋਬਾਈਲ-ਫਰਸਟ। ਮੁਫ਼ਤ ਡਿਸਕਵਰੀ ਕਾਲ ’ਤੇ ਅਸੀਂ ਵਿਸਥਾਰ ਨਾਲ ਦੱਸਦੇ ਹਾਂ ਕਿ ਤੁਹਾਡੇ ਪ੍ਰੋਜੈਕਟ ਵਿੱਚ ਕੀ-ਕੀ ਸ਼ਾਮਲ ਹੋਵੇਗਾ, ਅਤੇ 48 ਘੰਟਿਆਂ ਵਿੱਚ ਲਿਖਤੀ ਪ੍ਰਪੋਜ਼ਲ ਤੇ ਫਿਕਸ ਕੋਟ ਮਿਲ ਜਾਂਦਾ ਹੈ।',
+      par:'Is page de hero vich storefront preview sade design standard di live misaal ha — saaf layout, clear pricing, mobile-first. Free discovery call te assi tafseel naal dassde haan ke tuhade project vich ki ki shamil hovega, te 48 hours vich written proposal te fixed quote mil janda ha.'
+    },
+    location: {
+      en:'We work fully online — everything runs over calls, chat and email, so your location doesn\'t matter. And you always deal with one point of contact who knows your project.',
+      ur:'ہم مکمل طور پر آن لائن کام کرتے ہیں — سب کچھ کالز، چیٹ اور ای میل پر ہوتا ہے، اس لیے آپ کی لوکیشن سے کوئی فرق نہیں پڑتا۔ اور آپ ہمیشہ ایک ہی رابطے سے بات کرتے ہیں جو آپ کے پروجیکٹ کو جانتا ہے۔',
+      ru:'Hum completely online kaam karte hain — sab kuch calls, chat aur email par hota hai, is liye aap ki location se koi farq nahi parta. Aur aap hamesha ek hi point of contact se baat karte hain jo aap ke project ko janta hai.',
+      pa:'ਅਸੀਂ ਪੂਰੀ ਤਰ੍ਹਾਂ ਆਨਲਾਈਨ ਕੰਮ ਕਰਦੇ ਹਾਂ — ਸਭ ਕੁਝ ਕਾਲਾਂ, ਚੈਟ ਤੇ ਈਮੇਲ ’ਤੇ ਹੁੰਦਾ ਹੈ, ਇਸ ਲਈ ਤੁਹਾਡੀ ਲੋਕੇਸ਼ਨ ਮਾਇਨੇ ਨਹੀਂ ਰੱਖਦੀ। ਅਤੇ ਤੁਸੀਂ ਹਮੇਸ਼ਾ ਇੱਕੋ ਸੰਪਰਕ ਨਾਲ ਗੱਲ ਕਰਦੇ ਹੋ ਜੋ ਤੁਹਾਡੇ ਪ੍ਰੋਜੈਕਟ ਨੂੰ ਜਾਣਦਾ ਹੈ।',
+      par:'Assi poori tarah online kaam karde haan — sab kuch calls, chat te email te hunda ha, is lai tuhadi location matter nahi kardi. Te tusi hamesha iko contact naal gal karde ho jo tuhade project nu janda ha.'
+    },
+    howru: {
+      en:'I\'m doing great, thanks for asking! Ready when you are — ask me about our services, prices, timelines, or how to get started.',
+      ur:'میں بالکل ٹھیک ہوں، پوچھنے کا شکریہ! میں حاضر ہوں — ہماری سروسز، قیمتوں، ٹائم لائن یا شروع کرنے کے طریقے کے بارے میں کچھ بھی پوچھیں۔',
+      ru:'Main bilkul theek hun, poochne ka shukriya! Main haazir hun — hamari services, prices, timeline ya start karne ke tareeqay ke baare mein kuch bhi poochein.',
+      pa:'ਮੈਂ ਬਿਲਕੁਲ ਠੀਕ ਹਾਂ, ਪੁੱਛਣ ਲਈ ਧੰਨਵਾਦ! ਮੈਂ ਹਾਜ਼ਰ ਹਾਂ — ਸਾਡੀਆਂ ਸੇਵਾਵਾਂ, ਕੀਮਤਾਂ, ਟਾਈਮਲਾਈਨ ਜਾਂ ਸ਼ੁਰੂ ਕਰਨ ਦੇ ਤਰੀਕੇ ਬਾਰੇ ਕੁਝ ਵੀ ਪੁੱਛੋ।',
+      par:'Main bilkul theek haan, puchhan lai dhanvaad! Main haazir haan — sadian services, qeemat, timeline ya shuru karan de tareeqay bare kuch vi pucho.'
+    },
+    ack: {
+      en:'Perfect. If anything else comes up — a price, a timeline, how a service works — just ask. I\'m right here.',
+      ur:'بہترین۔ اگر کچھ اور پوچھنا ہو — کوئی قیمت، ٹائم لائن، یا کسی سروس کی تفصیل — بس لکھ دیں، میں یہیں ہوں۔',
+      ru:'Perfect. Agar kuch aur poochna ho — koi price, timeline, ya kisi service ki details — bas likh dein, main yahin hun.',
+      pa:'ਵਧੀਆ। ਜੇ ਕੁਝ ਹੋਰ ਪੁੱਛਣਾ ਹੋਵੇ — ਕੋਈ ਕੀਮਤ, ਟਾਈਮਲਾਈਨ, ਜਾਂ ਕਿਸੇ ਸੇਵਾ ਦੀ ਜਾਣਕਾਰੀ — ਬਸ ਲਿਖ ਦਿਓ, ਮੈਂ ਇੱਥੇ ਹੀ ਹਾਂ।',
+      par:'Wadhiya. Je kuch hor puchna hove — koi qeemat, timeline, ya kise service di details — bas likh deo, main ethe hi haan.'
+    },
+    fallback: {
+      en:'Good question — that one is a little outside what I can answer instantly. But I <b>can</b> answer these right here: <b>services</b>, <b>prices</b>, <b>timelines</b>, <b>payment</b>, <b>revisions</b>, and <b>how to get started</b>. Try asking one of those — or tap the button below to leave a message and the team will reply by email.',
+      ur:'اچھا سوال ہے — یہ میرے فوری جواب کے دائرے سے کچھ باہر ہے۔ لیکن ان چیزوں کا جواب میں یہیں فوراً دے سکتا ہوں: <b>سروسز</b>، <b>قیمتیں</b>، <b>ٹائم لائن</b>، <b>ادائیگی</b>، <b>ریویژن (تبدیلیاں)</b> اور <b>شروع کرنے کا طریقہ</b>۔ ان میں سے کوئی پوچھ کر دیکھیں — یا نیچے بٹن دبا کر پیغام چھوڑ دیں، ٹیم ای میل پر جواب دے گی۔',
+      ru:'Acha sawal hai — ye mere instant jawab ke dairay se kuch bahar hai. Lekin in cheezon ka jawab main yahin foran de sakta hun: <b>services</b>, <b>prices</b>, <b>timeline</b>, <b>payment</b>, <b>revisions</b> aur <b>start karne ka tareeqa</b>. In mein se koi pooch kar dekhen — ya neeche button daba kar message chhor dein, team email par jawab degi.',
+      pa:'ਚੰਗਾ ਸਵਾਲ ਹੈ — ਇਹ ਮੇਰੇ ਤੁਰੰਤ ਜਵਾਬ ਦੇ ਘੇਰੇ ਤੋਂ ਕੁਝ ਬਾਹਰ ਹੈ। ਪਰ ਇਨ੍ਹਾਂ ਚੀਜ਼ਾਂ ਦਾ ਜਵਾਬ ਮੈਂ ਇੱਥੇ ਹੀ ਤੁਰੰਤ ਦੇ ਸਕਦਾ ਹਾਂ: <b>ਸੇਵਾਵਾਂ</b>, <b>ਕੀਮਤਾਂ</b>, <b>ਟਾਈਮਲਾਈਨ</b>, <b>ਭੁਗਤਾਨ</b>, <b>ਰਿਵੀਜ਼ਨ</b> ਅਤੇ <b>ਸ਼ੁਰੂ ਕਰਨ ਦਾ ਤਰੀਕਾ</b>। ਇਨ੍ਹਾਂ ਵਿੱਚੋਂ ਕੁਝ ਪੁੱਛੋ — ਜਾਂ ਹੇਠਾਂ ਬਟਨ ਦਬਾ ਕੇ ਸੁਨੇਹਾ ਛੱਡ ਦਿਓ, ਟੀਮ ਈਮੇਲ ’ਤੇ ਜਵਾਬ ਦੇਵੇਗੀ।',
+      par:'Changa sawal ha — eh mere foran jawab de dairay ton kuch bahar ha. Par inna cheezan da jawab main ethe hi foran de sakda haan: <b>services</b>, <b>qeemat</b>, <b>timeline</b>, <b>payment</b>, <b>revisions</b> te <b>shuru karan da tareeqa</b>. Inna vichon kuch pucho — ya hethan button daba ke message chhadd deo, team email te jawab deve gi.'
+    },
+    leadbtn: {
+      en:'Leave a message for the team',
+      ur:'ٹیم کے لیے پیغام چھوڑیں',
+      ru:'Team ke liye message chhorein',
+      pa:'ਟੀਮ ਲਈ ਸੁਨੇਹਾ ਛੱਡੋ',
+      par:'Team lai message chhaddo'
+    },
     offer: {
       en:'That one deserves a proper answer from the team rather than a guess from me. Leave your details below and the <b>Wynvera team</b> will reply to your email — your message goes straight to <b>' + TEAM_EMAIL + '</b>.',
       ur:'یہ سوال میری اندازے کی بجائے ٹیم کے درست جواب کا مستحق ہے۔ نیچے اپنی تفصیل چھوڑ دیں، <b>Wynvera ٹیم</b> آپ کو ای میل پر جواب دے گی — آپ کا پیغام سیدھا <b>' + TEAM_EMAIL + '</b> پر جائے گا۔',
@@ -1278,37 +1335,71 @@
     }
   };
 
+  /* ---------- intent matching ----------
+     Text is normalised first (case, punctuation, Arabic-keyboard variants of
+     Urdu letters), then every rule is scored by the keywords it matches —
+     longest match wins. This makes the bot forgiving of phrasing, spelling
+     variants and mixed-language questions, instead of falling through to the
+     leave-a-message form on anything unexpected. */
+  function normText(s){
+    return (' ' + String(s).toLowerCase()
+      .replace(/ك/g, 'ک').replace(/ي/g, 'ی').replace(/ى/g, 'ی')
+      .replace(/ة/g, 'ت').replace(/ـ/g, '')
+      .replace(/[ً-ٰٟ]/g, '')
+      .replace(/[''’.,!?;:()\[\]{}"«»\/\\|@#$%^&*_+=~<>-]/g, ' ')
+      .replace(/\s+/g, ' ') + ' ');
+  }
+
   var RULES = [
-    { k:['redesign','re-design','revamp','ری ڈیزائن','موجودہ اسٹور','ਪੁਰਾਣੀ ਦੁਕਾਨ','purani website','existing store ko','mera store hai','pehle se store'], r:'redesign' },
-    { k:['shopify','شاپیفائی','shopify store','new store','store design','dukan banana','دکان بنانی'], r:'shopify' },
-    { k:['tiktok','tik tok','ٹک ٹاک','ਟਿਕਟਾਕ'], r:'tiktok' },
-    { k:['ebay','e-bay','ای بے','ਈਬੇ'], r:'ebay' },
-    { k:['wordpress','word press','ورڈپریس','ਵਰਡਪ੍ਰੈਸ','website','ویب سائٹ','ਵੈੱਬਸਾਈਟ','website design'], r:'wordpress' },
-    { k:['price','prices','pricing','cost','how much','rate','fee','charge','qeemat','qimat','kitne','kitna','kitni','kinne','paisay','paise','قیمت','قیمتیں','کتنے','کتنا','ਕਿੰਨੇ','ਕੀਮਤ','ਮੁੱਲ','charges','lagat','لاگت'], r:'pricing' },
-    { k:['service','services','offer','what do you do','what can you do','خدمات','خدمت','ਸੇਵਾਵਾਂ','ki karde','kya karte','kia karte','kya services','kia services','ki kam'], r:'services' },
-    { k:['process','how it works','how does it work','steps','get started','getting started','start','طریقہ','طریقہ کار','شروع','ਪ੍ਰਕਿਰਿਆ','kiven start','shuru','procedure','tareeqa','tariqa'], r:'process' },
-    { k:['how long','timeline','duration','turnaround','delivery time','when will','kab tak','kitna time','kitne din','کتنا وقت','کب تک','کتنے دن','ਕਿੰਨਾ ਸਮਾਂ','ਕਿੰਨੇ ਦਿਨ','kinna time','kinne din','time lagega','وقت لگے'], r:'timeline' },
-    { k:['payment','pay','deposit','invoice','billing','ادائیگی','پیمنٹ','ਭੁਗਤਾਨ','advance','paisay kab','pesy'], r:'payment' },
-    { k:['revision','changes','change my','edit after','update after','تبدیلی','ਬਦਲਾਅ','change karna','badlav'], r:'revision' },
-    { k:['discount','cheaper','deal','offer me','negotiate','رعایت','سستا','sasta','kam kar','ਛੋਟ','ریٹ کم'], r:'discount' },
-    { k:['refund','guarantee','money back','رقم واپس','ਵਾਰੰਟੀ','warranty'], r:'refund' },
-    { k:['who are you','your name','about wynvera','about you','about the agency','company','tum kon','aap kon','آپ کون','ਤੁਸੀਂ ਕੌਣ','tusi kon','tumhara naam','tera naam'], r:'about' },
-    { k:['contact','email','phone','call','book','human','person','team','talk to','رابطہ','ای میل','میل','ਸੰਪਰਕ','rabta','number','نمبر'], r:'contact' },
-    { k:['thank','thanks','shukriya','شکریہ','ਧੰਨਵਾਦ','meharbani','مہربانی','great','awesome','perfect'], r:'thanks' },
-    { k:['bye','goodbye','see you','allah hafiz','خدا حافظ','ਅਲਵਿਦਾ'], r:'bye' },
-    { k:['hello','hi','hey','salam','assalam','السلام','aoa','sat sri akal','ਸਤਿ ਸ੍ਰੀ','ست سری','namaste','kidda','kidaan','السلام علیکم'], r:'hello' }
+    { k:['hello','hi','hey','salam','salaam','assalam','assalamualaikum','assalam o alaikum','assalam u alaikum','aoa','السلام علیکم','اسلام علیکم','اسلام و علیکم','وعلیکم السلام','سلام','sat sri akal','ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ','ست سری اکال','namaste','kidda','kidaan','good morning','good afternoon','good evening'], r:'hello', soft:true },
+    { k:['how are you','how r you','how is it going','kya haal','kia haal','haal chaal','kese ho','kesay ho','kaisay ho','kaise ho','theek ho','ap kese','aap kese','aap kaise','کیا حال ہے','کیا حال','کیسے ہو','ٹھیک ہو','kidda haal','ki haal','tuhada ki haal','ਤੁਹਾਡਾ ਕੀ ਹਾਲ','ਕਿਵੇਂ ਹੋ','سناؤ کیسا چل رہا','kesa chal','kaisa chal raha','kesy chal','chal rha','sab theek','sb theek','kia chal raha'], r:'howru', soft:true },
+    { k:['thank','thanks','thank you','shukriya','شکریہ','ਧੰਨਵਾਦ','meharbani','مہربانی','jazakallah','جزاک اللہ','great','awesome'], r:'thanks', soft:true },
+    { k:['bye','goodbye','good bye','see you','allah hafiz','khuda hafiz','خدا حافظ','اللہ حافظ','ਅਲਵਿਦਾ','فی امان اللہ'], r:'bye', soft:true },
+    { k:['redesign','re design','revamp','ری ڈیزائن','موجودہ اسٹور','ਪੁਰਾਣੀ ਦੁਕਾਨ','purani website','purana store','existing store','mera store hai','pehle se store','store redesign','website redesign','redesign karna','improve my store','store improve','store theek karna','اسٹور ری ڈیزائن','اسٹور بہتر','store pehle se','theek krna','theek karna hai'], r:'redesign' },
+    { k:['shopify','shopfy','shopifay','شاپیفائی','shopify store','shopify banana','shopify banwana','shopify chahiye','store design'], r:'shopify' },
+    { k:['online store','online stores','stores','store banana','store banwana','store banani','store chahiye','new store','dukan','دکان','اسٹور بنانا','اسٹور بنوانا','اسٹور چاہیے','آن لائن اسٹور','online dukan','ecommerce store','e commerce','ای کامرس','shop banana','اپنی دکان','dukan banana','دکان بنانی','دکان بنانا'], r:'store' },
+    { k:['tiktok','tik tok','tiktoc','ٹک ٹاک','ਟਿਕਟਾਕ','tiktok shop','tik tok shop','ٹک ٹاک شاپ'], r:'tiktok' },
+    { k:['ebay','e bay','ای بے','ਈਬੇ'], r:'ebay' },
+    { k:['wordpress','word press','wordpres','ورڈپریس','ਵਰਡਪ੍ਰੈਸ','website','websites','web site','web sites','websit','ویب سائٹ','ਵੈੱਬਸਾਈਟ','website design','wordpress banana','wordpress banwana','site banana','site banwana','site chahiye','ویب سائٹ بنانا','ویب سائٹ بنوانا','ویب سائٹ بنوانی','business website','company website'], r:'wordpress' },
+    { k:['virtual assistant','va','assistant','اسسٹنٹ','ورچوئل اسسٹنٹ','va chahiye','assistant chahiye','ਵਰਚੁਅਲ ਅਸਿਸਟੈਂਟ','va plan','va service','va services'], r:'va' },
+    { k:['price','prices','pricing','cost','how much','rate','rates','fee','fees','charge','charges','qeemat','qimat','kitne','kitna','kitni','kinne','paisay','paise','paisa','قیمت','قیمتیں','کتنے','کتنا','کتنے پیسے','کتنے کا','کتنے کی','ਕਿੰਨੇ','ਕੀਮਤ','ਮੁੱਲ','lagat','لاگت','خرچہ','خرچ','kitne ka','kitne ki','kitne mein','rate batao','total cost'], r:'pricing' },
+    { k:['discount','cheaper','deal','negotiate','رعایت','سستا','sasta','ਛੋਟ','ریٹ کم','koi discount','discount milega','sasta karo','rate kam','price kam','کم قیمت','offer me','ڈسکاؤنٹ','ڈسکونٹ'], r:'discount' },
+    { k:['refund','guarantee','money back','moneyback','رقم واپس','ਵਾਰੰਟੀ','warranty','paisay wapas','پیسے واپس'], r:'refund' },
+    { k:['payment','pay','deposit','invoice','billing','ادائیگی','پیمنٹ','ਭੁਗਤਾਨ','advance','paisay kab','pesy','payment method','pay karna','payment kese','payment kaise','ادائیگی کیسے','ਭੁਗਤਾਨ ਕਿਵੇਂ','installment','قسط'], r:'payment' },
+    { k:['revision','revisions','changes','change my','edit after','update after','تبدیلی','ਬਦਲਾਅ','change karna','badlav','changes kar sakte','baad mein change','بعد میں تبدیلی'], r:'revision' },
+    { k:['how long','timeline','duration','turnaround','delivery time','delivery','timeframe','when will','kab tak','kitna time','kitne din','کتنا وقت','کب تک','کتنے دن','ਕਿੰਨਾ ਸਮਾਂ','ਕਿੰਨੇ ਦਿਨ','kinna time','kinne din','time lagega','وقت لگے','time kitna'], r:'timeline' },
+    { k:['process','how it works','how does it work','steps','get started','getting started','start','طریقہ','طریقہ کار','شروع','ਪ੍ਰਕਿਰਿਆ','kiven start','shuru','procedure','tareeqa','tariqa','kaise shuru','kesy start','شروع کیسے','order karna','order kese','hire karna','kaam shuru'], r:'process' },
+    { k:['portfolio','porfolio','samples','sample work','previous work','past work','examples','نمونے','kaam dikhao','kam dikhao','pehle ka kaam','ਪੋਰਟਫੋਲੀਓ','ਮਿਸਾਲਾਂ','work dikhao'], r:'portfolio' },
+    { k:['where are you','located','location','based','kis city','kis country','kahan se','کہاں سے','کہاں واقع','آپ کہاں','ਤੁਸੀਂ ਕਿੱਥੇ','kithe ho','address','پتہ','country','شہر'], r:'location' },
+    { k:['service','services','offer','what do you do','what can you do','خدمات','خدمت','ਸੇਵਾਵਾਂ','ki karde','kya karte','kia karte','kya services','kia services','ki kam','kia kia','kya kya','کیا کیا','list of services'], r:'services' },
+    { k:['who are you','your name','about wynvera','about you','about the agency','company','tum kon','tum kaun','aap kon','aap kaun','آپ کون','ਤੁਸੀਂ ਕੌਣ','tusi kon','tumhara naam','tera naam','wynvera kya hai','wynvera kia hai','تم کون ہو','آپ کون ہیں'], r:'about' },
+    { k:['talk to the team','talk to team','speak to the team','contact the team','contact form','leave a message','book a call','book a discovery call','book discovery call','book a meeting','schedule a call','team se baat','team sy bat','انسان سے بات','پیغام چھوڑنا','message chhorna','call book','ٹیم سے بات','کسی انسان سے بات'], r:'leadform' },
+    { k:['contact','email','phone','call','book','human','person','team','talk to','رابطہ','ای میل','میل','ਸੰਪਰਕ','rabta','number','نمبر'], r:'contact' }
   ];
+  for(var ri = 0; ri < RULES.length; ri++){
+    RULES[ri].nk = RULES[ri].k.map(function(kw){ return normText(kw); });
+  }
 
   function answerKey(q){
-    var t = q.toLowerCase();
+    var t = normText(q);
+    var best = null, bestScore = 0;
     for(var i = 0; i < RULES.length; i++){
-      for(var j = 0; j < RULES[i].k.length; j++){
-        var kw = RULES[i].k[j].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        if(new RegExp('(^|[^a-z])' + kw + '([^a-z]|$)').test(t)) return RULES[i].r;
+      var sc = 0;
+      for(var j = 0; j < RULES[i].nk.length; j++){
+        var kw = RULES[i].nk[j];
+        if(kw.trim() && t.indexOf(kw) > -1) sc += kw.trim().length;
       }
+      /* greetings & small talk are "soft": they only win when no real
+         question is in the same message ("Assalam o Alaikum, shopify ki
+         price?" should answer the price, not just say hello back) */
+      if(RULES[i].soft) sc = sc * 0.45;
+      if(sc > bestScore){ bestScore = sc; best = RULES[i].r; }
     }
-    return null;
+    return best;
   }
+
+  /* short standalone acknowledgements: "ok", "theek hai", "acha", "ji"… */
+  var ACKS = ['ok','okay','acha','achha','theek','theek hai','theek ha','thik','ji','ji haan','ji han','han','haan','yes','yeah','yep','sure','done','samajh gaya','samajh aa gaya','samajh gya','ٹھیک ہے','ٹھیک','اچھا','جی','جی ہاں','سمجھ گیا','ہاں','ਠੀਕ ਹੈ','ਠੀਕ','ਅੱਛਾ','ਹਾਂ ਜੀ','ਹਾਂ','theek a','acha ji','han ji'];
 
   /* ---------- fallback: leave-a-message form ---------- */
   function offerForm(originalQ, lang){
@@ -1352,9 +1443,34 @@
 
   function handle(q){
     var lang = detectLang(q);
+    /* short standalone replies ("ok", "theek hai", "ji") get a short reply, not the form */
+    if(ACKS.indexOf(normText(q).trim()) > -1){ botSay(pick(L10N.ack, lang)); return; }
     var key = answerKey(q);
-    if(key){ botSay(pick(L10N[key], lang)); }
-    else { typing.classList.add('show'); setTimeout(function(){ typing.classList.remove('show'); offerForm(q, lang); }, 700); }
+    if(key === 'leadform'){
+      typing.classList.add('show'); scrollDown();
+      setTimeout(function(){ typing.classList.remove('show'); offerForm(q, lang); }, 700);
+      return;
+    }
+    if(key){ botSay(pick(L10N[key], lang)); return; }
+    /* Anything else: answer here in the chat and offer the form as a button —
+       the form itself only opens when the visitor actually asks for it. */
+    typing.classList.add('show'); scrollDown();
+    setTimeout(function(){
+      typing.classList.remove('show');
+      var wrap = addMsg(pick(L10N.fallback, lang), 'bot');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'lead-send';
+      b.style.marginTop = '10px';
+      b.textContent = pick(L10N.leadbtn, lang);
+      b.addEventListener('click', function(){
+        b.disabled = true;
+        b.style.opacity = '.55';
+        offerForm(q, lang);
+      });
+      wrap.appendChild(b);
+      scrollDown();
+    }, 700);
   }
 
   /* ---------- open / close ---------- */
