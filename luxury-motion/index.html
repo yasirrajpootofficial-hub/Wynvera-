@@ -239,7 +239,7 @@ nav a:hover,nav a.active{color:var(--gold);border-bottom-color:var(--gold)}
 #performance .big-nums{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}
 #performance .big-nums>div{background:var(--bg);padding:38px 30px}
 #performance .big-nums b{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(48px,4.6vw,72px);line-height:1;color:var(--text)}
-#performance .big-nums b i{font-style:normal;color:var(--gold);font-size:.55em}
+#performance .big-nums b i{font-style:normal;color:var(--gold);font-size:.34em;letter-spacing:.08em}
 #performance .big-nums span{font-size:10px;letter-spacing:.28em;color:var(--muted);text-transform:uppercase;display:block;margin-top:10px}
 #performance .perf-img{overflow:hidden;border:1px solid var(--border)}
 #performance .perf-img img{width:100%;height:100%;object-fit:cover;aspect-ratio:16/11;transition:transform .8s ease}
@@ -375,7 +375,7 @@ footer .f-brand b{color:var(--gold);font-weight:500}
           <div><b><span data-count="1500">0</span><i> PS</i></b><span>Most power — Chiron</span></div>
           <div><b><span data-count="2.4" data-dec="1">0</span><i> s</i></b><span>Fastest 0–100 km/h — Chiron</span></div>
           <div><b><span data-count="420">0</span><i> km/h</i></b><span>Highest top speed — Chiron</span></div>
-          <div><b><span data-count="7">0</span></b><span>Icons in the collection</span></div>
+          <div><b><span data-count="7">0</span><i> icons</i></b><span>Icons in the collection</span></div>
         </div>
       </div>
       <div class="perf-copy reveal">
@@ -558,7 +558,7 @@ let selected = 0, viewIdx = 0;
   const wrap = $('#cards');
   CARS.forEach((c,i)=>{
     const el = document.createElement('article');
-    el.className = 'card reveal' + (i===0 ? ' wide' : '');
+    el.className = 'card reveal' + (i===0 || i===6 ? ' wide' : '');
     el.innerHTML = `
       <div class="img"><img src="${c.views[0].u}" alt="${c.maker} ${c.name}" loading="lazy"><span class="num">${c.num} / 07</span></div>
       <div class="body">
@@ -604,6 +604,7 @@ function selectCar(i){
     ['Model Year', c.year], ['Category', c.cat], ['Engine / Powertrain', c.engine],
     ['Power', c.power], ['0–100 km/h', c.accel], ['Top Speed', c.top],
     ['Transmission', c.trans], ['Drivetrain', c.drive],
+    ['In the Collection', 'No. ' + c.num + ' of 07'], ['Showcase', 'Photographic views × 3'],
   ];
   $('#fSpecs').innerHTML = rows.map(([k,v],idx)=>
     `<div class="${idx===2?'full':''}"><span>${k}</span><b>${v}</b></div>`).join('');
