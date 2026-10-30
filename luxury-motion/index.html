@@ -2,880 +2,700 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LUXURY MOTION — The Art of Automotive Excellence</title>
-<meta name="description" content="LUXURY MOTION — an immersive 3D luxury automotive showroom featuring seven iconic machines.">
+<meta name="description" content="LUXURY MOTION — an immersive luxury automotive experience featuring seven iconic machines, photographed in the real world.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Ferrari_SF90_Stradale_Mayfair.jpg/1920px-Ferrari_SF90_Stradale_Mayfair.jpg">
 <style>
-  :root{
-    --obsidian:#08090B; --charcoal:#15171B; --silver:#BFC4CC; --gold:#C6A66A;
-    --white:#F5F5F3; --gold-dim:rgba(198,166,106,.55); --panel:rgba(12,13,16,.82);
-    --line:rgba(198,166,106,.28);
-  }
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%;overflow:hidden;background:var(--obsidian);color:var(--white);
-    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
-  #scene{position:fixed;inset:0}
-  #scene canvas{display:block;touch-action:none}
-  .serif{font-family:Georgia,"Times New Roman",serif}
-  /* ---------- Loading ---------- */
-  #loader{position:fixed;inset:0;z-index:60;background:var(--obsidian);display:flex;flex-direction:column;
-    align-items:center;justify-content:center;gap:18px;transition:opacity .8s ease}
-  #loader.done{opacity:0;pointer-events:none}
-  #loader .lm{font-family:Georgia,serif;letter-spacing:.42em;font-size:clamp(20px,4vw,34px);font-weight:400}
-  #loader .lm b{color:var(--gold);font-weight:400}
-  #loader .tag{letter-spacing:.34em;font-size:10px;color:var(--silver);text-transform:uppercase}
-  #loadbar{width:min(320px,70vw);height:1px;background:#26282e;position:relative;overflow:hidden}
-  #loadbar i{position:absolute;left:0;top:0;bottom:0;width:0%;background:var(--gold);transition:width .3s ease}
-  #loadpct{font-size:11px;letter-spacing:.25em;color:var(--silver)}
-  /* ---------- Intro ---------- */
-  #intro{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    text-align:center;background:radial-gradient(ellipse at 50% 120%,rgba(198,166,106,.14),transparent 55%),
-    linear-gradient(180deg,rgba(8,9,11,.25),rgba(8,9,11,.88));transition:opacity 1s ease,visibility 1s}
-  #intro.hidden{opacity:0;visibility:hidden}
-  #intro .eyebrow{letter-spacing:.5em;font-size:11px;color:var(--gold);text-transform:uppercase;margin-bottom:22px}
-  #intro h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(42px,9vw,96px);letter-spacing:.14em;line-height:1.02}
-  #intro h1 span{color:var(--gold)}
-  #intro .sub{margin-top:18px;letter-spacing:.4em;font-size:clamp(10px,1.6vw,14px);color:var(--silver);text-transform:uppercase}
-  #intro .line{width:64px;height:1px;background:var(--gold);margin:26px auto}
-  #intro p{color:#c9ccd2;font-size:15px;letter-spacing:.06em}
-  #enterBtn{margin-top:34px;cursor:pointer;border:1px solid var(--gold);background:transparent;color:var(--gold);
-    padding:16px 44px;letter-spacing:.34em;font-size:12px;text-transform:uppercase;transition:all .35s}
-  #enterBtn:hover{background:var(--gold);color:#0a0a0a}
-  #intro .hint{margin-top:22px;font-size:11px;letter-spacing:.2em;color:#7d818a}
-  /* ---------- Header ---------- */
-  header{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;
-    padding:18px 28px;background:linear-gradient(180deg,rgba(8,9,11,.85),rgba(8,9,11,0));pointer-events:none}
-  header>*{pointer-events:auto}
-  .brand{font-family:Georgia,serif;letter-spacing:.3em;font-size:17px;cursor:pointer;white-space:nowrap}
-  .brand b{color:var(--gold);font-weight:400}
-  nav{display:flex;gap:30px}
-  nav a{color:#cfd2d8;text-decoration:none;font-size:11px;letter-spacing:.28em;cursor:pointer;transition:color .25s}
-  nav a:hover,nav a.active{color:var(--gold)}
-  .head-cta{border:1px solid var(--line);background:rgba(12,13,16,.6);color:var(--white);padding:10px 18px;
-    font-size:11px;letter-spacing:.24em;cursor:pointer;text-transform:uppercase;transition:all .3s}
-  .head-cta:hover{border-color:var(--gold);color:var(--gold)}
-  /* ---------- Car info (left) ---------- */
-  #info{position:fixed;left:28px;top:50%;transform:translateY(-50%);z-index:20;max-width:430px;
-    transition:opacity .45s ease,transform .45s ease;pointer-events:none}
-  #info.fading{opacity:0;transform:translateY(-50%) translateX(-14px)}
-  #info .idx{font-size:12px;letter-spacing:.4em;color:var(--gold)}
-  #info .maker{margin-top:10px;font-size:11px;letter-spacing:.42em;color:var(--silver);text-transform:uppercase}
-  #info h2{font-family:Georgia,serif;font-weight:400;font-size:clamp(38px,5.4vw,64px);line-height:1.02;margin:6px 0 12px}
-  #info h2 em{color:var(--gold);font-style:normal}
-  #info .desc{color:#c6c9cf;font-size:14.5px;line-height:1.65;max-width:380px}
-  #info .quick{display:flex;gap:26px;margin:20px 0 22px;flex-wrap:wrap}
-  #info .quick div b{display:block;font-family:Georgia,serif;font-weight:400;font-size:22px;color:var(--white)}
-  #info .quick div span{font-size:10px;letter-spacing:.24em;color:#8b8f98;text-transform:uppercase}
-  .btnrow{display:flex;gap:12px;flex-wrap:wrap;pointer-events:auto}
-  .btn{cursor:pointer;border:1px solid var(--gold);padding:13px 24px;font-size:11px;letter-spacing:.26em;
-    text-transform:uppercase;transition:all .3s;background:transparent;color:var(--gold)}
-  .btn:hover{background:var(--gold);color:#0a0a0a}
-  .btn.ghost{border-color:rgba(255,255,255,.35);color:var(--white)}
-  .btn.ghost:hover{border-color:var(--gold);color:var(--gold);background:transparent}
-  .btn.on{background:var(--gold);color:#0a0a0a}
-  /* ---------- Camera views ---------- */
-  #views{position:fixed;right:28px;top:50%;transform:translateY(-50%);z-index:20;display:flex;flex-direction:column;gap:8px}
-  #views button{cursor:pointer;background:var(--panel);border:1px solid rgba(255,255,255,.14);color:#d6d8dc;
-    padding:9px 14px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;text-align:left;
-    backdrop-filter:blur(6px);transition:all .25s;white-space:nowrap}
-  #views button:hover,#views button.on{border-color:var(--gold);color:var(--gold)}
-  /* ---------- Bottom nav ---------- */
-  #bottom{position:fixed;left:0;right:0;bottom:0;z-index:25;display:flex;flex-direction:column;align-items:center;gap:12px;
-    padding:0 20px 18px;background:linear-gradient(0deg,rgba(8,9,11,.88),rgba(8,9,11,0));pointer-events:none}
-  #bottom>*{pointer-events:auto}
-  #dots{display:flex;gap:10px;align-items:center}
-  #dots button{cursor:pointer;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.3);
-    background:rgba(12,13,16,.65);color:#d6d8dc;font-size:11px;letter-spacing:.05em;transition:all .25s}
-  #dots button.on{border-color:var(--gold);color:#0a0a0a;background:var(--gold)}
-  #dots button:hover{border-color:var(--gold)}
-  #carstrip{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-  #carstrip button{cursor:pointer;background:rgba(12,13,16,.65);border:1px solid rgba(255,255,255,.13);color:#c9ccd2;
-    padding:8px 12px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;backdrop-filter:blur(6px);transition:all .25s}
-  #carstrip button.on{border-color:var(--gold);color:var(--gold)}
-  #prevNext{position:fixed;right:28px;bottom:96px;z-index:26;display:flex;gap:10px}
-  #prevNext button{cursor:pointer;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.3);
-    background:rgba(12,13,16,.7);color:var(--white);font-size:20px;transition:all .25s}
-  #prevNext button:hover{border-color:var(--gold);color:var(--gold)}
-  #swipeHint{font-size:10px;letter-spacing:.26em;color:#7d818a;text-transform:uppercase}
-  /* ---------- Configurator ---------- */
-  #config{position:fixed;right:28px;bottom:150px;z-index:24;width:238px;background:var(--panel);border:1px solid var(--line);
-    padding:16px;backdrop-filter:blur(8px);transition:transform .4s ease,opacity .4s ease}
-  #config.hidden{transform:translateX(120%);opacity:0;pointer-events:none}
-  #config h3{font-family:Georgia,serif;font-weight:400;letter-spacing:.22em;font-size:13px;color:var(--gold);margin-bottom:12px}
-  #config h4{font-size:10px;letter-spacing:.26em;color:#9a9ea7;text-transform:uppercase;margin:12px 0 8px}
-  .swatches{display:flex;gap:8px;flex-wrap:wrap}
-  .sw{cursor:pointer;width:28px;height:28px;border-radius:50%;border:2px solid transparent;outline:1px solid rgba(255,255,255,.25);transition:all .2s}
-  .sw.on{border-color:#0a0a0a;outline:2px solid var(--gold);transform:scale(1.12)}
-  .optrow{display:flex;gap:8px;flex-wrap:wrap}
-  .optrow button{cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.25);color:#d6d8dc;
-    padding:7px 10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;transition:all .2s}
-  .optrow button.on{border-color:var(--gold);color:var(--gold)}
-  #configToggle{position:fixed;right:28px;bottom:96px;z-index:26;display:none}
-  /* ---------- Modals ---------- */
-  .modal{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;background:rgba(5,6,8,.78);backdrop-filter:blur(4px);padding:20px}
-  .modal.open{display:flex}
-  .modal .card{background:#101215;border:1px solid var(--line);max-width:640px;width:100%;max-height:86vh;overflow:auto;padding:32px 34px;position:relative}
-  .modal .close{position:absolute;top:14px;right:16px;cursor:pointer;background:none;border:none;color:#9a9ea7;font-size:24px}
-  .modal h3{font-family:Georgia,serif;font-weight:400;font-size:28px;margin-bottom:4px}
-  .modal h3 em{color:var(--gold);font-style:normal}
-  .modal .sub{font-size:11px;letter-spacing:.3em;color:var(--silver);text-transform:uppercase;margin-bottom:18px}
-  .modal p{color:#c6c9cf;font-size:14px;line-height:1.7;margin-bottom:14px}
-  .specgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#26282e;border:1px solid #26282e;margin:16px 0}
-  .specgrid div{background:#101215;padding:13px 14px}
-  .specgrid b{display:block;font-family:Georgia,serif;font-weight:400;font-size:17px;margin-top:3px}
-  .specgrid span{font-size:10px;letter-spacing:.22em;color:#8b8f98;text-transform:uppercase}
-  .modal .note{font-size:12px;color:#8b8f98;line-height:1.6}
-  .feat{list-style:none;margin:10px 0 4px}
-  .feat li{padding:8px 0 8px 22px;border-bottom:1px solid #1e2025;color:#c6c9cf;font-size:13.5px;position:relative}
-  .feat li:before{content:"◆";position:absolute;left:0;color:var(--gold);font-size:10px;top:11px}
-  /* ---------- Fallback ---------- */
-  #fallback{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:var(--obsidian);padding:24px;text-align:center}
-  #fallback .card{max-width:520px}
-  #fallback h2{font-family:Georgia,serif;font-weight:400;letter-spacing:.14em;font-size:30px;margin-bottom:14px}
-  #fallback p{color:#c6c9cf;line-height:1.7;font-size:14px}
-  #dragHint{position:fixed;left:50%;bottom:118px;transform:translateX(-50%);z-index:15;font-size:10px;letter-spacing:.3em;
-    color:#7d818a;text-transform:uppercase;pointer-events:none}
-  @media (max-width:900px){
-    nav{display:none}
-    header{padding:14px 16px}
-    #info{left:16px;right:16px;top:auto;bottom:132px;transform:none;max-width:none}
-    #info.fading{transform:translateX(-10px)}
-    #info h2{font-size:36px}
-    #info .desc{display:none}
-    #info .quick{gap:18px;margin:12px 0 14px}
-    #info .quick div b{font-size:18px}
-    #views{display:none}
-    #config{right:12px;left:12px;width:auto;bottom:210px}
-    #prevNext{right:16px;bottom:200px}
-    #prevNext button{width:44px;height:44px}
-    #carstrip{display:none}
-    #dragHint{display:none}
-    .modal .card{padding:24px 20px}
-    .specgrid{grid-template-columns:1fr 1fr}
-  }
-  @media (prefers-reduced-motion:reduce){
-    *{transition-duration:.01ms !important;animation-duration:.01ms !important}
-  }
+:root{
+  --bg:#08090B; --bg2:#121418; --text:#F5F5F3; --muted:#A5A8AE;
+  --gold:#C6A66A; --border:rgba(255,255,255,.12);
+  --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter','Helvetica Neue',Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:300;
+  line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--sans)}
+::selection{background:var(--gold);color:#0a0a0a}
+.serif{font-family:var(--serif)}
+.eyebrow{font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);font-weight:500}
+.gold{color:var(--gold)}
+.wrap{max-width:1560px;margin:0 auto;padding:0 48px}
+section{position:relative}
+.sec-head{padding:110px 0 54px}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:clamp(40px,5vw,72px);line-height:1.05;margin:16px 0 18px}
+.sec-head p{color:var(--muted);font-size:16px;max-width:640px}
+.sec-head .rule{width:64px;height:1px;background:var(--gold);margin-top:26px}
+.reveal{opacity:0;transform:translateY(34px);transition:opacity .9s ease,transform .9s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+
+/* ---------- Loader ---------- */
+#loader{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:16px;transition:opacity .7s ease}
+#loader.done{opacity:0;pointer-events:none}
+#loader .lm{font-family:var(--serif);font-size:clamp(26px,4vw,40px);letter-spacing:.3em}
+#loader .lm b{color:var(--gold);font-weight:500}
+#loader .tag{font-size:10px;letter-spacing:.4em;color:var(--muted);text-transform:uppercase}
+#loadbar{width:min(280px,64vw);height:1px;background:#232529;overflow:hidden}
+#loadbar i{display:block;height:100%;width:0;background:var(--gold);transition:width .3s ease}
+
+/* ---------- Nav ---------- */
+header{position:fixed;top:0;left:0;right:0;z-index:100;transition:background .4s ease,border-color .4s ease;
+  border-bottom:1px solid transparent}
+header.scrolled{background:rgba(8,9,11,.88);backdrop-filter:blur(12px);border-bottom-color:var(--border)}
+.nav-in{max-width:1560px;margin:0 auto;padding:0 48px;height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{font-family:var(--serif);font-size:21px;letter-spacing:.24em;white-space:nowrap;cursor:pointer}
+.brand b{color:var(--gold);font-weight:500}
+nav{display:flex;gap:38px}
+nav a{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#d6d8dc;cursor:pointer;
+  padding:6px 0;border-bottom:1px solid transparent;transition:color .25s,border-color .25s}
+nav a:hover,nav a.active{color:var(--gold);border-bottom-color:var(--gold)}
+.btn{display:inline-block;cursor:pointer;border:1px solid var(--gold);background:transparent;color:var(--gold);
+  padding:14px 32px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;font-weight:500;transition:all .35s}
+.btn:hover{background:var(--gold);color:#0a0a0a}
+.btn.solid{background:var(--gold);color:#0a0a0a}
+.btn.solid:hover{background:transparent;color:var(--gold)}
+.btn.ghost{border-color:rgba(255,255,255,.35);color:var(--text)}
+.btn.ghost:hover{border-color:var(--gold);color:var(--gold);background:transparent}
+#burger{display:none;background:none;border:none;cursor:pointer;width:40px;height:40px;position:relative}
+#burger span{position:absolute;left:8px;right:8px;height:1px;background:var(--text);transition:all .3s}
+#burger span:nth-child(1){top:14px}#burger span:nth-child(2){top:20px}#burger span:nth-child(3){top:26px}
+#burger.open span:nth-child(1){top:20px;transform:rotate(45deg)}
+#burger.open span:nth-child(2){opacity:0}
+#burger.open span:nth-child(3){top:20px;transform:rotate(-45deg)}
+#mobileMenu{position:fixed;top:76px;left:0;right:0;z-index:99;background:rgba(8,9,11,.97);border-bottom:1px solid var(--border);
+  display:none;flex-direction:column;padding:10px 24px 22px}
+#mobileMenu.open{display:flex}
+#mobileMenu a{padding:14px 0;border-bottom:1px solid var(--border);font-size:12px;letter-spacing:.3em;text-transform:uppercase}
+
+/* ---------- Hero ---------- */
+#hero{height:100svh;min-height:640px;overflow:hidden}
+#heroImg{position:absolute;inset:-4% 0;background:url('https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Ferrari_SF90_Stradale_Mayfair.jpg/1920px-Ferrari_SF90_Stradale_Mayfair.jpg') center 62%/cover no-repeat;
+  animation:kenburns 22s ease-in-out infinite alternate;will-change:transform}
+@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.07)}}
+#hero .shade{position:absolute;inset:0;background:
+  linear-gradient(180deg,rgba(8,9,11,.62) 0%,rgba(8,9,11,.18) 34%,rgba(8,9,11,.28) 62%,rgba(8,9,11,.96) 100%),
+  linear-gradient(90deg,rgba(8,9,11,.72) 0%,rgba(8,9,11,.08) 55%)}
+#hero .content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;
+  max-width:1560px;margin:0 auto;padding:0 48px 96px}
+#hero .kicker{font-size:11px;letter-spacing:.46em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+#hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(56px,9.5vw,138px);line-height:.98;letter-spacing:.02em}
+#hero h1 span{color:var(--gold);font-style:italic}
+#hero .tagline{margin-top:18px;font-size:clamp(12px,1.4vw,16px);letter-spacing:.4em;text-transform:uppercase;color:#d8dade}
+#hero .lead{margin-top:22px;color:var(--muted);font-size:16px;max-width:560px}
+#hero .cta{margin-top:34px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+#hero .scroll{position:absolute;right:48px;bottom:96px;z-index:2;display:flex;flex-direction:column;align-items:center;gap:12px;
+  font-size:10px;letter-spacing:.34em;color:var(--muted);writing-mode:vertical-rl;text-transform:uppercase}
+#hero .scroll i{width:1px;height:56px;background:linear-gradient(var(--gold),transparent);display:block;animation:drip 2.2s ease-in-out infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}55%{transform:scaleY(1);transform-origin:top}56%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+#hero .hero-meta{position:absolute;left:48px;bottom:28px;z-index:2;font-size:11px;letter-spacing:.28em;color:#8b8f98;text-transform:uppercase}
+#hero .hero-meta b{color:var(--gold);font-weight:500}
+
+/* ---------- Marquee strip ---------- */
+.strip{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);overflow:hidden;padding:20px 0}
+.strip .track{display:flex;gap:64px;white-space:nowrap;width:max-content;animation:slide 36s linear infinite}
+.strip span{font-family:var(--serif);font-size:20px;letter-spacing:.24em;color:#6d7076;text-transform:uppercase}
+.strip span b{color:var(--gold);font-weight:500}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* ---------- Collection ---------- */
+#collection{background:var(--bg)}
+.cards{display:grid;grid-template-columns:repeat(12,1fr);gap:28px;padding-bottom:120px}
+.card{grid-column:span 4;background:var(--bg2);border:1px solid var(--border);overflow:hidden;cursor:pointer;
+  transition:transform .5s ease,border-color .4s ease;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-8px);border-color:rgba(198,166,106,.55)}
+.card.wide{grid-column:span 8}
+.card .img{overflow:hidden;aspect-ratio:16/10;position:relative;background:#0e0f12}
+.card.wide .img{aspect-ratio:21/10}
+.card .img img{width:100%;height:100%;object-fit:cover;transition:transform .8s ease,filter .5s ease}
+.card:hover .img img{transform:scale(1.06)}
+.card .img .num{position:absolute;top:16px;left:18px;font-family:var(--serif);font-size:15px;letter-spacing:.2em;
+  color:var(--text);background:rgba(8,9,11,.55);backdrop-filter:blur(4px);padding:6px 12px;border:1px solid rgba(255,255,255,.16)}
+.card .body{padding:26px 26px 28px;display:flex;flex-direction:column;flex:1}
+.card .maker{font-size:10px;letter-spacing:.36em;text-transform:uppercase;color:var(--gold)}
+.card h3{font-family:var(--serif);font-weight:500;font-size:32px;line-height:1.1;margin:10px 0 10px}
+.card.wide h3{font-size:40px}
+.card .desc{color:var(--muted);font-size:14px;flex:1}
+.card .stats{display:flex;gap:28px;margin:20px 0 22px;padding-top:18px;border-top:1px solid var(--border)}
+.card .stats div b{display:block;font-family:var(--serif);font-weight:500;font-size:24px;color:var(--text)}
+.card .stats div span{font-size:9px;letter-spacing:.24em;color:#8b8f98;text-transform:uppercase}
+.card .explore{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px}
+.card .explore i{transition:transform .3s}
+.card:hover .explore i{transform:translateX(6px)}
 </style>
 </head>
 <body>
-<div id="scene"></div>
 
 <div id="loader">
   <div class="lm">LUXURY <b>MOTION</b></div>
   <div class="tag">The Art of Automotive Excellence</div>
   <div id="loadbar"><i></i></div>
-  <div id="loadpct">PREPARING SHOWROOM — 0%</div>
 </div>
 
-<div id="intro">
-  <div class="eyebrow">An Exclusive Automotive Exhibition</div>
-  <h1>LUXURY <span>MOTION</span></h1>
-  <div class="sub">The Art of Automotive Excellence</div>
-  <div class="line"></div>
-  <p>Seven icons. Seven machines. One extraordinary experience.</p>
-  <button id="enterBtn">Enter Showroom</button>
-  <div class="hint">DRAG TO ROTATE &nbsp;·&nbsp; SCROLL TO EXPLORE &nbsp;·&nbsp; ARROW KEYS TO CHANGE CAR</div>
-</div>
-
-<header>
-  <div class="brand" id="brandHome">LUXURY <b>MOTION</b></div>
-  <nav>
-    <a data-nav="home" class="active">HOME</a>
-    <a data-nav="collection">COLLECTION</a>
-    <a data-nav="experience">EXPERIENCE</a>
-    <a data-nav="about">ABOUT</a>
-  </nav>
-  <button class="head-cta" id="exploreBtn">Explore Collection</button>
+<header id="siteHeader">
+  <div class="nav-in">
+    <div class="brand" data-go="hero">LUXURY <b>MOTION</b></div>
+    <nav>
+      <a data-go="hero" class="active">Home</a>
+      <a data-go="collection">Collection</a>
+      <a data-go="featured">Experience</a>
+      <a data-go="about">About</a>
+    </nav>
+    <button class="btn" id="navExplore" style="padding:11px 22px">Explore</button>
+    <button id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
 </header>
-
-<div id="info">
-  <div class="idx" id="carIdx">01 / 07</div>
-  <div class="maker" id="carMaker">Automobili Lamborghini</div>
-  <h2 id="carName">Revuelto</h2>
-  <p class="desc" id="carDesc"></p>
-  <div class="quick">
-    <div><b id="qPower">—</b><span>Power</span></div>
-    <div><b id="qAccel">—</b><span>0–100 km/h</span></div>
-    <div><b id="qSpeed">—</b><span>Top Speed</span></div>
-  </div>
-  <div class="btnrow">
-    <button class="btn" id="detailsBtn">View Details</button>
-    <button class="btn ghost" id="tourBtn">Explore 360°</button>
-    <button class="btn ghost" id="cfgBtn">Configure</button>
-  </div>
+<div id="mobileMenu">
+  <a data-go="hero">Home</a>
+  <a data-go="collection">Collection</a>
+  <a data-go="featured">Experience</a>
+  <a data-go="about">About</a>
 </div>
 
-<div id="views">
-  <button data-view="front">Front</button>
-  <button data-view="threequarter" class="on">Front ¾</button>
-  <button data-view="side">Side Profile</button>
-  <button data-view="rear">Rear</button>
-  <button data-view="rearthree">Rear ¾</button>
-  <button data-view="reset">⟲ Reset Camera</button>
-</div>
-
-<div id="config" class="hidden">
-  <h3>CONFIGURATOR</h3>
-  <div id="cfgCar" style="font-size:11px;letter-spacing:.2em;color:#9a9ea7">LAMBORGHINI REVUELTO</div>
-  <h4>Exterior Paint</h4>
-  <div class="swatches" id="paintSw"></div>
-  <h4>Wheel Finish</h4>
-  <div class="optrow" id="wheelSw">
-    <button data-wheel="silver" class="on">Silver</button>
-    <button data-wheel="black">Black</button>
-    <button data-wheel="gold">Gold</button>
+<!-- ============ SECTION 01 · HERO ============ -->
+<section id="hero">
+  <div id="heroImg"></div>
+  <div class="shade"></div>
+  <div class="content">
+    <div class="kicker">An Exclusive Automotive Exhibition</div>
+    <h1>LUXURY<br><span>Motion</span></h1>
+    <div class="tagline">The Art of Automotive Excellence</div>
+    <p class="lead">Seven icons. Seven machines. One extraordinary experience. Real machines, photographed in the real world — presented the way they deserve to be seen.</p>
+    <div class="cta">
+      <button class="btn solid" data-go="collection">Explore Collection</button>
+      <button class="btn ghost" data-go="featured">Featured Vehicle</button>
+    </div>
   </div>
-  <h4>Interior Theme</h4>
-  <div class="optrow" id="intSw">
-    <button data-int="black" class="on">Onyx Black</button>
-    <button data-int="tan">Cognac Tan</button>
-    <button data-int="red">Rosso Red</button>
-    <button data-int="cream">Ivory Cream</button>
+  <div class="scroll"><span>Scroll</span><i></i></div>
+  <div class="hero-meta">Ferrari SF90 Stradale · <b>Rosso Corsa</b> · Mayfair, London</div>
+</section>
+
+<div class="strip" aria-hidden="true">
+  <div class="track" id="stripTrack"></div>
+</div>
+
+<!-- ============ SECTION 02 · COLLECTION ============ -->
+<section id="collection">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Section 02 — The Exclusive Collection</div>
+      <h2>Seven icons.<br><span class="gold">Seven machines.</span></h2>
+      <p>Every car in the collection is a real, production machine — photographed, not illustrated. Select any vehicle to open its full showcase.</p>
+      <div class="rule"></div>
+    </div>
+    <div class="cards" id="cards"></div>
   </div>
-  <h4>Showroom Lighting</h4>
-  <div class="optrow" id="lightSw">
-    <button data-light="studio" class="on">Studio</button>
-    <button data-light="warm">Warm</button>
-    <button data-light="cool">Cool</button>
-    <button data-light="night">Night</button>
+</section>
+
+<style>
+/* ---------- Featured vehicle ---------- */
+#featured{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+#featured .sec-head{padding-bottom:40px}
+.f-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:30px}
+.f-chips button{cursor:pointer;background:transparent;border:1px solid var(--border);color:#c9ccd2;
+  padding:10px 16px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;transition:all .25s}
+.f-chips button:hover{border-color:var(--gold);color:var(--gold)}
+.f-chips button.on{background:var(--gold);border-color:var(--gold);color:#0a0a0a}
+.f-stage{position:relative;overflow:hidden;background:#0a0b0d;border:1px solid var(--border)}
+.f-stage .frame{position:relative;aspect-ratio:16/9}
+.f-stage .frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .8s ease}
+.f-stage .frame img.on{opacity:1}
+.f-stage .frame .shade2{position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,9,11,.55),transparent 45%);pointer-events:none}
+.f-stage .cap{position:absolute;left:26px;bottom:20px;z-index:3;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#e6e7ea}
+.f-stage .cap b{color:var(--gold);font-weight:500}
+.f-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:52px;height:52px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.4);background:rgba(8,9,11,.55);color:var(--text);font-size:22px;cursor:pointer;
+  backdrop-filter:blur(4px);transition:all .25s}
+.f-nav:hover{border-color:var(--gold);color:var(--gold)}
+.f-nav.prev{left:20px}.f-nav.next{right:20px}
+.f-views{position:absolute;right:20px;bottom:16px;z-index:3;display:flex;gap:8px}
+.f-views button{cursor:pointer;background:rgba(8,9,11,.6);border:1px solid rgba(255,255,255,.3);color:#e6e7ea;
+  padding:8px 14px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;backdrop-filter:blur(4px);transition:all .25s}
+.f-views button.on,.f-views button:hover{border-color:var(--gold);color:var(--gold)}
+.f-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:64px;padding:64px 0 110px;align-items:start}
+.f-info h3{font-family:var(--serif);font-weight:500;font-size:clamp(44px,5.4vw,76px);line-height:1.02;margin:12px 0 8px}
+.f-info h3 em{color:var(--gold);font-style:normal}
+.f-info .cat{font-size:11px;letter-spacing:.36em;text-transform:uppercase;color:var(--muted)}
+.f-info .desc{color:#c6c9cf;font-size:16px;margin-top:18px;max-width:620px}
+.f-info .feat{list-style:none;margin-top:26px}
+.f-info .feat li{padding:12px 0 12px 26px;border-bottom:1px solid var(--border);color:#c6c9cf;font-size:14.5px;position:relative}
+.f-info .feat li:before{content:"◆";position:absolute;left:0;color:var(--gold);font-size:10px;top:16px}
+.specgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}
+.specgrid>div{background:var(--bg);padding:20px 22px}
+.specgrid b{display:block;font-family:var(--serif);font-weight:500;font-size:26px;margin-top:4px;line-height:1.15}
+.specgrid span{font-size:9px;letter-spacing:.26em;color:#8b8f98;text-transform:uppercase}
+.specgrid .full{grid-column:1/-1}
+.f-note{margin-top:18px;font-size:12px;color:#8b8f98;line-height:1.7}
+
+/* ---------- Performance ---------- */
+#performance .perf-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:72px;padding:0 0 120px;align-items:center}
+#performance .big-nums{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}
+#performance .big-nums>div{background:var(--bg);padding:38px 30px}
+#performance .big-nums b{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(48px,4.6vw,72px);line-height:1;color:var(--text)}
+#performance .big-nums b i{font-style:normal;color:var(--gold);font-size:.55em}
+#performance .big-nums span{font-size:10px;letter-spacing:.28em;color:var(--muted);text-transform:uppercase;display:block;margin-top:10px}
+#performance .perf-img{overflow:hidden;border:1px solid var(--border)}
+#performance .perf-img img{width:100%;height:100%;object-fit:cover;aspect-ratio:16/11;transition:transform .8s ease}
+#performance .perf-img:hover img{transform:scale(1.04)}
+#performance .perf-copy h3{font-family:var(--serif);font-weight:500;font-size:clamp(30px,3vw,44px);line-height:1.15;margin:14px 0 16px}
+#performance .perf-copy p{color:var(--muted);font-size:15.5px;margin-bottom:14px}
+#performance .perf-copy p b{color:var(--text);font-weight:500}
+
+/* ---------- Design & craftsmanship ---------- */
+#craft{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.tiles{display:grid;grid-template-columns:repeat(12,1fr);gap:28px;padding-bottom:120px}
+.tile{grid-column:span 6;position:relative;overflow:hidden;border:1px solid var(--border);cursor:pointer;min-height:420px}
+.tile.tall{grid-column:span 4;min-height:520px}
+.tile.wide{grid-column:span 8}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .9s ease}
+.tile:hover img{transform:scale(1.05)}
+.tile .shade3{position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,9,11,.88) 0%,rgba(8,9,11,.12) 55%,transparent 100%)}
+.tile .t-body{position:absolute;left:28px;right:28px;bottom:24px;z-index:2}
+.tile .t-body .eyebrow{font-size:10px}
+.tile h3{font-family:var(--serif);font-weight:500;font-size:32px;line-height:1.1;margin:8px 0 6px}
+.tile p{color:#c6c9cf;font-size:13.5px;max-width:480px}
+
+/* ---------- Final ---------- */
+#final{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden}
+#final .bg{position:absolute;inset:0;background:url('https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b5/Bugatti_Chiron%2C_IAA_2017%2C_Frankfurt_%281Y7A2857%29.jpg/1920px-Bugatti_Chiron%2C_IAA_2017%2C_Frankfurt_%281Y7A2857%29.jpg') center/cover no-repeat}
+#final .shade4{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,9,11,.92),rgba(8,9,11,.42) 45%,rgba(8,9,11,.94))}
+#final .inner{position:relative;z-index:2;padding:120px 24px}
+#final h2{font-family:var(--serif);font-weight:500;font-size:clamp(48px,8vw,110px);line-height:1.02}
+#final h2 span{color:var(--gold);font-style:italic}
+#final .sub{margin-top:20px;letter-spacing:.42em;font-size:12px;text-transform:uppercase;color:#d8dade}
+#final .cta{margin-top:40px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+
+/* ---------- About / footer ---------- */
+#about{border-top:1px solid var(--border)}
+#about .about-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:72px;padding:100px 0 90px}
+#about h2{font-family:var(--serif);font-weight:500;font-size:clamp(34px,3.6vw,52px);line-height:1.1;margin:14px 0 18px}
+#about p{color:var(--muted);font-size:15px;margin-bottom:14px}
+#about .fact{border-left:1px solid var(--gold);padding:4px 0 4px 20px;margin:26px 0}
+#about .fact b{display:block;font-family:var(--serif);font-weight:500;font-size:22px;color:var(--text)}
+#about .fact span{font-size:11px;letter-spacing:.24em;color:#8b8f98;text-transform:uppercase}
+footer{border-top:1px solid var(--border);background:#060708}
+footer .f-in{max-width:1560px;margin:0 auto;padding:44px 48px;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+footer p{font-size:12px;color:#7d818a;line-height:1.8;max-width:760px}
+footer .f-brand{font-family:var(--serif);letter-spacing:.24em;font-size:18px}
+footer .f-brand b{color:var(--gold);font-weight:500}
+#toTop{position:fixed;right:24px;bottom:24px;z-index:90;width:48px;height:48px;border-radius:50%;border:1px solid var(--gold);
+  background:rgba(8,9,11,.8);color:var(--gold);font-size:18px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s}
+#toTop.show{opacity:1;pointer-events:auto}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1100px){
+  .card,.card.wide{grid-column:span 6}
+  .f-grid{grid-template-columns:1fr;gap:40px}
+  #performance .perf-grid{grid-template-columns:1fr;gap:48px}
+  .tile,.tile.tall,.tile.wide{grid-column:span 12;min-height:380px}
+  #about .about-grid{grid-template-columns:1fr;gap:40px}
+}
+@media (max-width:820px){
+  nav{display:none}
+  #navExplore{display:none}
+  #burger{display:block}
+  .wrap,.nav-in{padding-left:20px;padding-right:20px}
+  .sec-head{padding:72px 0 36px}
+  .cards{gap:18px;padding-bottom:80px}
+  .card,.card.wide{grid-column:span 12}
+  .card.wide .img{aspect-ratio:16/10}
+  #hero .content{padding:0 20px 84px}
+  #hero .scroll{display:none}
+  #hero .hero-meta{left:20px;bottom:20px}
+  .f-stage .frame{aspect-ratio:4/3}
+  .f-views{left:16px;right:auto;bottom:14px}
+  .f-stage .cap{display:none}
+  .f-nav{width:44px;height:44px}
+  .f-nav.prev{left:10px}.f-nav.next{right:10px}
+  .f-grid{padding:44px 0 72px}
+  .specgrid{grid-template-columns:1fr 1fr}
+  #performance .big-nums>div{padding:26px 20px}
+  #performance .perf-grid{padding-bottom:80px}
+  .tiles{padding-bottom:80px;gap:18px}
+  .tile{min-height:320px}
+  .tile .t-body{left:20px;right:20px;bottom:18px}
+  #about .about-grid{padding:64px 0}
+  footer .f-in{padding:32px 20px}
+  .strip span{font-size:16px}
+}
+</style>
+
+<!-- ============ SECTION 03 · FEATURED VEHICLE ============ -->
+<section id="featured">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Section 03 — Featured Vehicle Experience</div>
+      <h2>The showcase.<br><span class="gold">One machine, in full.</span></h2>
+      <p>Choose a vehicle below. Three real photographic views, full specifications and the details that define it — no illustrations, no stand-ins.</p>
+      <div class="rule"></div>
+    </div>
+    <div class="f-chips reveal" id="fChips"></div>
+    <div class="f-stage reveal">
+      <div class="frame" id="fFrame"></div>
+      <div class="shade2"></div>
+      <div class="cap" id="fCap"></div>
+      <button class="f-nav prev" id="fPrev" aria-label="Previous view">‹</button>
+      <button class="f-nav next" id="fNext" aria-label="Next view">›</button>
+      <div class="f-views" id="fViews"></div>
+    </div>
+    <div class="f-grid">
+      <div class="f-info reveal">
+        <div class="eyebrow" id="fNum">01 / 07</div>
+        <div class="cat" id="fMaker">Automobili Lamborghini</div>
+        <h3 id="fName">Revuelto</h3>
+        <p class="desc" id="fDesc"></p>
+        <ul class="feat" id="fFeat"></ul>
+      </div>
+      <div class="reveal">
+        <div class="specgrid" id="fSpecs"></div>
+        <p class="f-note">Figures are the manufacturers' published figures for the model year shown. Acceleration and top speed vary with market, tyres, options and conditions. Photography: Wikimedia Commons contributors, CC licences — real cars, real photographs.</p>
+      </div>
+    </div>
   </div>
-  <div style="margin-top:14px;font-size:11px;color:#8b8f98;line-height:1.6">Paint, wheels and interior update live on the selected car. Choose another car to configure it.</div>
-</div>
+</section>
 
-<div id="prevNext">
-  <button id="prevBtn" aria-label="Previous vehicle">‹</button>
-  <button id="nextBtn" aria-label="Next vehicle">›</button>
-</div>
-
-<div id="bottom">
-  <div id="dots"></div>
-  <div id="carstrip"></div>
-  <div id="swipeHint">Swipe or scroll to change vehicle · Drag to rotate · Scroll to zoom</div>
-</div>
-<div id="dragHint">Drag to rotate — Scroll to zoom</div>
-
-<div class="modal" id="detailsModal">
-  <div class="card">
-    <button class="close" data-close="detailsModal">×</button>
-    <h3 id="dName">Revuelto</h3>
-    <div class="sub" id="dSub"></div>
-    <p id="dDesc"></p>
-    <div class="specgrid" id="dSpecs"></div>
-    <h3 style="font-size:20px;margin-top:8px">Signature Design</h3>
-    <ul class="feat" id="dFeat"></ul>
-    <p class="note">Figures are manufacturer-published figures for the model year shown. Acceleration and top speed vary with market, tyres, options and conditions. Paint and trim shown are illustrative.</p>
+<!-- ============ SECTION 04 · PERFORMANCE ============ -->
+<section id="performance">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Section 04 — Performance &amp; Engineering</div>
+      <h2>Numbers that<br><span class="gold">end arguments.</span></h2>
+      <div class="rule"></div>
+    </div>
+    <div class="perf-grid">
+      <div class="reveal">
+        <div class="big-nums">
+          <div><b><span data-count="1500">0</span><i> PS</i></b><span>Most power — Chiron</span></div>
+          <div><b><span data-count="2.4" data-dec="1">0</span><i> s</i></b><span>Fastest 0–100 km/h — Chiron</span></div>
+          <div><b><span data-count="420">0</span><i> km/h</i></b><span>Highest top speed — Chiron</span></div>
+          <div><b><span data-count="7">0</span></b><span>Icons in the collection</span></div>
+        </div>
+      </div>
+      <div class="perf-copy reveal">
+        <div class="perf-img"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Rear_view_of_Green_Lamborghini_Revuelto.jpg/1920px-Rear_view_of_Green_Lamborghini_Revuelto.jpg" alt="Lamborghini Revuelto, rear view" loading="lazy"></div>
+        <h3 style="margin-top:28px">Hybrid fire, electric silence,<br>sixteen cylinders of excess.</h3>
+        <p>The collection spans three philosophies of speed. <b>The Revuelto and SF90 Stradale</b> pair combustion with electric motors — instant torque filling every gap a gearbox leaves behind. <b>The Chiron</b> answers with pure displacement: an 8.0-litre, quad-turbo W16, the largest engine in the room. <b>The Spectre</b> proves the third way — silence, delivered with 584 horsepower and not a single vibration.</p>
+        <p>Between them: <b>6,018 PS</b> of combined output, four drivetrain philosophies, and one shared rule — nothing here is a concept. Every car is in production, on the road, and photographed as it actually is.</p>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
-<div class="modal" id="aboutModal">
-  <div class="card">
-    <button class="close" data-close="aboutModal">×</button>
-    <h3>About <em>LUXURY MOTION</em></h3>
-    <div class="sub">A Private Automotive Gallery</div>
-    <p>LUXURY MOTION is a digital showroom built as an interactive exhibition — seven machines, one dark gallery, and a configurator that lets you dress each car your way. Drag to walk around a car, use the camera views to study its lines, and open View Details for the numbers that matter.</p>
-    <p>An honest note on the cars: the seven vehicles here are detailed procedural 3D interpretations built in Three.js — shaped, painted and lit to each marque's identity. They are not the manufacturers' official CAD or GLB models, and no external model files are loaded. The specifications shown are the manufacturers' published figures.</p>
-    <p>Built as a single standalone page — HTML, CSS, vanilla JavaScript and Three.js. No account, no backend, no tracking.</p>
+<!-- ============ SECTION 05 · DESIGN & CRAFTSMANSHIP ============ -->
+<section id="craft">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Section 05 — Design &amp; Craftsmanship</div>
+      <h2>Look closer.<br><span class="gold">That is the point.</span></h2>
+      <p>At this level, design is not decoration. Every line manages air, every material earns its place, and every detail is finished by hand.</p>
+      <div class="rule"></div>
+    </div>
+    <div class="tiles">
+      <div class="tile wide reveal">
+        <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/2023_Lamborghini_Revuelto_Rear.jpg/1920px-2023_Lamborghini_Revuelto_Rear.jpg" alt="Lamborghini Revuelto rear aero" loading="lazy">
+        <div class="shade3"></div>
+        <div class="t-body"><div class="eyebrow">Exterior — Lamborghini Revuelto</div>
+          <h3>Aerodynamics, worn openly</h3>
+          <p>Y-shaped tail lights, twin high-mounted exhausts and a diffuser that works as hard as the V12 behind it. Nothing is hidden; everything is shaped by air.</p></div>
+      </div>
+      <div class="tile tall reveal">
+        <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Rolls-Royce_Spectre_IAA_2023_1X7A0753.jpg/1920px-Rolls-Royce_Spectre_IAA_2023_1X7A0753.jpg" alt="Rolls-Royce Spectre presence" loading="lazy">
+        <div class="shade3"></div>
+        <div class="t-body"><div class="eyebrow">Presence — Rolls-Royce Spectre</div>
+          <h3>Silence, tailored</h3>
+          <p>Five and a half metres of coach-built calm. The widest grille Rolls-Royce has ever fitted, split headlights, and a cabin lit by thousands of hand-set stars.</p></div>
+      </div>
+      <div class="tile tall reveal">
+        <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/2018_Bugatti_Chiron_in_Exposed_Blue_Carbon%2C_front_right.jpg/1920px-2018_Bugatti_Chiron_in_Exposed_Blue_Carbon%2C_front_right.jpg" alt="Bugatti Chiron exposed blue carbon" loading="lazy">
+        <div class="shade3"></div>
+        <div class="t-body"><div class="eyebrow">Materials — Bugatti Chiron</div>
+          <h3>Carbon, left exposed</h3>
+          <p>Two-tone coachwork in Atlantic Blue over exposed carbon fibre — the C-line sweeping the flank, the horseshoe grille, jewellery-grade machining throughout.</p></div>
+      </div>
+      <div class="tile wide reveal">
+        <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Porsche_992_GT3_RS_MYLE_Festival_2025_DSC_9586_%28cropped%29.jpg/1920px-Porsche_992_GT3_RS_MYLE_Festival_2025_DSC_9586_%28cropped%29.jpg" alt="Porsche 911 GT3 RS" loading="lazy">
+        <div class="shade3"></div>
+        <div class="t-body"><div class="eyebrow">Motorsport — Porsche 911 GT3 RS</div>
+          <h3>A race car with number plates</h3>
+          <p>A swan-neck wing with DRS, louvred front wings, a 9,000 rpm flat-six. Downforce you can feel in your chest — 409 kg of it at 200 km/h.</p></div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
-<div id="fallback"><div class="card">
-  <h2>LUXURY <span style="color:#C6A66A">MOTION</span></h2>
-  <p>This showroom needs WebGL to render its 3D gallery, and WebGL could not start in this browser. Please try a recent version of Chrome, Edge, Firefox or Safari with hardware acceleration enabled — or open this page on another device.</p>
-  <p style="margin-top:14px;color:#8b8f98">The collection: Lamborghini Revuelto · Ferrari SF90 Stradale · Rolls-Royce Spectre · Bentley Continental GT · Mercedes-AMG GT · Porsche 911 GT3 RS · Bugatti Chiron.</p>
-</div></div>
+<!-- ============ SECTION 06 · FINAL ============ -->
+<section id="final">
+  <div class="bg"></div>
+  <div class="shade4"></div>
+  <div class="inner reveal">
+    <div class="eyebrow">Section 06 — The Final Experience</div>
+    <h2 style="margin-top:18px">BEYOND DRIVING.<br><span>A STATEMENT OF EXCELLENCE.</span></h2>
+    <div class="sub">Luxury Motion</div>
+    <div class="cta">
+      <button class="btn solid" data-go="collection">Return to the Collection</button>
+      <button class="btn ghost" data-go="hero">Back to the Beginning</button>
+    </div>
+  </div>
+</section>
 
-<script type="importmap">
-{"imports":{
-  "three":"https://unpkg.com/three@0.160.0/build/three.module.js",
-  "three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"
-}}
-</script>
+<!-- ============ ABOUT / FOOTER ============ -->
+<section id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="reveal">
+        <div class="eyebrow">About — Luxury Motion</div>
+        <h2>A private gallery,<br>built around <span class="gold">real machines.</span></h2>
+        <p>LUXURY MOTION is a digital showroom in the form of an exhibition: seven production cars, each photographed in the real world, presented with the restraint their makers would recognise — large images, honest specifications, and nothing that pretends to be something it is not.</p>
+        <p>An honest note: this showcase uses real automotive photography. No 3D models are used here — the previous procedural 3D cars were removed because they could not meet the standard this collection demands. When a licensed, photorealistic 3D model of a specific car becomes available, it will replace that car's photographic gallery.</p>
+      </div>
+      <div class="reveal">
+        <div class="fact"><b>07</b><span>Vehicles in the collection</span></div>
+        <div class="fact"><b>25</b><span>Photographs, all verified loading</span></div>
+        <div class="fact"><b>6,018 PS</b><span>Combined output of the collection</span></div>
+        <div class="fact"><b>01</b><span>Page. No account. No backend.</span></div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="f-in">
+      <div>
+        <div class="f-brand">LUXURY <b>MOTION</b></div>
+        <p style="margin-top:12px">© 2026 LUXURY MOTION. All rights reserved.<br>Vehicle names and marks belong to their respective manufacturers. This is an independent showcase, not affiliated with or endorsed by any manufacturer.</p>
+      </div>
+      <p>Photography: Wikimedia Commons contributors, under Creative Commons licences (CC BY / CC BY-SA). Specifications are the manufacturers' published figures. Images are shown at 1920px for fast loading; originals are up to 4K and beyond.</p>
+    </div>
+  </footer>
+</section>
 
-<script type="module">
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+<button id="toTop" aria-label="Back to top">↑</button>
 
-/* ================= DATA — manufacturer-published figures ================= */
+<script>
+const W = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/';
 const CARS = [
-  { id:'revuelto', num:'01', maker:'Automobili Lamborghini', name:'Revuelto', short:'Revuelto',
-    year:'2024', cat:'V12 Plug-in Hybrid Supercar', paint:0x1f7a3a, paintName:'Verde Mantis', accent:0x39d353,
-    L:4.94, W:2.03, roof:1.16, nose:0.62, wheel:0.38, wing:'lambo',
-    engine:'6.5L V12 + 3 electric motors (PHEV)', power:'1,015 PS', accel:'2.5 s', top:'350 km/h',
-    trans:'8-speed dual-clutch', drive:'All-wheel drive',
-    desc:'The V12, electrified and unleashed — a flagship that pairs a naturally aspirated V12 with three electric motors for a new kind of violence, beautifully controlled.',
-    feat:['Y-shaped LED daytime running lights','Scissor doors and sharp aerodynamic surfacing','Active rear wing and exposed V12 architecture','Three-motor hybrid system with torque vectoring'] },
-  { id:'sf90', num:'02', maker:'Ferrari', name:'SF90 Stradale', short:'SF90 Stradale',
-    year:'2020', cat:'Plug-in Hybrid Supercar', paint:0xc40000, paintName:'Rosso Corsa', accent:0xff3b30,
-    L:4.71, W:1.97, roof:1.18, nose:0.58, wheel:0.37, wing:'none',
-    engine:'4.0L twin-turbo V8 + 3 electric motors (PHEV)', power:'1,000 PS', accel:'2.5 s', top:'340 km/h',
-    trans:'8-speed dual-clutch', drive:'All-wheel drive',
-    desc:'Ferrari’s first series-production plug-in hybrid — a V8 and three electric motors working as one, with the elegance of Maranello and the pace of a race car.',
-    feat:['Matrix LED headlights and S-duct aero','Mid-rear V8 with electric front axle','Shut-off Gurney rear aero system','Carbon-fibre steering wheel with touch controls'] },
-  { id:'spectre', num:'03', maker:'Rolls-Royce', name:'Spectre', short:'Spectre',
-    year:'2024', cat:'Ultra-Luxury Electric Coupé', paint:0x0d0d10, paintName:'Diamond Black', accent:0xc6a66a,
-    L:5.45, W:2.08, roof:1.56, nose:0.78, wheel:0.40, wing:'none',
-    engine:'Dual electric motors (102 kWh battery)', power:'584 hp', accel:'4.4 s', top:'250 km/h',
-    trans:'Single-speed, direct drive', drive:'All-wheel drive',
-    desc:'The silent flagship — Rolls-Royce’s first electric coupé. A cathedral of calm, finished in diamond black with champagne light playing across its coachwork.',
-    feat:['Illuminated Pantheon grille and Spirit of Ecstasy','Starlight doors with 4,796 hand-set lights','Planar suspension reading the road ahead','Coach doors opening to a hand-stitched cabin'] },
-  { id:'continental', num:'04', maker:'Bentley', name:'Continental GT', short:'Continental GT',
-    year:'2024', cat:'Grand Tourer', paint:0x0f3d24, paintName:'British Racing Green', accent:0x9fb98a,
-    L:4.85, W:1.96, roof:1.40, nose:0.72, wheel:0.39, wing:'none',
-    engine:'6.0L twin-turbo W12', power:'650 hp', accel:'3.5 s', top:'335 km/h',
-    trans:'8-speed dual-clutch', drive:'All-wheel drive',
-    desc:'A grand tourer in the old sense — twelve cylinders, hand-stitched leather, and a continent disappearing quietly beneath it.',
-    feat:['Crystal-cut matrix headlights','Hand-stitched leather and wood veneer cabin','Rotating dashboard display','W12 power with effortless torque'] },
-  { id:'amggt', num:'05', maker:'Mercedes-AMG', name:'AMG GT', short:'AMG GT',
-    year:'2024', cat:'Performance Coupé', paint:0x0a0a0c, paintName:'Obsidian Black', accent:0xbfc4cc,
-    L:4.73, W:1.93, roof:1.35, nose:0.66, wheel:0.38, wing:'small',
-    engine:'4.0L twin-turbo V8', power:'577 hp', accel:'3.1 s', top:'315 km/h',
-    trans:'9-speed multi-clutch', drive:'All-wheel drive',
-    desc:'Affalterbach’s long-bonnet coupé — a hand-built V8 set far behind the front axle, tuned for precision rather than theatre.',
-    feat:['Panamericana grille with vertical slats','Handcrafted AMG V8, signed by its builder','Active aerodynamics and rear-axle steering','Nappa leather cabin with AMG Performance seats'] },
-  { id:'gt3rs', num:'06', maker:'Porsche', name:'911 GT3 RS', short:'911 GT3 RS',
-    year:'2023', cat:'Track-Focused Sports Car', paint:0x9aa0a8, paintName:'Arctic Grey', accent:0xe8e8e8,
-    L:4.57, W:1.90, roof:1.32, nose:0.60, wheel:0.37, wing:'big',
-    engine:'4.0L naturally aspirated flat-6', power:'518 hp', accel:'3.0 s', top:'296 km/h',
-    trans:'7-speed PDK dual-clutch', drive:'Rear-wheel drive',
-    desc:'A race car with number plates. Nine thousand rpm, a swan-neck wing the size of a dining table, and downforce you can feel in your chest.',
-    feat:['Swan-neck rear wing with DRS','9,000 rpm naturally aspirated flat-six','Magnesium wheels and carbon roof','NACA ducts and louvred front wings'] },
-  { id:'chiron', num:'07', maker:'Bugatti', name:'Chiron', short:'Chiron',
-    year:'2022', cat:'Hypercar', paint:0x14356e, paintName:'French Racing Blue', accent:0x3b82f6,
-    L:4.54, W:2.04, roof:1.21, nose:0.60, wheel:0.39, wing:'small',
-    engine:'8.0L quad-turbo W16', power:'1,500 PS', accel:'2.4 s', top:'420 km/h',
-    trans:'7-speed dual-clutch', drive:'All-wheel drive',
-    desc:'Sixteen cylinders, four turbos, fifteen hundred horsepower — the Chiron is engineering as an act of excess, finished like jewellery.',
-    feat:['Signature C-line sweeping the flanks','Horseshoe grille and full-width light bar','Two-tone blue and black coachwork','Machined aluminium and hand-stitched leather cabin'] },
+ { num:'01', maker:'Automobili Lamborghini', name:'Revuelto', cat:'V12 Plug-in Hybrid Supercar', year:'2024',
+   power:'1,015 PS', accel:'2.5 s', top:'350 km/h',
+   engine:'6.5L V12 + 3 electric motors (PHEV)', trans:'8-speed dual-clutch', drive:'All-wheel drive',
+   desc:'The V12, electrified and unleashed — a naturally aspirated flagship paired with three electric motors, for a new kind of violence, beautifully controlled.',
+   feat:['Y-shaped LED daytime running lights','Scissor doors and sharp aerodynamic surfacing','Active rear wing and exposed V12 architecture','Three-motor hybrid system with torque vectoring'],
+   views:[
+     {u:W+'9/96/Lamborghini_Revuelto_IMG_0562.jpg/1920px-Lamborghini_Revuelto_IMG_0562.jpg', c:'Front three-quarter · <b>Bianco Monocerus</b>'},
+     {u:W+'6/6d/Rear_view_of_Green_Lamborghini_Revuelto.jpg/1920px-Rear_view_of_Green_Lamborghini_Revuelto.jpg', c:'Rear three-quarter · <b>Verde Mantis</b>'},
+     {u:W+'0/0a/Lamborghini_Revuelto_DSC_6987.jpg/1920px-Lamborghini_Revuelto_DSC_6987.jpg', c:'Rear view · <b>Detail study</b>'}] },
+ { num:'02', maker:'Ferrari', name:'SF90 Stradale', cat:'Plug-in Hybrid Supercar', year:'2021',
+   power:'1,000 PS', accel:'2.5 s', top:'340 km/h',
+   engine:'4.0L twin-turbo V8 + 3 electric motors (PHEV)', trans:'8-speed dual-clutch', drive:'All-wheel drive',
+   desc:'Ferrari’s first series-production plug-in hybrid — a V8 and three electric motors working as one, with the elegance of Maranello and the pace of a race car.',
+   feat:['Matrix LED headlights and S-duct aero','Mid-rear V8 with electric front axle','Shut-off Gurney rear aero system','Carbon-fibre steering wheel with touch controls'],
+   views:[
+     {u:W+'e/ef/Ferrari_SF90_Stradale_Mayfair.jpg/1920px-Ferrari_SF90_Stradale_Mayfair.jpg', c:'Front three-quarter · <b>Rosso Corsa</b>'},
+     {u:W+'8/88/2021_Ferrari_SF90_Stradale_3.jpg/1920px-2021_Ferrari_SF90_Stradale_3.jpg', c:'Rear three-quarter · <b>Nero</b>'},
+     {u:W+'6/68/Ferrari_SF90_Stradale_%28front%29.jpg/1920px-Ferrari_SF90_Stradale_%28front%29.jpg', c:'Front view · <b>Detail study</b>'}] },
+ { num:'03', maker:'Rolls-Royce', name:'Spectre', cat:'Ultra-Luxury Electric Coupé', year:'2024',
+   power:'584 hp', accel:'4.4 s', top:'250 km/h',
+   engine:'Dual electric motors · 102 kWh battery', trans:'Single-speed, direct drive', drive:'All-wheel drive',
+   desc:'The silent flagship — Rolls-Royce’s first electric coupé. A cathedral of calm, finished in pale blue with champagne light playing across its coachwork.',
+   feat:['Illuminated Pantheon grille and Spirit of Ecstasy','Starlight doors with 4,796 hand-set lights','Planar suspension reading the road ahead','Coach doors opening to a hand-stitched cabin'],
+   views:[
+     {u:W+'8/87/2023_Rolls-Royce_Spectre.jpg/1920px-2023_Rolls-Royce_Spectre.jpg', c:'Front three-quarter · <b>Gunmetal over Arctic White</b>'},
+     {u:W+'5/54/Rolls-Royce_Spectre_IAA_2023_1X7A0754.jpg/1920px-Rolls-Royce_Spectre_IAA_2023_1X7A0754.jpg', c:'Side profile · <b>IAA 2023</b>'},
+     {u:W+'5/5f/Rolls-Royce_Spectre_IAA_2023_1X7A0753.jpg/1920px-Rolls-Royce_Spectre_IAA_2023_1X7A0753.jpg', c:'Presence study · <b>IAA 2023</b>'}] },
+ { num:'04', maker:'Bentley', name:'Continental GT Speed', cat:'Grand Tourer', year:'2024',
+   power:'782 PS', accel:'3.2 s', top:'335 km/h',
+   engine:'4.0L twin-turbo V8 plug-in hybrid', trans:'8-speed dual-clutch', drive:'All-wheel drive',
+   desc:'A grand tourer in the old sense — hand-stitched leather, a continent disappearing quietly beneath it, and now a hybrid V8 with more power than any Bentley before it.',
+   feat:['Crystal-cut matrix headlights','Hand-stitched leather and wood veneer cabin','Rotating dashboard display','Ultra Performance Hybrid V8 powertrain'],
+   views:[
+     {u:W+'6/66/Bentley_Continental_GT_%284th_gen.%29_DSC_6978.jpg/1920px-Bentley_Continental_GT_%284th_gen.%29_DSC_6978.jpg', c:'Front three-quarter · <b>4th generation</b>'},
+     {u:W+'d/da/Bentley_Continental_GT_%284th_gen.%29_DSC_6979.jpg/1920px-Bentley_Continental_GT_%284th_gen.%29_DSC_6979.jpg', c:'Side profile · <b>Detail study</b>'},
+     {u:W+'b/bc/Bentley_Continental_GT_%284th_gen.%29_IMG_0556.jpg/1920px-Bentley_Continental_GT_%284th_gen.%29_IMG_0556.jpg', c:'Rear three-quarter · <b>Detail study</b>'}] },
+ { num:'05', maker:'Mercedes-AMG', name:'AMG GT 63 Pro', cat:'Performance Coupé', year:'2025',
+   power:'612 PS', accel:'3.2 s', top:'320 km/h',
+   engine:'4.0L twin-turbo V8', trans:'9-speed multi-clutch', drive:'All-wheel drive (4MATIC+)',
+   desc:'Affalterbach’s long-bonnet coupé, sharpened for the circuit — a hand-built V8, active aero and a fixed rear wing, tuned for precision rather than theatre.',
+   feat:['Panamericana grille with vertical slats','Handcrafted AMG V8, signed by its builder','Active aerodynamics and fixed rear wing','Nappa leather cabin with AMG Performance seats'],
+   views:[
+     {u:W+'7/71/Mercedes-AMG_GT_63_Pro_%28C192%29_IAA_2025_DSC_2092.jpg/1920px-Mercedes-AMG_GT_63_Pro_%28C192%29_IAA_2025_DSC_2092.jpg', c:'Rear three-quarter · <b>IAA 2025</b>'},
+     {u:W+'f/f5/Mercedes-AMG_GT_63_Pro_%28C192%29_IAA_2025_DSC_1963.jpg/1920px-Mercedes-AMG_GT_63_Pro_%28C192%29_IAA_2025_DSC_1963.jpg', c:'Front three-quarter · <b>IAA 2025</b>'},
+     {u:W+'f/f6/Mercedes-AMG_GT_63_Pro_%28C192%29_IAA_2025_DSC_2097.jpg/1920px-Mercedes-AMG_GT_63_Pro_%28C192%29_IAA_2025_DSC_2097.jpg', c:'Side profile · <b>IAA 2025</b>'}] },
+ { num:'06', maker:'Porsche', name:'911 GT3 RS', cat:'Track-Focused Sports Car', year:'2023',
+   power:'525 PS', accel:'3.2 s', top:'296 km/h',
+   engine:'4.0L naturally aspirated flat-6', trans:'7-speed PDK dual-clutch', drive:'Rear-wheel drive',
+   desc:'A race car with number plates. Nine thousand rpm, a swan-neck wing the size of a dining table, and downforce you can feel in your chest.',
+   feat:['Swan-neck rear wing with DRS','9,000 rpm naturally aspirated flat-six','Magnesium wheels and carbon roof','NACA ducts and louvred front wings'],
+   views:[
+     {u:W+'b/ba/Porsche_992_GT3_RS_DSC_9055.jpg/1920px-Porsche_992_GT3_RS_DSC_9055.jpg', c:'Front three-quarter · <b>Racing Yellow</b>'},
+     {u:W+'b/b3/Porsche_911_GT3_RS%2C_Auto_2025%2C_Zurich_%2820251029-P1073692%29.jpg/1920px-Porsche_911_GT3_RS%2C_Auto_2025%2C_Zurich_%2820251029-P1073692%29.jpg', c:'Front view · <b>Auto Zürich 2025</b>'},
+     {u:W+'c/c7/Porsche_992_GT3_RS_MYLE_Festival_2025_DSC_9586.jpg/1920px-Porsche_992_GT3_RS_MYLE_Festival_2025_DSC_9586.jpg', c:'Side profile · <b>MYLE Festival 2025</b>'}] },
+ { num:'07', maker:'Bugatti', name:'Chiron', cat:'Hypercar', year:'2022',
+   power:'1,500 PS', accel:'2.4 s', top:'420 km/h',
+   engine:'8.0L quad-turbo W16', trans:'7-speed dual-clutch', drive:'All-wheel drive',
+   desc:'Sixteen cylinders, four turbos, fifteen hundred horsepower — the Chiron is engineering as an act of excess, finished like jewellery.',
+   feat:['Signature C-line sweeping the flanks','Horseshoe grille and full-width light bar','Two-tone blue and black coachwork','Machined aluminium and hand-stitched leather cabin'],
+   views:[
+     {u:W+'b/be/Bugatti_Chiron_Royal_Blue.jpg/1920px-Bugatti_Chiron_Royal_Blue.jpg', c:'Front three-quarter · <b>Atlantic Blue / Black</b>'},
+     {u:W+'6/6f/Bugatti_Chiron%2C_GIMS_2018%2C_Le_Grand-Saconnex_%281X7A1765%29.jpg/1920px-Bugatti_Chiron%2C_GIMS_2018%2C_Le_Grand-Saconnex_%281X7A1765%29.jpg', c:'Front view · <b>Geneva Motor Show 2018</b>'},
+     {u:W+'a/a2/2021_Bugatti_Chiron_Pur_Sport_in_Atlantic_Blue%2C_front_left.jpg/1920px-2021_Bugatti_Chiron_Pur_Sport_in_Atlantic_Blue%2C_front_left.jpg', c:'Front three-quarter · <b>Pur Sport, Atlantic Blue</b>'}] },
 ];
-
-const PAINTS = [
-  {n:'Obsidian Black', c:0x0a0a0c}, {n:'Racing Red', c:0xc40000}, {n:'Metallic Silver', c:0xbfc4cc},
-  {n:'British Racing Green', c:0x0f3d24}, {n:'Midnight Blue', c:0x14356e}, {n:'Pearl White', c:0xf5f5f3},
-  {n:'Champagne Gold', c:0xc6a66a}, {n:'Verde Mantis', c:0x1f7a3a},
-];
-const INTERIORS = { black:0x141416, tan:0x8a5a2e, red:0x7a1010, cream:0xd8cfc0 };
-const WHEELS = { silver:0xc8ccd2, black:0x17181a, gold:0xc6a66a };
-const LIGHTING = {
-  studio:{ spot:0xfff2dd, amb:0.55, spotI:260, name:'Studio' },
-  warm:{ spot:0xffd9a0, amb:0.45, spotI:220, name:'Warm' },
-  cool:{ spot:0xdfe8ff, amb:0.6, spotI:240, name:'Cool' },
-  night:{ spot:0x9fb6ff, amb:0.28, spotI:150, name:'Night' },
-};
-const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-/* ================= STATE ================= */
-let renderer, scene, camera, controls, clock;
-let carGroups = [], paintMats = [], rimMats = [], seatMats = [];
-let platform, accentSpot, keySpot, fillLight, ambLight;
-let selected = 0, autoRotate = false, entered = false, camTween = null;
-let lightMode = 'studio';
-const ROW = i => ({ x:(i-3)*3.6, z:-8.2, ry:0.12 });
-const CENTER = { x:0, z:0, ry:-0.38 };
-
-/* ================= HELPERS ================= */
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-function mat(color, metalness, roughness, extra={}) {
-  return new THREE.MeshPhysicalMaterial(Object.assign({color, metalness, roughness}, extra));
-}
-function box(w,h,d,material,x=0,y=0,z=0){
-  const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), material);
-  m.position.set(x,y,z); m.castShadow = true; m.receiveShadow = true; return m;
-}
-function cyl(rt,rb,h,material,x=0,y=0,z=0,seg=24){
-  const m = new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg), material);
-  m.position.set(x,y,z); m.castShadow = true; return m;
-}
-function ease(t){ return t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
-function tweenCam(toPos, toTgt, dur=1100){
-  camTween = { p0:camera.position.clone(), p1:new THREE.Vector3(...toPos),
-    t0:controls.target.clone(), t1:new THREE.Vector3(...toTgt), s:performance.now(), d:dur };
-}
-function marbleTexture(){
-  const c = document.createElement('canvas'); c.width = c.height = 1024;
-  const g = c.getContext('2d');
-  g.fillStyle = '#0a0b0d'; g.fillRect(0,0,1024,1024);
-  for(let i=0;i<9000;i++){
-    g.fillStyle = `rgba(255,255,255,${Math.random()*0.03})`;
-    g.fillRect(Math.random()*1024, Math.random()*1024, 1+Math.random()*2, 1+Math.random()*2);
-  }
-  g.strokeStyle = 'rgba(198,166,106,0.16)'; g.lineWidth = 1;
-  for(let v=0; v<7; v++){
-    g.beginPath(); let x = Math.random()*1024, y = 0;
-    g.moveTo(x,y);
-    while(y < 1024){ x += (Math.random()-0.5)*90; y += 40+Math.random()*60; g.lineTo(x,y); }
-    g.stroke();
-  }
-  g.strokeStyle = 'rgba(255,255,255,0.07)';
-  for(let v=0; v<10; v++){
-    g.beginPath(); let x = Math.random()*1024, y = 0; g.moveTo(x,y);
-    while(y < 1024){ x += (Math.random()-0.5)*70; y += 50+Math.random()*70; g.lineTo(x,y); }
-    g.stroke();
-  }
-  const t = new THREE.CanvasTexture(c);
-  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(3,3);
-  t.colorSpace = THREE.SRGBColorSpace; return t;
-}
+let selected = 0, viewIdx = 0;
 
-/* ================= CAR BUILDER ================= */
-function buildCar(spec){
-  const g = new THREE.Group();
-  const L = spec.L, W = spec.W, H = spec.roof;
-  const paint = mat(spec.paint, 0.65, 0.24, { clearcoat:1, clearcoatRoughness:0.08, envMapIntensity:1.15 });
-  const darkTrim = mat(0x0b0c0e, 0.8, 0.35);
-  const glass = mat(0x0a1118, 0.1, 0.06, { transparent:true, opacity:0.62, clearcoat:1, envMapIntensity:1.4 });
-  const chrome = mat(0xd8dce2, 1, 0.12, { envMapIntensity:1.5 });
-  const rim = mat(0xc8ccd2, 1, 0.22, { envMapIntensity:1.3 });
-  const seat = mat(0x141416, 0.1, 0.85);
-  const tyre = mat(0x0a0a0a, 0, 0.95);
-  const lightW = new THREE.MeshStandardMaterial({ color:0xffffff, emissive:0xfff6d8, emissiveIntensity:2.2 });
-  const lightR = new THREE.MeshStandardMaterial({ color:0x330000, emissive:0xff1a1a, emissiveIntensity:1.8 });
+/* --- marquee strip --- */
+(function(){
+  const names = CARS.map(c=>`<span>${c.maker} <b>·</b> ${c.name}</span>`).join('<span><b>◆</b></span>');
+  $('#stripTrack').innerHTML = names + '<span><b>◆</b></span>' + names + '<span><b>◆</b></span>';
+})();
 
-  /* --- body: extruded side profile --- */
-  const noseY = spec.nose, roofY = H;
-  const s = new THREE.Shape();
-  s.moveTo(-L/2+0.15, 0.34);
-  s.lineTo(L/2-0.28, 0.34);
-  s.quadraticCurveTo(L/2+0.06, 0.36, L/2+0.04, noseY-0.12);   // nose
-  s.lineTo(L/2-0.55, noseY+0.10);                              // hood edge
-  s.quadraticCurveTo(0.55, noseY+0.22, 0.15, roofY-0.28);      // windscreen base
-  s.quadraticCurveTo(-0.35, roofY, -1.05, roofY-0.03);         // roof
-  s.quadraticCurveTo(-1.75, roofY-0.16, -L/2-0.02, roofY-0.42);// rear deck
-  s.lineTo(-L/2-0.02, 0.42);
-  s.quadraticCurveTo(-L/2+0.02, 0.34, -L/2+0.15, 0.34);
-  const bodyGeo = new THREE.ExtrudeGeometry(s, { depth:W*0.86, bevelEnabled:true, bevelThickness:0.07, bevelSize:0.07, bevelSegments:3, steps:1 });
-  bodyGeo.translate(0, 0, -W*0.43);
-  const body = new THREE.Mesh(bodyGeo, paint);
-  body.castShadow = true; body.receiveShadow = true;
-  g.add(body);
-
-  /* --- lower skirt / two-tone (Chiron) --- */
-  if(spec.id === 'chiron'){
-    const skirt = box(L*0.82, 0.22, W*0.9, mat(0x050506, 0.7, 0.3), -0.1, 0.42, 0);
-    g.add(skirt);
-  }
-  /* --- glass cabin --- */
-  const cs = new THREE.Shape();
-  cs.moveTo(0.55, roofY-0.34); cs.lineTo(0.05, roofY-0.10);
-  cs.quadraticCurveTo(-0.4, roofY+0.02, -1.0, roofY-0.01);
-  cs.lineTo(-1.35, roofY-0.22); cs.lineTo(-1.3, roofY-0.34); cs.lineTo(0.55, roofY-0.34);
-  const cabGeo = new THREE.ExtrudeGeometry(cs, { depth:W*0.62, bevelEnabled:true, bevelThickness:0.03, bevelSize:0.03, bevelSegments:2 });
-  cabGeo.translate(0, 0, -W*0.31);
-  const cabin = new THREE.Mesh(cabGeo, glass); cabin.castShadow = true; g.add(cabin);
-
-  /* --- interior: seats + dash, visible through glass --- */
-  const seatL = box(0.42, 0.5, 0.42, seat, 0.05, roofY-0.32, 0.28);
-  const seatR = box(0.42, 0.5, 0.42, seat, 0.05, roofY-0.32, -0.28);
-  const dash = box(0.5, 0.14, W*0.55, mat(0x0c0d0f, 0.2, 0.8), 0.55, roofY-0.34, 0);
-  g.add(seatL, seatR, dash);
-
-  /* --- wheels --- */
-  const wr = spec.wheel;
-  const wheelX = L*0.31, wheelZ = W*0.46;
-  [[wheelX, wheelZ],[wheelX, -wheelZ],[-wheelX, wheelZ],[-wheelX, -wheelZ]].forEach(([x,z])=>{
-    const wg = new THREE.Group(); wg.position.set(x, wr+0.02, z);
-    const tire = new THREE.Mesh(new THREE.CylinderGeometry(wr, wr, 0.26, 28), tyre);
-    tire.rotation.x = Math.PI/2; tire.castShadow = true; wg.add(tire);
-    const rimM = new THREE.Mesh(new THREE.CylinderGeometry(wr*0.62, wr*0.62, 0.27, 20), rim);
-    rimM.rotation.x = Math.PI/2; wg.add(rimM);
-    for(let k=0;k<5;k++){
-      const sp = box(0.05, wr*0.55, 0.28, rim, 0, 0, 0);
-      sp.rotation.z = k*Math.PI/5; sp.position.set(Math.cos(k*Math.PI/5)*0, 0, 0);
-      const holder = new THREE.Group(); holder.rotation.z = k*Math.PI/5;
-      const spoke = box(wr*0.55, 0.06, 0.28, rim, wr*0.28, 0, 0);
-      holder.add(spoke); wg.add(holder);
-    }
-    const hub = cyl(wr*0.16, wr*0.16, 0.29, darkTrim, 0, 0, 0); hub.rotation.x = Math.PI/2; wg.add(hub);
-    g.add(wg);
+/* --- collection cards --- */
+(function(){
+  const wrap = $('#cards');
+  CARS.forEach((c,i)=>{
+    const el = document.createElement('article');
+    el.className = 'card reveal' + (i===0 ? ' wide' : '');
+    el.innerHTML = `
+      <div class="img"><img src="${c.views[0].u}" alt="${c.maker} ${c.name}" loading="lazy"><span class="num">${c.num} / 07</span></div>
+      <div class="body">
+        <div class="maker">${c.maker} · ${c.year}</div>
+        <h3>${c.name}</h3>
+        <p class="desc">${c.desc}</p>
+        <div class="stats">
+          <div><b>${c.power}</b><span>Power</span></div>
+          <div><b>${c.accel}</b><span>0–100 km/h</span></div>
+          <div><b>${c.top}</b><span>Top Speed</span></div>
+        </div>
+        <div class="explore">Explore vehicle <i>→</i></div>
+      </div>`;
+    el.addEventListener('click', ()=>{ selectCar(i); document.getElementById('featured').scrollIntoView({behavior:'smooth'}); });
+    wrap.appendChild(el);
   });
+})();
 
-  /* --- front fascia --- */
-  const fx = L/2 + 0.02;
-  if(spec.id === 'continental'){
-    // four round headlights
-    [[0.52],[0.78]].forEach(([z])=>{
-      [z,-z].forEach(zz=>{
-        const hl = new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.06,20), lightW);
-        hl.rotation.z = Math.PI/2; hl.position.set(fx+0.02, noseY+0.06, zz); g.add(hl);
-      });
-    });
-    g.add(box(0.06, 0.3, 0.9, chrome, fx, 0.62, 0));
-  } else if(spec.id === 'amggt'){
-    // Panamericana vertical slats
-    g.add(box(0.06, 0.34, 0.85, darkTrim, fx, 0.6, 0));
-    for(let k=-3;k<=3;k++) g.add(box(0.08, 0.3, 0.03, chrome, fx, 0.6, k*0.11));
-    g.add(box(0.05, 0.07, 0.5, lightW, fx+0.02, noseY+0.08, 0.62));
-    g.add(box(0.05, 0.07, 0.5, lightW, fx+0.02, noseY+0.08, -0.62));
-  } else if(spec.id === 'spectre'){
-    // tall illuminated grille
-    g.add(box(0.06, 0.52, 0.7, chrome, fx, 0.62, 0));
-    g.add(box(0.05, 0.08, 0.55, lightW, fx+0.02, noseY+0.12, 0.6));
-    g.add(box(0.05, 0.08, 0.55, lightW, fx+0.02, noseY+0.12, -0.6));
-    const spirit = cyl(0.015, 0.015, 0.22, chrome, L/2-0.35, noseY+0.28, 0); g.add(spirit);
-  } else if(spec.id === 'revuelto'){
-    // Y-shaped lights: angled strips
-    [0.62,-0.62].forEach(z=>{
-      const a = box(0.05, 0.06, 0.42, lightW, fx+0.02, noseY+0.1, z);
-      a.rotation.x = z>0 ? 0.5 : -0.5; g.add(a);
-    });
-    g.add(box(0.06, 0.16, 1.0, darkTrim, fx, 0.5, 0));
-  } else {
-    // slim LED strips
-    g.add(box(0.05, 0.07, 0.55, lightW, fx+0.02, noseY+0.08, 0.62));
-    g.add(box(0.05, 0.07, 0.55, lightW, fx+0.02, noseY+0.08, -0.62));
-    g.add(box(0.06, 0.2, 0.9, darkTrim, fx, 0.52, 0));
-  }
-  /* --- rear lights --- */
-  g.add(box(0.05, 0.08, W*0.72, lightR, -L/2-0.04, roofY-0.42, 0));
-  if(spec.id === 'chiron') g.add(box(0.05, 0.06, W*0.8, lightR, -L/2-0.04, roofY-0.5, 0));
-
-  /* --- mirrors --- */
-  [0.62,-0.62].forEach(z=>{
-    g.add(box(0.05, 0.04, 0.14, darkTrim, 0.42, roofY-0.18, z*W*0.5/0.62 + (z>0?0.06:-0.06)));
-    g.add(box(0.1, 0.09, 0.06, paint, 0.42, roofY-0.14, z > 0 ? W/2+0.1 : -W/2-0.1));
-  });
-
-  /* --- wings / aero --- */
-  if(spec.wing === 'big'){
-    g.add(box(0.06, 0.34, 0.05, darkTrim, -L/2+0.28, roofY-0.1, 0.55));
-    g.add(box(0.06, 0.34, 0.05, darkTrim, -L/2+0.28, roofY-0.1, -0.55));
-    const wing = box(0.42, 0.05, W*0.95, darkTrim, -L/2+0.22, roofY+0.12, 0);
-    wing.rotation.z = -0.08; g.add(wing);
-    // bonnet vents
-    g.add(box(0.5, 0.03, 0.7, darkTrim, 1.15, noseY+0.16, 0));
-  } else if(spec.wing === 'small'){
-    g.add(box(0.4, 0.05, W*0.8, paint, -L/2+0.18, roofY-0.28, 0));
-  } else if(spec.wing === 'lambo'){
-    g.add(box(0.05, 0.3, 0.05, darkTrim, -L/2+0.3, roofY-0.12, 0.5));
-    g.add(box(0.05, 0.3, 0.05, darkTrim, -L/2+0.3, roofY-0.12, -0.5));
-    g.add(box(0.42, 0.05, W*0.85, darkTrim, -L/2+0.26, roofY+0.08, 0));
-  }
-  /* --- side skirts + diffuser --- */
-  g.add(box(L*0.6, 0.1, W*0.94, darkTrim, 0, 0.36, 0));
-  g.add(box(0.3, 0.16, W*0.7, darkTrim, -L/2+0.1, 0.4, 0));
-  /* --- exhausts --- */
-  if(spec.id === 'revuelto' || spec.id === 'gt3rs'){
-    [0.18,-0.18].forEach(z=>{
-      const ex = cyl(0.06, 0.06, 0.14, chrome, -L/2-0.06, 0.52, z); ex.rotation.z = Math.PI/2; g.add(ex);
-    });
-  }
-  g.userData = { paint, rim, seat };
-  return g;
+/* --- featured vehicle --- */
+function renderChips(){
+  $('#fChips').innerHTML = CARS.map((c,i)=>
+    `<button data-i="${i}" class="${i===selected?'on':''}">${c.num} — ${c.name}</button>`).join('');
+  $$('#fChips button').forEach(b=>b.addEventListener('click', ()=>selectCar(+b.dataset.i)));
 }
-
-/* ================= SCENE ================= */
-function init(){
-  const holder = $('#scene');
-  renderer = new THREE.WebGLRenderer({ antialias:true, powerPreference:'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(innerWidth, innerHeight);
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.12;
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  holder.appendChild(renderer.domElement);
-
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x08090b);
-  scene.fog = new THREE.Fog(0x08090b, 16, 42);
-
-  camera = new THREE.PerspectiveCamera(42, innerWidth/innerHeight, 0.1, 120);
-  camera.position.set(11.5, 4.6, 13.5);
-
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-
-  controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 0.9, 0);
-  controls.enableDamping = true; controls.dampingFactor = 0.06;
-  controls.minDistance = 4.2; controls.maxDistance = 17;
-  controls.maxPolarAngle = Math.PI * 0.495; controls.minPolarAngle = 0.18;
-  controls.enablePan = false;
-  controls.autoRotate = false; controls.autoRotateSpeed = 0.7;
-
-  /* lights */
-  ambLight = new THREE.AmbientLight(0xffffff, 0.55); scene.add(ambLight);
-  const hemi = new THREE.HemisphereLight(0xcfd6e4, 0x0a0a0c, 0.35); scene.add(hemi);
-  keySpot = new THREE.SpotLight(0xfff2dd, 260, 30, 0.5, 0.45, 1.6);
-  keySpot.position.set(4, 9, 5); keySpot.castShadow = true;
-  keySpot.shadow.mapSize.set(2048, 2048); keySpot.shadow.bias = -0.0002;
-  scene.add(keySpot); scene.add(keySpot.target);
-  accentSpot = new THREE.SpotLight(CARS[0].accent, 200, 26, 0.62, 0.6, 1.7);
-  accentSpot.position.set(-5, 8, -4); scene.add(accentSpot); scene.add(accentSpot.target);
-  fillLight = new THREE.DirectionalLight(0xbfc4cc, 0.5); fillLight.position.set(-6, 5, 8); scene.add(fillLight);
-
-  /* floor — polished black marble */
-  const floor = new THREE.Mesh(
-    new THREE.CircleGeometry(26, 72),
-    new THREE.MeshStandardMaterial({ map:marbleTexture(), color:0xffffff, metalness:0.85, roughness:0.28, envMapIntensity:0.9 })
-  );
-  floor.rotation.x = -Math.PI/2; floor.receiveShadow = true; scene.add(floor);
-
-  /* platform */
-  platform = new THREE.Group();
-  const disc = new THREE.Mesh(new THREE.CylinderGeometry(3.4, 3.55, 0.14, 64),
-    new THREE.MeshStandardMaterial({ color:0x111216, metalness:0.9, roughness:0.32, envMapIntensity:0.8 }));
-  disc.position.y = 0.07; disc.receiveShadow = true; platform.add(disc);
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(3.42, 0.025, 12, 90),
-    new THREE.MeshStandardMaterial({ color:0xc6a66a, metalness:1, roughness:0.25, emissive:0xc6a66a, emissiveIntensity:0.6 }));
-  ring.rotation.x = Math.PI/2; ring.position.y = 0.15; platform.add(ring);
-  scene.add(platform);
-
-  /* ceiling beams + light shafts */
-  const beamMat = mat(0x0e0f12, 0.6, 0.6);
-  for(let i=-3;i<=3;i++){
-    const beam = box(0.5, 0.35, 22, beamMat, i*2.6, 8.4, -2);
-    scene.add(beam);
-  }
-  const shaftMat = new THREE.MeshBasicMaterial({ color:0xfff2dd, transparent:true, opacity:0.045, side:THREE.DoubleSide, depthWrite:false });
-  [[-2.2,2],[2.2,-2],[0,4]].forEach(([x,z])=>{
-    const cone = new THREE.Mesh(new THREE.ConeGeometry(1.7, 8.4, 24, 1, true), shaftMat);
-    cone.position.set(x, 4.2, z); scene.add(cone);
-  });
-  /* back wall glow strip */
-  const strip = box(20, 0.06, 0.06, new THREE.MeshStandardMaterial({ color:0x111111, emissive:0xc6a66a, emissiveIntensity:1.4 }), 0, 3.4, -11);
-  scene.add(strip);
-
-  /* cars */
-  CARS.forEach((spec, i)=>{
-    const car = buildCar(spec);
-    const rp = ROW(i);
-    car.position.set(rp.x, 0, rp.z); car.rotation.y = rp.ry;
-    car.userData.paint = car.userData.paint; 
-    scene.add(car); carGroups.push(car);
-    paintMats.push(car.userData.paint); rimMats.push(car.userData.rim); seatMats.push(car.userData.seat);
-  });
-  // selected car to centre
-  const c = carGroups[0]; c.position.set(CENTER.x, 0, CENTER.z); c.rotation.y = CENTER.ry;
-
-  clock = new THREE.Clock();
-  animate();
-  buildUI();
-  updateInfo(0, true);
-  applyLighting('studio');
-}
-
-/* ================= UI ================= */
-function buildUI(){
-  const dots = $('#dots'), strip = $('#carstrip');
-  CARS.forEach((c, i)=>{
-    const d = document.createElement('button'); d.textContent = String(i+1);
-    d.className = i===0 ? 'on' : ''; d.onclick = ()=>selectCar(i); dots.appendChild(d);
-    const s = document.createElement('button'); s.textContent = `${c.num} — ${c.short}`;
-    s.className = i===0 ? 'on' : ''; s.onclick = ()=>selectCar(i); strip.appendChild(s);
-  });
-  $('#prevBtn').onclick = ()=>selectCar((selected+6)%7);
-  $('#nextBtn').onclick = ()=>selectCar((selected+1)%7);
-  $('#exploreBtn').onclick = ()=>{ document.querySelector('#carstrip').scrollIntoView({behavior:'smooth', block:'nearest'}); selectCar((selected+1)%7); };
-  $('#brandHome').onclick = ()=>{ selectCar(0); setView('threequarter'); };
-  $$('nav a').forEach(a=>{
-    a.onclick = ()=>{
-      $$('nav a').forEach(x=>x.classList.remove('active')); a.classList.add('active');
-      const k = a.dataset.nav;
-      if(k==='home'){ selectCar(0); setView('threequarter'); }
-      if(k==='collection'){ $('#bottom').scrollIntoView(); }
-      if(k==='experience'){ toggleTour(); }
-      if(k==='about'){ openModal('aboutModal'); }
-    };
-  });
-  $$('#views button').forEach(b=>{ b.onclick = ()=>setView(b.dataset.view); });
-  $('#detailsBtn').onclick = ()=>openDetails();
-  $('#tourBtn').onclick = toggleTour;
-  $('#cfgBtn').onclick = ()=>{ $('#config').classList.toggle('hidden'); };
-  $$('.modal .close').forEach(b=>{ b.onclick = ()=>closeModal(b.dataset.close); });
-  $$('.modal').forEach(m=>{ m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('open'); }); });
-  document.addEventListener('keydown', e=>{
-    if(e.key==='ArrowRight') selectCar((selected+1)%7);
-    if(e.key==='ArrowLeft') selectCar((selected+6)%7);
-    if(e.key==='Escape'){ closeModal('detailsModal'); closeModal('aboutModal'); $('#config').classList.add('hidden'); }
-  });
-  // wheel navigation (debounced)
-  let wheelLock = 0;
-  $('#scene').addEventListener('wheel', e=>{
-    const now = Date.now();
-    if(now - wheelLock < 900) return;
-    if(Math.abs(e.deltaY) < 12) return;
-    wheelLock = now;
-    selectCar(e.deltaY > 0 ? (selected+1)%7 : (selected+6)%7);
-  }, { passive:true });
-  // touch swipe
-  let tx = 0, ty = 0;
-  $('#scene').addEventListener('touchstart', e=>{ tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive:true });
-  $('#scene').addEventListener('touchend', e=>{
-    const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
-    if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)*1.4) selectCar(dx < 0 ? (selected+1)%7 : (selected+6)%7);
-  }, { passive:true });
-  // paint swatches
-  const ps = $('#paintSw');
-  PAINTS.forEach((p, i)=>{
-    const s = document.createElement('button'); s.className = 'sw' + (i===0 ? ' on' : '');
-    s.style.background = '#'+p.c.toString(16).padStart(6,'0'); s.title = p.n;
-    s.onclick = ()=>{
-      $$('#paintSw .sw').forEach(x=>x.classList.remove('on')); s.classList.add('on');
-      paintMats[selected].color.setHex(p.c);
-      $('#cfgCar').textContent = CARS[selected].maker.toUpperCase() + ' ' + CARS[selected].short.toUpperCase() + ' — ' + p.n.toUpperCase();
-    };
-    ps.appendChild(s);
-  });
-  $$('#wheelSw button').forEach(b=>{ b.onclick = ()=>{
-    $$('#wheelSw button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
-    rimMats[selected].color.setHex(WHEELS[b.dataset.wheel]);
-  };});
-  $$('#intSw button').forEach(b=>{ b.onclick = ()=>{
-    $$('#intSw button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
-    seatMats[selected].color.setHex(INTERIORS[b.dataset.int]);
-  };});
-  $$('#lightSw button').forEach(b=>{ b.onclick = ()=>{
-    $$('#lightSw button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
-    applyLighting(b.dataset.light);
-  };});
-  // enter showroom
-  $('#enterBtn').onclick = ()=>{
-    entered = true;
-    $('#intro').classList.add('hidden');
-    keySpot.intensity = 40; accentSpot.intensity = 30;
-    tweenCam([7.2, 2.6, 8.2], [0, 0.9, 0], 1800);
-    setTimeout(()=>{ keySpot.intensity = LIGHTING[lightMode].spotI; accentSpot.intensity = 200; }, 900);
-  };
-  // loading progress (procedural build is fast — animate honestly while scene builds)
-  let p = 0;
-  const bar = $('#loadbar i'), pct = $('#loadpct');
-  const iv = setInterval(()=>{
-    p = Math.min(100, p + Math.random()*22);
-    bar.style.width = p+'%'; pct.textContent = 'PREPARING SHOWROOM — ' + Math.round(p) + '%';
-    if(p >= 100){ clearInterval(iv); setTimeout(()=>$('#loader').classList.add('done'), 250); }
-  }, 120);
-}
-
-function applyLighting(mode){
-  lightMode = mode;
-  const L = LIGHTING[mode];
-  keySpot.color.setHex(L.spot);
-  keySpot.intensity = L.spotI;
-  ambLight.intensity = L.amb;
-  fillLight.intensity = mode==='night' ? 0.25 : 0.5;
-}
-
-function updateInfo(i, instant){
-  const c = CARS[i];
-  const info = $('#info');
-  const apply = ()=>{
-    $('#carIdx').textContent = c.num + ' / 07';
-    $('#carMaker').textContent = c.maker;
-    $('#carName').innerHTML = c.name.replace(/(\s+\S+)$/, ' <em>$1</em>');
-    $('#carDesc').textContent = c.desc;
-    $('#qPower').textContent = c.power;
-    $('#qAccel').textContent = c.accel;
-    $('#qSpeed').textContent = c.top;
-    $('#cfgCar').textContent = c.maker.toUpperCase() + ' ' + c.short.toUpperCase() + ' — ' + c.paintName.toUpperCase();
-    $$('#dots button').forEach((b,k)=>b.classList.toggle('on', k===i));
-    $$('#carstrip button').forEach((b,k)=>b.classList.toggle('on', k===i));
-  };
-  if(instant){ apply(); return; }
-  info.classList.add('fading');
-  setTimeout(()=>{ apply(); info.classList.remove('fading'); }, 320);
-}
-
-function selectCar(i){
-  if(i === selected && entered) { setView('threequarter'); return; }
-  const prev = selected; selected = i;
-  const prevCar = carGroups[prev], nextCar = carGroups[i];
-  const rp = ROW(prev), rc = ROW(i);
-  nextCar.userData.tx = CENTER.x; nextCar.userData.tz = CENTER.z; nextCar.userData.try = CENTER.ry;
-  prevCar.userData.tx = rp.x; prevCar.userData.tz = rp.z; prevCar.userData.try = rp.ry;
-  carGroups.forEach((g,k)=>{
-    if(k!==i && k!==prev){ const r = ROW(k); g.userData.tx = r.x; g.userData.tz = r.z; g.userData.try = r.ry; }
-  });
-  accentSpot.color.setHex(CARS[i].accent);
-  accentSpot.target.position.set(0, 1, 0);
-  updateInfo(i);
-  if(entered) tweenCam([7.2, 2.6, 8.2], [0, 0.9, 0], 1000);
-}
-
-const VIEWS = {
-  front:[9.6, 1.2, 0.8], threequarter:[7.2, 2.6, 8.2], side:[0.5, 1.4, 10.2],
-  rear:[-9.6, 1.6, -0.8], rearthree:[-7.4, 2.8, -7.6], reset:[7.2, 2.6, 8.2],
-};
-function setView(name){
-  $$('#views button').forEach(b=>b.classList.toggle('on', b.dataset.view===name || (name==='reset' && b.dataset.view==='reset')));
-  tweenCam(VIEWS[name] || VIEWS.threequarter, [0, 0.9, 0], 1100);
-  if(name==='reset') setTimeout(()=>$$('#views button').forEach(b=>b.classList.toggle('on', b.dataset.view==='threequarter')), 100);
-}
-
-function toggleTour(){
-  autoRotate = !autoRotate;
-  controls.autoRotate = autoRotate;
-  $('#tourBtn').classList.toggle('on', autoRotate);
-  $('#tourBtn').textContent = autoRotate ? 'Stop Rotation' : 'Explore 360°';
-}
-
-function openModal(id){ $('#'+id).classList.add('open'); }
-function closeModal(id){ $('#'+id).classList.remove('open'); }
-
-function openDetails(){
+function renderViews(){
   const c = CARS[selected];
-  $('#dName').innerHTML = c.name.replace(/(\s+\S+)$/, ' <em>$1</em>');
-  $('#dSub').textContent = `${c.maker} · ${c.year} · ${c.cat}`;
-  $('#dDesc').textContent = c.desc;
+  $('#fFrame').innerHTML = c.views.map((v,i)=>
+    `<img src="${v.u}" alt="${c.maker} ${c.name} — view ${i+1}" class="${i===viewIdx?'on':''}" loading="${i===0?'eager':'lazy'}">`).join('');
+  $('#fViews').innerHTML = c.views.map((v,i)=>
+    `<button data-v="${i}" class="${i===viewIdx?'on':''}">View 0${i+1}</button>`).join('');
+  $$('#fViews button').forEach(b=>b.addEventListener('click', ()=>setView(+b.dataset.v)));
+  $('#fCap').innerHTML = c.views[viewIdx].c;
+}
+function selectCar(i){
+  selected = i; viewIdx = 0;
+  const c = CARS[i];
+  $('#fNum').textContent = c.num + ' / 07';
+  $('#fMaker').textContent = c.maker;
+  $('#fName').innerHTML = c.name.replace(/(\s+\S+)$/, ' <em>$1</em>');
+  $('#fDesc').textContent = c.desc;
+  $('#fFeat').innerHTML = c.feat.map(f=>`<li>${f}</li>`).join('');
   const rows = [
     ['Model Year', c.year], ['Category', c.cat], ['Engine / Powertrain', c.engine],
     ['Power', c.power], ['0–100 km/h', c.accel], ['Top Speed', c.top],
     ['Transmission', c.trans], ['Drivetrain', c.drive],
-    ['Exterior', c.paintName], ['Paint Finish', 'Metallic clearcoat'],
   ];
-  $('#dSpecs').innerHTML = rows.map(([k,v])=>`<div><span>${k}</span><b>${v}</b></div>`).join('');
-  $('#dFeat').innerHTML = c.feat.map(f=>`<li>${f}</li>`).join('');
-  openModal('detailsModal');
+  $('#fSpecs').innerHTML = rows.map(([k,v],idx)=>
+    `<div class="${idx===2?'full':''}"><span>${k}</span><b>${v}</b></div>`).join('');
+  renderChips(); renderViews();
 }
+function setView(v){
+  viewIdx = v;
+  $$('#fFrame img').forEach((im,i)=>im.classList.toggle('on', i===viewIdx));
+  $$('#fViews button').forEach((b,i)=>b.classList.toggle('on', i===viewIdx));
+  $('#fCap').innerHTML = CARS[selected].views[viewIdx].c;
+}
+$('#fPrev').addEventListener('click', ()=>setView((viewIdx+2)%3));
+$('#fNext').addEventListener('click', ()=>setView((viewIdx+1)%3));
+selectCar(0);
 
-/* ================= LOOP ================= */
-function animate(){
-  requestAnimationFrame(animate);
-  const dt = Math.min(clock.getDelta(), 0.05);
-  const t = clock.elapsedTime;
-  if(camTween){
-    const k = Math.min(1, (performance.now() - camTween.s)/camTween.d);
-    const e = ease(k);
-    camera.position.lerpVectors(camTween.p0, camTween.p1, e);
-    controls.target.lerpVectors(camTween.t0, camTween.t1, e);
-    if(k >= 1) camTween = null;
+/* --- image fallback: if a thumb fails, retry the original file once --- */
+document.addEventListener('error', e=>{
+  const t = e.target;
+  if(t.tagName==='IMG' && !t.dataset.retried && t.src.includes('/thumb/')){
+    t.dataset.retried = '1';
+    const m = t.src.match(/\/thumb\/[^/]+\/[^/]+\/(.+)\/\d+px-/);
+    if(m) t.src = 'https://upload.wikimedia.org/wikipedia/commons/' + m[1].split('/').slice(0,2).join('/') + '/' + decodeURIComponent(m[1].split('/').pop());
   }
-  // move cars toward targets
-  carGroups.forEach(g=>{
-    const u = g.userData;
-    if(u.tx !== undefined){
-      g.position.x += (u.tx - g.position.x) * Math.min(1, dt*2.2);
-      g.position.z += (u.tz - g.position.z) * Math.min(1, dt*2.2);
-      let dr = u.try - g.rotation.y;
-      while(dr > Math.PI) dr -= Math.PI*2; while(dr < -Math.PI) dr += Math.PI*2;
-      g.rotation.y += dr * Math.min(1, dt*2.2);
-    }
-  });
-  // platform + accent shimmer
-  if(!REDUCED) platform.rotation.y += dt * (autoRotate ? 0.35 : 0.08);
-  accentSpot.intensity = (lightMode==='night' ? 150 : 200) + Math.sin(t*0.8)*12;
-  controls.update();
-  renderer.render(scene, camera);
-}
+}, true);
 
-addEventListener('resize', ()=>{
-  if(!renderer) return;
-  camera.aspect = innerWidth/innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
+/* --- nav / scroll --- */
+const header = $('#siteHeader'), toTop = $('#toTop');
+addEventListener('scroll', ()=>{
+  header.classList.toggle('scrolled', scrollY > 40);
+  toTop.classList.toggle('show', scrollY > 900);
+  const heroImg = $('#heroImg');
+  if(scrollY < innerHeight) heroImg.style.transform = `translateY(${scrollY*0.22}px) scale(${1 + scrollY*0.00004})`;
+}, {passive:true});
+toTop.addEventListener('click', ()=>scrollTo({top:0, behavior:'smooth'}));
+function go(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+$$('[data-go]').forEach(el=>el.addEventListener('click', ()=>{
+  go(el.dataset.go);
+  $('#mobileMenu').classList.remove('open'); $('#burger').classList.remove('open');
+}));
+$('#navExplore').addEventListener('click', ()=>go('collection'));
+$('#burger').addEventListener('click', ()=>{
+  $('#mobileMenu').classList.toggle('open'); $('#burger').classList.toggle('open');
+});
+/* active nav link */
+const secs = ['hero','collection','featured','about'];
+addEventListener('scroll', ()=>{
+  let cur = 'hero';
+  secs.forEach(id=>{ const el = document.getElementById(id); if(el && el.getBoundingClientRect().top <= 120) cur = id; });
+  $$('nav a').forEach(a=>a.classList.toggle('active', a.dataset.go===cur));
+}, {passive:true});
+
+/* --- reveal on scroll --- */
+const io = new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+}, {threshold:.12});
+$$('.reveal').forEach(el=>io.observe(el));
+
+/* --- count-up --- */
+const cio = new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(!e.isIntersecting) return;
+    cio.unobserve(e.target);
+    const el = e.target, target = parseFloat(el.dataset.count), dec = +(el.dataset.dec||0);
+    const t0 = performance.now(), dur = 1600;
+    (function tick(now){
+      const k = Math.min(1,(now-t0)/dur), ease = 1-Math.pow(1-k,3);
+      el.textContent = (target*ease).toFixed(dec).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      if(k<1) requestAnimationFrame(tick);
+    })(t0);
+  });
+}, {threshold:.5});
+$$('[data-count]').forEach(el=>cio.observe(el));
+
+/* --- keyboard: featured gallery --- */
+document.addEventListener('keydown', e=>{
+  const r = document.getElementById('featured').getBoundingClientRect();
+  if(r.top < innerHeight && r.bottom > 0){
+    if(e.key==='ArrowRight') setView((viewIdx+1)%3);
+    if(e.key==='ArrowLeft') setView((viewIdx+2)%3);
+  }
 });
 
-/* ================= BOOT ================= */
-try{
-  init();
-}catch(err){
-  console.error(err);
-  $('#loader').classList.add('done');
-  $('#fallback').style.display = 'flex';
-}
+/* --- loader: fade once hero image is ready (or after 2.5s max) --- */
+(function(){
+  const bar = $('#loadbar i'); let p = 0;
+  const iv = setInterval(()=>{ p = Math.min(92, p + Math.random()*20); bar.style.width = p+'%'; }, 120);
+  const done = ()=>{ clearInterval(iv); bar.style.width='100%'; setTimeout(()=>$('#loader').classList.add('done'), 250); };
+  const img = new Image();
+  img.onload = img.onerror = ()=>setTimeout(done, 200);
+  img.src = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Ferrari_SF90_Stradale_Mayfair.jpg/1920px-Ferrari_SF90_Stradale_Mayfair.jpg';
+  setTimeout(done, 2600);
+})();
 </script>
 </body>
 </html>
