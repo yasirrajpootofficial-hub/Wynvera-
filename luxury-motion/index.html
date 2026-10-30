@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LUXURY MOTION — The Art of Automotive Excellence</title>
+<meta name="description" content="LUXURY MOTION — an immersive 3D luxury automotive showroom featuring seven iconic machines.">
+<style>
+  :root{
+    --obsidian:#08090B; --charcoal:#15171B; --silver:#BFC4CC; --gold:#C6A66A;
+    --white:#F5F5F3; --gold-dim:rgba(198,166,106,.55); --panel:rgba(12,13,16,.82);
+    --line:rgba(198,166,106,.28);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;background:var(--obsidian);color:var(--white);
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
+  #scene{position:fixed;inset:0}
+  #scene canvas{display:block;touch-action:none}
+  .serif{font-family:Georgia,"Times New Roman",serif}
+  /* ---------- Loading ---------- */
+  #loader{position:fixed;inset:0;z-index:60;background:var(--obsidian);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:18px;transition:opacity .8s ease}
+  #loader.done{opacity:0;pointer-events:none}
+  #loader .lm{font-family:Georgia,serif;letter-spacing:.42em;font-size:clamp(20px,4vw,34px);font-weight:400}
+  #loader .lm b{color:var(--gold);font-weight:400}
+  #loader .tag{letter-spacing:.34em;font-size:10px;color:var(--silver);text-transform:uppercase}
+  #loadbar{width:min(320px,70vw);height:1px;background:#26282e;position:relative;overflow:hidden}
+  #loadbar i{position:absolute;left:0;top:0;bottom:0;width:0%;background:var(--gold);transition:width .3s ease}
+  #loadpct{font-size:11px;letter-spacing:.25em;color:var(--silver)}
+  /* ---------- Intro ---------- */
+  #intro{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;background:radial-gradient(ellipse at 50% 120%,rgba(198,166,106,.14),transparent 55%),
+    linear-gradient(180deg,rgba(8,9,11,.25),rgba(8,9,11,.88));transition:opacity 1s ease,visibility 1s}
+  #intro.hidden{opacity:0;visibility:hidden}
+  #intro .eyebrow{letter-spacing:.5em;font-size:11px;color:var(--gold);text-transform:uppercase;margin-bottom:22px}
+  #intro h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(42px,9vw,96px);letter-spacing:.14em;line-height:1.02}
+  #intro h1 span{color:var(--gold)}
+  #intro .sub{margin-top:18px;letter-spacing:.4em;font-size:clamp(10px,1.6vw,14px);color:var(--silver);text-transform:uppercase}
+  #intro .line{width:64px;height:1px;background:var(--gold);margin:26px auto}
+  #intro p{color:#c9ccd2;font-size:15px;letter-spacing:.06em}
+  #enterBtn{margin-top:34px;cursor:pointer;border:1px solid var(--gold);background:transparent;color:var(--gold);
+    padding:16px 44px;letter-spacing:.34em;font-size:12px;text-transform:uppercase;transition:all .35s}
+  #enterBtn:hover{background:var(--gold);color:#0a0a0a}
+  #intro .hint{margin-top:22px;font-size:11px;letter-spacing:.2em;color:#7d818a}
+  /* ---------- Header ---------- */
+  header{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;
+    padding:18px 28px;background:linear-gradient(180deg,rgba(8,9,11,.85),rgba(8,9,11,0));pointer-events:none}
+  header>*{pointer-events:auto}
+  .brand{font-family:Georgia,serif;letter-spacing:.3em;font-size:17px;cursor:pointer;white-space:nowrap}
+  .brand b{color:var(--gold);font-weight:400}
+  nav{display:flex;gap:30px}
+  nav a{color:#cfd2d8;text-decoration:none;font-size:11px;letter-spacing:.28em;cursor:pointer;transition:color .25s}
+  nav a:hover,nav a.active{color:var(--gold)}
+  .head-cta{border:1px solid var(--line);background:rgba(12,13,16,.6);color:var(--white);padding:10px 18px;
+    font-size:11px;letter-spacing:.24em;cursor:pointer;text-transform:uppercase;transition:all .3s}
+  .head-cta:hover{border-color:var(--gold);color:var(--gold)}
+  /* ---------- Car info (left) ---------- */
+  #info{position:fixed;left:28px;top:50%;transform:translateY(-50%);z-index:20;max-width:430px;
+    transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+  #info.fading{opacity:0;transform:translateY(-50%) translateX(-14px)}
+  #info .idx{font-size:12px;letter-spacing:.4em;color:var(--gold)}
+  #info .maker{margin-top:10px;font-size:11px;letter-spacing:.42em;color:var(--silver);text-transform:uppercase}
+  #info h2{font-family:Georgia,serif;font-weight:400;font-size:clamp(38px,5.4vw,64px);line-height:1.02;margin:6px 0 12px}
+  #info h2 em{color:var(--gold);font-style:normal}
+  #info .desc{color:#c6c9cf;font-size:14.5px;line-height:1.65;max-width:380px}
+  #info .quick{display:flex;gap:26px;margin:20px 0 22px;flex-wrap:wrap}
+  #info .quick div b{display:block;font-family:Georgia,serif;font-weight:400;font-size:22px;color:var(--white)}
+  #info .quick div span{font-size:10px;letter-spacing:.24em;color:#8b8f98;text-transform:uppercase}
+  .btnrow{display:flex;gap:12px;flex-wrap:wrap;pointer-events:auto}
+  .btn{cursor:pointer;border:1px solid var(--gold);padding:13px 24px;font-size:11px;letter-spacing:.26em;
+    text-transform:uppercase;transition:all .3s;background:transparent;color:var(--gold)}
+  .btn:hover{background:var(--gold);color:#0a0a0a}
+  .btn.ghost{border-color:rgba(255,255,255,.35);color:var(--white)}
+  .btn.ghost:hover{border-color:var(--gold);color:var(--gold);background:transparent}
+  .btn.on{background:var(--gold);color:#0a0a0a}
+  /* ---------- Camera views ---------- */
+  #views{position:fixed;right:28px;top:50%;transform:translateY(-50%);z-index:20;display:flex;flex-direction:column;gap:8px}
+  #views button{cursor:pointer;background:var(--panel);border:1px solid rgba(255,255,255,.14);color:#d6d8dc;
+    padding:9px 14px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;text-align:left;
+    backdrop-filter:blur(6px);transition:all .25s;white-space:nowrap}
+  #views button:hover,#views button.on{border-color:var(--gold);color:var(--gold)}
+  /* ---------- Bottom nav ---------- */
+  #bottom{position:fixed;left:0;right:0;bottom:0;z-index:25;display:flex;flex-direction:column;align-items:center;gap:12px;
+    padding:0 20px 18px;background:linear-gradient(0deg,rgba(8,9,11,.88),rgba(8,9,11,0));pointer-events:none}
+  #bottom>*{pointer-events:auto}
+  #dots{display:flex;gap:10px;align-items:center}
+  #dots button{cursor:pointer;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.3);
+    background:rgba(12,13,16,.65);color:#d6d8dc;font-size:11px;letter-spacing:.05em;transition:all .25s}
+  #dots button.on{border-color:var(--gold);color:#0a0a0a;background:var(--gold)}
+  #dots button:hover{border-color:var(--gold)}
+  #carstrip{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  #carstrip button{cursor:pointer;background:rgba(12,13,16,.65);border:1px solid rgba(255,255,255,.13);color:#c9ccd2;
+    padding:8px 12px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;backdrop-filter:blur(6px);transition:all .25s}
+  #carstrip button.on{border-color:var(--gold);color:var(--gold)}
+  #prevNext{position:fixed;right:28px;bottom:96px;z-index:26;display:flex;gap:10px}
+  #prevNext button{cursor:pointer;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.3);
+    background:rgba(12,13,16,.7);color:var(--white);font-size:20px;transition:all .25s}
+  #prevNext button:hover{border-color:var(--gold);color:var(--gold)}
+  #swipeHint{font-size:10px;letter-spacing:.26em;color:#7d818a;text-transform:uppercase}
+  /* ---------- Configurator ---------- */
+  #config{position:fixed;right:28px;bottom:150px;z-index:24;width:238px;background:var(--panel);border:1px solid var(--line);
+    padding:16px;backdrop-filter:blur(8px);transition:transform .4s ease,opacity .4s ease}
+  #config.hidden{transform:translateX(120%);opacity:0;pointer-events:none}
+  #config h3{font-family:Georgia,serif;font-weight:400;letter-spacing:.22em;font-size:13px;color:var(--gold);margin-bottom:12px}
+  #config h4{font-size:10px;letter-spacing:.26em;color:#9a9ea7;text-transform:uppercase;margin:12px 0 8px}
+  .swatches{display:flex;gap:8px;flex-wrap:wrap}
+  .sw{cursor:pointer;width:28px;height:28px;border-radius:50%;border:2px solid transparent;outline:1px solid rgba(255,255,255,.25);transition:all .2s}
+  .sw.on{border-color:#0a0a0a;outline:2px solid var(--gold);transform:scale(1.12)}
+  .optrow{display:flex;gap:8px;flex-wrap:wrap}
+  .optrow button{cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.25);color:#d6d8dc;
+    padding:7px 10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;transition:all .2s}
+  .optrow button.on{border-color:var(--gold);color:var(--gold)}
+  #configToggle{position:fixed;right:28px;bottom:96px;z-index:26;display:none}
+  /* ---------- Modals ---------- */
+  .modal{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;background:rgba(5,6,8,.78);backdrop-filter:blur(4px);padding:20px}
+  .modal.open{display:flex}
+  .modal .card{background:#101215;border:1px solid var(--line);max-width:640px;width:100%;max-height:86vh;overflow:auto;padding:32px 34px;position:relative}
+  .modal .close{position:absolute;top:14px;right:16px;cursor:pointer;background:none;border:none;color:#9a9ea7;font-size:24px}
+  .modal h3{font-family:Georgia,serif;font-weight:400;font-size:28px;margin-bottom:4px}
+  .modal h3 em{color:var(--gold);font-style:normal}
+  .modal .sub{font-size:11px;letter-spacing:.3em;color:var(--silver);text-transform:uppercase;margin-bottom:18px}
+  .modal p{color:#c6c9cf;font-size:14px;line-height:1.7;margin-bottom:14px}
+  .specgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#26282e;border:1px solid #26282e;margin:16px 0}
+  .specgrid div{background:#101215;padding:13px 14px}
+  .specgrid b{display:block;font-family:Georgia,serif;font-weight:400;font-size:17px;margin-top:3px}
+  .specgrid span{font-size:10px;letter-spacing:.22em;color:#8b8f98;text-transform:uppercase}
+  .modal .note{font-size:12px;color:#8b8f98;line-height:1.6}
+  .feat{list-style:none;margin:10px 0 4px}
+  .feat li{padding:8px 0 8px 22px;border-bottom:1px solid #1e2025;color:#c6c9cf;font-size:13.5px;position:relative}
+  .feat li:before{content:"◆";position:absolute;left:0;color:var(--gold);font-size:10px;top:11px}
+  /* ---------- Fallback ---------- */
+  #fallback{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:var(--obsidian);padding:24px;text-align:center}
+  #fallback .card{max-width:520px}
+  #fallback h2{font-family:Georgia,serif;font-weight:400;letter-spacing:.14em;font-size:30px;margin-bottom:14px}
+  #fallback p{color:#c6c9cf;line-height:1.7;font-size:14px}
+  #dragHint{position:fixed;left:50%;bottom:118px;transform:translateX(-50%);z-index:15;font-size:10px;letter-spacing:.3em;
+    color:#7d818a;text-transform:uppercase;pointer-events:none}
+  @media (max-width:900px){
+    nav{display:none}
+    header{padding:14px 16px}
+    #info{left:16px;right:16px;top:auto;bottom:132px;transform:none;max-width:none}
+    #info.fading{transform:translateX(-10px)}
+    #info h2{font-size:36px}
+    #info .desc{display:none}
+    #info .quick{gap:18px;margin:12px 0 14px}
+    #info .quick div b{font-size:18px}
+    #views{display:none}
+    #config{right:12px;left:12px;width:auto;bottom:210px}
+    #prevNext{right:16px;bottom:200px}
+    #prevNext button{width:44px;height:44px}
+    #carstrip{display:none}
+    #dragHint{display:none}
+    .modal .card{padding:24px 20px}
+    .specgrid{grid-template-columns:1fr 1fr}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition-duration:.01ms !important;animation-duration:.01ms !important}
+  }
+</style>
+</head>
+<body>
+<div id="scene"></div>
+
+<div id="loader">
+  <div class="lm">LUXURY <b>MOTION</b></div>
+  <div class="tag">The Art of Automotive Excellence</div>
+  <div id="loadbar"><i></i></div>
+  <div id="loadpct">PREPARING SHOWROOM — 0%</div>
+</div>
+
+<div id="intro">
+  <div class="eyebrow">An Exclusive Automotive Exhibition</div>
+  <h1>LUXURY <span>MOTION</span></h1>
+  <div class="sub">The Art of Automotive Excellence</div>
+  <div class="line"></div>
+  <p>Seven icons. Seven machines. One extraordinary experience.</p>
+  <button id="enterBtn">Enter Showroom</button>
+  <div class="hint">DRAG TO ROTATE &nbsp;·&nbsp; SCROLL TO EXPLORE &nbsp;·&nbsp; ARROW KEYS TO CHANGE CAR</div>
+</div>
+
+<header>
+  <div class="brand" id="brandHome">LUXURY <b>MOTION</b></div>
+  <nav>
+    <a data-nav="home" class="active">HOME</a>
+    <a data-nav="collection">COLLECTION</a>
+    <a data-nav="experience">EXPERIENCE</a>
+    <a data-nav="about">ABOUT</a>
+  </nav>
+  <button class="head-cta" id="exploreBtn">Explore Collection</button>
+</header>
+
+<div id="info">
+  <div class="idx" id="carIdx">01 / 07</div>
+  <div class="maker" id="carMaker">Automobili Lamborghini</div>
+  <h2 id="carName">Revuelto</h2>
+  <p class="desc" id="carDesc"></p>
+  <div class="quick">
+    <div><b id="qPower">—</b><span>Power</span></div>
+    <div><b id="qAccel">—</b><span>0–100 km/h</span></div>
+    <div><b id="qSpeed">—</b><span>Top Speed</span></div>
+  </div>
+  <div class="btnrow">
+    <button class="btn" id="detailsBtn">View Details</button>
+    <button class="btn ghost" id="tourBtn">Explore 360°</button>
+    <button class="btn ghost" id="cfgBtn">Configure</button>
+  </div>
+</div>
+
+<div id="views">
+  <button data-view="front">Front</button>
+  <button data-view="threequarter" class="on">Front ¾</button>
+  <button data-view="side">Side Profile</button>
+  <button data-view="rear">Rear</button>
+  <button data-view="rearthree">Rear ¾</button>
+  <button data-view="reset">⟲ Reset Camera</button>
+</div>
+
+<div id="config" class="hidden">
+  <h3>CONFIGURATOR</h3>
+  <div id="cfgCar" style="font-size:11px;letter-spacing:.2em;color:#9a9ea7">LAMBORGHINI REVUELTO</div>
+  <h4>Exterior Paint</h4>
+  <div class="swatches" id="paintSw"></div>
+  <h4>Wheel Finish</h4>
+  <div class="optrow" id="wheelSw">
+    <button data-wheel="silver" class="on">Silver</button>
+    <button data-wheel="black">Black</button>
+    <button data-wheel="gold">Gold</button>
+  </div>
+  <h4>Interior Theme</h4>
+  <div class="optrow" id="intSw">
+    <button data-int="black" class="on">Onyx Black</button>
+    <button data-int="tan">Cognac Tan</button>
+    <button data-int="red">Rosso Red</button>
+    <button data-int="cream">Ivory Cream</button>
+  </div>
+  <h4>Showroom Lighting</h4>
+  <div class="optrow" id="lightSw">
+    <button data-light="studio" class="on">Studio</button>
+    <button data-light="warm">Warm</button>
+    <button data-light="cool">Cool</button>
+    <button data-light="night">Night</button>
+  </div>
+  <div style="margin-top:14px;font-size:11px;color:#8b8f98;line-height:1.6">Paint, wheels and interior update live on the selected car. Choose another car to configure it.</div>
+</div>
+
+<div id="prevNext">
+  <button id="prevBtn" aria-label="Previous vehicle">‹</button>
+  <button id="nextBtn" aria-label="Next vehicle">›</button>
+</div>
+
+<div id="bottom">
+  <div id="dots"></div>
+  <div id="carstrip"></div>
+  <div id="swipeHint">Swipe or scroll to change vehicle · Drag to rotate · Scroll to zoom</div>
+</div>
+<div id="dragHint">Drag to rotate — Scroll to zoom</div>
+
+<div class="modal" id="detailsModal">
+  <div class="card">
+    <button class="close" data-close="detailsModal">×</button>
+    <h3 id="dName">Revuelto</h3>
+    <div class="sub" id="dSub"></div>
+    <p id="dDesc"></p>
+    <div class="specgrid" id="dSpecs"></div>
+    <h3 style="font-size:20px;margin-top:8px">Signature Design</h3>
+    <ul class="feat" id="dFeat"></ul>
+    <p class="note">Figures are manufacturer-published figures for the model year shown. Acceleration and top speed vary with market, tyres, options and conditions. Paint and trim shown are illustrative.</p>
+  </div>
+</div>
+
+<div class="modal" id="aboutModal">
+  <div class="card">
+    <button class="close" data-close="aboutModal">×</button>
+    <h3>About <em>LUXURY MOTION</em></h3>
+    <div class="sub">A Private Automotive Gallery</div>
+    <p>LUXURY MOTION is a digital showroom built as an interactive exhibition — seven machines, one dark gallery, and a configurator that lets you dress each car your way. Drag to walk around a car, use the camera views to study its lines, and open View Details for the numbers that matter.</p>
+    <p>An honest note on the cars: the seven vehicles here are detailed procedural 3D interpretations built in Three.js — shaped, painted and lit to each marque's identity. They are not the manufacturers' official CAD or GLB models, and no external model files are loaded. The specifications shown are the manufacturers' published figures.</p>
+    <p>Built as a single standalone page — HTML, CSS, vanilla JavaScript and Three.js. No account, no backend, no tracking.</p>
+  </div>
+</div>
+
+<div id="fallback"><div class="card">
+  <h2>LUXURY <span style="color:#C6A66A">MOTION</span></h2>
+  <p>This showroom needs WebGL to render its 3D gallery, and WebGL could not start in this browser. Please try a recent version of Chrome, Edge, Firefox or Safari with hardware acceleration enabled — or open this page on another device.</p>
+  <p style="margin-top:14px;color:#8b8f98">The collection: Lamborghini Revuelto · Ferrari SF90 Stradale · Rolls-Royce Spectre · Bentley Continental GT · Mercedes-AMG GT · Porsche 911 GT3 RS · Bugatti Chiron.</p>
+</div></div>
+
+<script type="importmap">
+{"imports":{
+  "three":"https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+/* ================= DATA — manufacturer-published figures ================= */
+const CARS = [
+  { id:'revuelto', num:'01', maker:'Automobili Lamborghini', name:'Revuelto', short:'Revuelto',
+    year:'2024', cat:'V12 Plug-in Hybrid Supercar', paint:0x1f7a3a, paintName:'Verde Mantis', accent:0x39d353,
+    L:4.94, W:2.03, roof:1.16, nose:0.62, wheel:0.38, wing:'lambo',
+    engine:'6.5L V12 + 3 electric motors (PHEV)', power:'1,015 PS', accel:'2.5 s', top:'350 km/h',
+    trans:'8-speed dual-clutch', drive:'All-wheel drive',
+    desc:'The V12, electrified and unleashed — a flagship that pairs a naturally aspirated V12 with three electric motors for a new kind of violence, beautifully controlled.',
+    feat:['Y-shaped LED daytime running lights','Scissor doors and sharp aerodynamic surfacing','Active rear wing and exposed V12 architecture','Three-motor hybrid system with torque vectoring'] },
+  { id:'sf90', num:'02', maker:'Ferrari', name:'SF90 Stradale', short:'SF90 Stradale',
+    year:'2020', cat:'Plug-in Hybrid Supercar', paint:0xc40000, paintName:'Rosso Corsa', accent:0xff3b30,
+    L:4.71, W:1.97, roof:1.18, nose:0.58, wheel:0.37, wing:'none',
+    engine:'4.0L twin-turbo V8 + 3 electric motors (PHEV)', power:'1,000 PS', accel:'2.5 s', top:'340 km/h',
+    trans:'8-speed dual-clutch', drive:'All-wheel drive',
+    desc:'Ferrari’s first series-production plug-in hybrid — a V8 and three electric motors working as one, with the elegance of Maranello and the pace of a race car.',
+    feat:['Matrix LED headlights and S-duct aero','Mid-rear V8 with electric front axle','Shut-off Gurney rear aero system','Carbon-fibre steering wheel with touch controls'] },
+  { id:'spectre', num:'03', maker:'Rolls-Royce', name:'Spectre', short:'Spectre',
+    year:'2024', cat:'Ultra-Luxury Electric Coupé', paint:0x0d0d10, paintName:'Diamond Black', accent:0xc6a66a,
+    L:5.45, W:2.08, roof:1.56, nose:0.78, wheel:0.40, wing:'none',
+    engine:'Dual electric motors (102 kWh battery)', power:'584 hp', accel:'4.4 s', top:'250 km/h',
+    trans:'Single-speed, direct drive', drive:'All-wheel drive',
+    desc:'The silent flagship — Rolls-Royce’s first electric coupé. A cathedral of calm, finished in diamond black with champagne light playing across its coachwork.',
+    feat:['Illuminated Pantheon grille and Spirit of Ecstasy','Starlight doors with 4,796 hand-set lights','Planar suspension reading the road ahead','Coach doors opening to a hand-stitched cabin'] },
+  { id:'continental', num:'04', maker:'Bentley', name:'Continental GT', short:'Continental GT',
+    year:'2024', cat:'Grand Tourer', paint:0x0f3d24, paintName:'British Racing Green', accent:0x9fb98a,
+    L:4.85, W:1.96, roof:1.40, nose:0.72, wheel:0.39, wing:'none',
+    engine:'6.0L twin-turbo W12', power:'650 hp', accel:'3.5 s', top:'335 km/h',
+    trans:'8-speed dual-clutch', drive:'All-wheel drive',
+    desc:'A grand tourer in the old sense — twelve cylinders, hand-stitched leather, and a continent disappearing quietly beneath it.',
+    feat:['Crystal-cut matrix headlights','Hand-stitched leather and wood veneer cabin','Rotating dashboard display','W12 power with effortless torque'] },
+  { id:'amggt', num:'05', maker:'Mercedes-AMG', name:'AMG GT', short:'AMG GT',
+    year:'2024', cat:'Performance Coupé', paint:0x0a0a0c, paintName:'Obsidian Black', accent:0xbfc4cc,
+    L:4.73, W:1.93, roof:1.35, nose:0.66, wheel:0.38, wing:'small',
+    engine:'4.0L twin-turbo V8', power:'577 hp', accel:'3.1 s', top:'315 km/h',
+    trans:'9-speed multi-clutch', drive:'All-wheel drive',
+    desc:'Affalterbach’s long-bonnet coupé — a hand-built V8 set far behind the front axle, tuned for precision rather than theatre.',
+    feat:['Panamericana grille with vertical slats','Handcrafted AMG V8, signed by its builder','Active aerodynamics and rear-axle steering','Nappa leather cabin with AMG Performance seats'] },
+  { id:'gt3rs', num:'06', maker:'Porsche', name:'911 GT3 RS', short:'911 GT3 RS',
+    year:'2023', cat:'Track-Focused Sports Car', paint:0x9aa0a8, paintName:'Arctic Grey', accent:0xe8e8e8,
+    L:4.57, W:1.90, roof:1.32, nose:0.60, wheel:0.37, wing:'big',
+    engine:'4.0L naturally aspirated flat-6', power:'518 hp', accel:'3.0 s', top:'296 km/h',
+    trans:'7-speed PDK dual-clutch', drive:'Rear-wheel drive',
+    desc:'A race car with number plates. Nine thousand rpm, a swan-neck wing the size of a dining table, and downforce you can feel in your chest.',
+    feat:['Swan-neck rear wing with DRS','9,000 rpm naturally aspirated flat-six','Magnesium wheels and carbon roof','NACA ducts and louvred front wings'] },
+  { id:'chiron', num:'07', maker:'Bugatti', name:'Chiron', short:'Chiron',
+    year:'2022', cat:'Hypercar', paint:0x14356e, paintName:'French Racing Blue', accent:0x3b82f6,
+    L:4.54, W:2.04, roof:1.21, nose:0.60, wheel:0.39, wing:'small',
+    engine:'8.0L quad-turbo W16', power:'1,500 PS', accel:'2.4 s', top:'420 km/h',
+    trans:'7-speed dual-clutch', drive:'All-wheel drive',
+    desc:'Sixteen cylinders, four turbos, fifteen hundred horsepower — the Chiron is engineering as an act of excess, finished like jewellery.',
+    feat:['Signature C-line sweeping the flanks','Horseshoe grille and full-width light bar','Two-tone blue and black coachwork','Machined aluminium and hand-stitched leather cabin'] },
+];
+
+const PAINTS = [
+  {n:'Obsidian Black', c:0x0a0a0c}, {n:'Racing Red', c:0xc40000}, {n:'Metallic Silver', c:0xbfc4cc},
+  {n:'British Racing Green', c:0x0f3d24}, {n:'Midnight Blue', c:0x14356e}, {n:'Pearl White', c:0xf5f5f3},
+  {n:'Champagne Gold', c:0xc6a66a}, {n:'Verde Mantis', c:0x1f7a3a},
+];
+const INTERIORS = { black:0x141416, tan:0x8a5a2e, red:0x7a1010, cream:0xd8cfc0 };
+const WHEELS = { silver:0xc8ccd2, black:0x17181a, gold:0xc6a66a };
+const LIGHTING = {
+  studio:{ spot:0xfff2dd, amb:0.55, spotI:260, name:'Studio' },
+  warm:{ spot:0xffd9a0, amb:0.45, spotI:220, name:'Warm' },
+  cool:{ spot:0xdfe8ff, amb:0.6, spotI:240, name:'Cool' },
+  night:{ spot:0x9fb6ff, amb:0.28, spotI:150, name:'Night' },
+};
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ================= STATE ================= */
+let renderer, scene, camera, controls, clock;
+let carGroups = [], paintMats = [], rimMats = [], seatMats = [];
+let platform, accentSpot, keySpot, fillLight, ambLight;
+let selected = 0, autoRotate = false, entered = false, camTween = null;
+let lightMode = 'studio';
+const ROW = i => ({ x:(i-3)*3.6, z:-8.2, ry:0.12 });
+const CENTER = { x:0, z:0, ry:-0.38 };
+
+/* ================= HELPERS ================= */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+function mat(color, metalness, roughness, extra={}) {
+  return new THREE.MeshPhysicalMaterial(Object.assign({color, metalness, roughness}, extra));
+}
+function box(w,h,d,material,x=0,y=0,z=0){
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), material);
+  m.position.set(x,y,z); m.castShadow = true; m.receiveShadow = true; return m;
+}
+function cyl(rt,rb,h,material,x=0,y=0,z=0,seg=24){
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg), material);
+  m.position.set(x,y,z); m.castShadow = true; return m;
+}
+function ease(t){ return t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
+function tweenCam(toPos, toTgt, dur=1100){
+  camTween = { p0:camera.position.clone(), p1:new THREE.Vector3(...toPos),
+    t0:controls.target.clone(), t1:new THREE.Vector3(...toTgt), s:performance.now(), d:dur };
+}
+function marbleTexture(){
+  const c = document.createElement('canvas'); c.width = c.height = 1024;
+  const g = c.getContext('2d');
+  g.fillStyle = '#0a0b0d'; g.fillRect(0,0,1024,1024);
+  for(let i=0;i<9000;i++){
+    g.fillStyle = `rgba(255,255,255,${Math.random()*0.03})`;
+    g.fillRect(Math.random()*1024, Math.random()*1024, 1+Math.random()*2, 1+Math.random()*2);
+  }
+  g.strokeStyle = 'rgba(198,166,106,0.16)'; g.lineWidth = 1;
+  for(let v=0; v<7; v++){
+    g.beginPath(); let x = Math.random()*1024, y = 0;
+    g.moveTo(x,y);
+    while(y < 1024){ x += (Math.random()-0.5)*90; y += 40+Math.random()*60; g.lineTo(x,y); }
+    g.stroke();
+  }
+  g.strokeStyle = 'rgba(255,255,255,0.07)';
+  for(let v=0; v<10; v++){
+    g.beginPath(); let x = Math.random()*1024, y = 0; g.moveTo(x,y);
+    while(y < 1024){ x += (Math.random()-0.5)*70; y += 50+Math.random()*70; g.lineTo(x,y); }
+    g.stroke();
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(3,3);
+  t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+
+/* ================= CAR BUILDER ================= */
+function buildCar(spec){
+  const g = new THREE.Group();
+  const L = spec.L, W = spec.W, H = spec.roof;
+  const paint = mat(spec.paint, 0.65, 0.24, { clearcoat:1, clearcoatRoughness:0.08, envMapIntensity:1.15 });
+  const darkTrim = mat(0x0b0c0e, 0.8, 0.35);
+  const glass = mat(0x0a1118, 0.1, 0.06, { transparent:true, opacity:0.62, clearcoat:1, envMapIntensity:1.4 });
+  const chrome = mat(0xd8dce2, 1, 0.12, { envMapIntensity:1.5 });
+  const rim = mat(0xc8ccd2, 1, 0.22, { envMapIntensity:1.3 });
+  const seat = mat(0x141416, 0.1, 0.85);
+  const tyre = mat(0x0a0a0a, 0, 0.95);
+  const lightW = new THREE.MeshStandardMaterial({ color:0xffffff, emissive:0xfff6d8, emissiveIntensity:2.2 });
+  const lightR = new THREE.MeshStandardMaterial({ color:0x330000, emissive:0xff1a1a, emissiveIntensity:1.8 });
+
+  /* --- body: extruded side profile --- */
+  const noseY = spec.nose, roofY = H;
+  const s = new THREE.Shape();
+  s.moveTo(-L/2+0.15, 0.34);
+  s.lineTo(L/2-0.28, 0.34);
+  s.quadraticCurveTo(L/2+0.06, 0.36, L/2+0.04, noseY-0.12);   // nose
+  s.lineTo(L/2-0.55, noseY+0.10);                              // hood edge
+  s.quadraticCurveTo(0.55, noseY+0.22, 0.15, roofY-0.28);      // windscreen base
+  s.quadraticCurveTo(-0.35, roofY, -1.05, roofY-0.03);         // roof
+  s.quadraticCurveTo(-1.75, roofY-0.16, -L/2-0.02, roofY-0.42);// rear deck
+  s.lineTo(-L/2-0.02, 0.42);
+  s.quadraticCurveTo(-L/2+0.02, 0.34, -L/2+0.15, 0.34);
+  const bodyGeo = new THREE.ExtrudeGeometry(s, { depth:W*0.86, bevelEnabled:true, bevelThickness:0.07, bevelSize:0.07, bevelSegments:3, steps:1 });
+  bodyGeo.translate(0, 0, -W*0.43);
+  const body = new THREE.Mesh(bodyGeo, paint);
+  body.castShadow = true; body.receiveShadow = true;
+  g.add(body);
+
+  /* --- lower skirt / two-tone (Chiron) --- */
+  if(spec.id === 'chiron'){
+    const skirt = box(L*0.82, 0.22, W*0.9, mat(0x050506, 0.7, 0.3), -0.1, 0.42, 0);
+    g.add(skirt);
+  }
+  /* --- glass cabin --- */
+  const cs = new THREE.Shape();
+  cs.moveTo(0.55, roofY-0.34); cs.lineTo(0.05, roofY-0.10);
+  cs.quadraticCurveTo(-0.4, roofY+0.02, -1.0, roofY-0.01);
+  cs.lineTo(-1.35, roofY-0.22); cs.lineTo(-1.3, roofY-0.34); cs.lineTo(0.55, roofY-0.34);
+  const cabGeo = new THREE.ExtrudeGeometry(cs, { depth:W*0.62, bevelEnabled:true, bevelThickness:0.03, bevelSize:0.03, bevelSegments:2 });
+  cabGeo.translate(0, 0, -W*0.31);
+  const cabin = new THREE.Mesh(cabGeo, glass); cabin.castShadow = true; g.add(cabin);
+
+  /* --- interior: seats + dash, visible through glass --- */
+  const seatL = box(0.42, 0.5, 0.42, seat, 0.05, roofY-0.32, 0.28);
+  const seatR = box(0.42, 0.5, 0.42, seat, 0.05, roofY-0.32, -0.28);
+  const dash = box(0.5, 0.14, W*0.55, mat(0x0c0d0f, 0.2, 0.8), 0.55, roofY-0.34, 0);
+  g.add(seatL, seatR, dash);
+
+  /* --- wheels --- */
+  const wr = spec.wheel;
+  const wheelX = L*0.31, wheelZ = W*0.46;
+  [[wheelX, wheelZ],[wheelX, -wheelZ],[-wheelX, wheelZ],[-wheelX, -wheelZ]].forEach(([x,z])=>{
+    const wg = new THREE.Group(); wg.position.set(x, wr+0.02, z);
+    const tire = new THREE.Mesh(new THREE.CylinderGeometry(wr, wr, 0.26, 28), tyre);
+    tire.rotation.x = Math.PI/2; tire.castShadow = true; wg.add(tire);
+    const rimM = new THREE.Mesh(new THREE.CylinderGeometry(wr*0.62, wr*0.62, 0.27, 20), rim);
+    rimM.rotation.x = Math.PI/2; wg.add(rimM);
+    for(let k=0;k<5;k++){
+      const sp = box(0.05, wr*0.55, 0.28, rim, 0, 0, 0);
+      sp.rotation.z = k*Math.PI/5; sp.position.set(Math.cos(k*Math.PI/5)*0, 0, 0);
+      const holder = new THREE.Group(); holder.rotation.z = k*Math.PI/5;
+      const spoke = box(wr*0.55, 0.06, 0.28, rim, wr*0.28, 0, 0);
+      holder.add(spoke); wg.add(holder);
+    }
+    const hub = cyl(wr*0.16, wr*0.16, 0.29, darkTrim, 0, 0, 0); hub.rotation.x = Math.PI/2; wg.add(hub);
+    g.add(wg);
+  });
+
+  /* --- front fascia --- */
+  const fx = L/2 + 0.02;
+  if(spec.id === 'continental'){
+    // four round headlights
+    [[0.52],[0.78]].forEach(([z])=>{
+      [z,-z].forEach(zz=>{
+        const hl = new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.06,20), lightW);
+        hl.rotation.z = Math.PI/2; hl.position.set(fx+0.02, noseY+0.06, zz); g.add(hl);
+      });
+    });
+    g.add(box(0.06, 0.3, 0.9, chrome, fx, 0.62, 0));
+  } else if(spec.id === 'amggt'){
+    // Panamericana vertical slats
+    g.add(box(0.06, 0.34, 0.85, darkTrim, fx, 0.6, 0));
+    for(let k=-3;k<=3;k++) g.add(box(0.08, 0.3, 0.03, chrome, fx, 0.6, k*0.11));
+    g.add(box(0.05, 0.07, 0.5, lightW, fx+0.02, noseY+0.08, 0.62));
+    g.add(box(0.05, 0.07, 0.5, lightW, fx+0.02, noseY+0.08, -0.62));
+  } else if(spec.id === 'spectre'){
+    // tall illuminated grille
+    g.add(box(0.06, 0.52, 0.7, chrome, fx, 0.62, 0));
+    g.add(box(0.05, 0.08, 0.55, lightW, fx+0.02, noseY+0.12, 0.6));
+    g.add(box(0.05, 0.08, 0.55, lightW, fx+0.02, noseY+0.12, -0.6));
+    const spirit = cyl(0.015, 0.015, 0.22, chrome, L/2-0.35, noseY+0.28, 0); g.add(spirit);
+  } else if(spec.id === 'revuelto'){
+    // Y-shaped lights: angled strips
+    [0.62,-0.62].forEach(z=>{
+      const a = box(0.05, 0.06, 0.42, lightW, fx+0.02, noseY+0.1, z);
+      a.rotation.x = z>0 ? 0.5 : -0.5; g.add(a);
+    });
+    g.add(box(0.06, 0.16, 1.0, darkTrim, fx, 0.5, 0));
+  } else {
+    // slim LED strips
+    g.add(box(0.05, 0.07, 0.55, lightW, fx+0.02, noseY+0.08, 0.62));
+    g.add(box(0.05, 0.07, 0.55, lightW, fx+0.02, noseY+0.08, -0.62));
+    g.add(box(0.06, 0.2, 0.9, darkTrim, fx, 0.52, 0));
+  }
+  /* --- rear lights --- */
+  g.add(box(0.05, 0.08, W*0.72, lightR, -L/2-0.04, roofY-0.42, 0));
+  if(spec.id === 'chiron') g.add(box(0.05, 0.06, W*0.8, lightR, -L/2-0.04, roofY-0.5, 0));
+
+  /* --- mirrors --- */
+  [0.62,-0.62].forEach(z=>{
+    g.add(box(0.05, 0.04, 0.14, darkTrim, 0.42, roofY-0.18, z*W*0.5/0.62 + (z>0?0.06:-0.06)));
+    g.add(box(0.1, 0.09, 0.06, paint, 0.42, roofY-0.14, z > 0 ? W/2+0.1 : -W/2-0.1));
+  });
+
+  /* --- wings / aero --- */
+  if(spec.wing === 'big'){
+    g.add(box(0.06, 0.34, 0.05, darkTrim, -L/2+0.28, roofY-0.1, 0.55));
+    g.add(box(0.06, 0.34, 0.05, darkTrim, -L/2+0.28, roofY-0.1, -0.55));
+    const wing = box(0.42, 0.05, W*0.95, darkTrim, -L/2+0.22, roofY+0.12, 0);
+    wing.rotation.z = -0.08; g.add(wing);
+    // bonnet vents
+    g.add(box(0.5, 0.03, 0.7, darkTrim, 1.15, noseY+0.16, 0));
+  } else if(spec.wing === 'small'){
+    g.add(box(0.4, 0.05, W*0.8, paint, -L/2+0.18, roofY-0.28, 0));
+  } else if(spec.wing === 'lambo'){
+    g.add(box(0.05, 0.3, 0.05, darkTrim, -L/2+0.3, roofY-0.12, 0.5));
+    g.add(box(0.05, 0.3, 0.05, darkTrim, -L/2+0.3, roofY-0.12, -0.5));
+    g.add(box(0.42, 0.05, W*0.85, darkTrim, -L/2+0.26, roofY+0.08, 0));
+  }
+  /* --- side skirts + diffuser --- */
+  g.add(box(L*0.6, 0.1, W*0.94, darkTrim, 0, 0.36, 0));
+  g.add(box(0.3, 0.16, W*0.7, darkTrim, -L/2+0.1, 0.4, 0));
+  /* --- exhausts --- */
+  if(spec.id === 'revuelto' || spec.id === 'gt3rs'){
+    [0.18,-0.18].forEach(z=>{
+      const ex = cyl(0.06, 0.06, 0.14, chrome, -L/2-0.06, 0.52, z); ex.rotation.z = Math.PI/2; g.add(ex);
+    });
+  }
+  g.userData = { paint, rim, seat };
+  return g;
+}
+
+/* ================= SCENE ================= */
+function init(){
+  const holder = $('#scene');
+  renderer = new THREE.WebGLRenderer({ antialias:true, powerPreference:'high-performance' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.12;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  holder.appendChild(renderer.domElement);
+
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x08090b);
+  scene.fog = new THREE.Fog(0x08090b, 16, 42);
+
+  camera = new THREE.PerspectiveCamera(42, innerWidth/innerHeight, 0.1, 120);
+  camera.position.set(11.5, 4.6, 13.5);
+
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+  controls = new OrbitControls(camera, renderer.domElement);
+  controls.target.set(0, 0.9, 0);
+  controls.enableDamping = true; controls.dampingFactor = 0.06;
+  controls.minDistance = 4.2; controls.maxDistance = 17;
+  controls.maxPolarAngle = Math.PI * 0.495; controls.minPolarAngle = 0.18;
+  controls.enablePan = false;
+  controls.autoRotate = false; controls.autoRotateSpeed = 0.7;
+
+  /* lights */
+  ambLight = new THREE.AmbientLight(0xffffff, 0.55); scene.add(ambLight);
+  const hemi = new THREE.HemisphereLight(0xcfd6e4, 0x0a0a0c, 0.35); scene.add(hemi);
+  keySpot = new THREE.SpotLight(0xfff2dd, 260, 30, 0.5, 0.45, 1.6);
+  keySpot.position.set(4, 9, 5); keySpot.castShadow = true;
+  keySpot.shadow.mapSize.set(2048, 2048); keySpot.shadow.bias = -0.0002;
+  scene.add(keySpot); scene.add(keySpot.target);
+  accentSpot = new THREE.SpotLight(CARS[0].accent, 200, 26, 0.62, 0.6, 1.7);
+  accentSpot.position.set(-5, 8, -4); scene.add(accentSpot); scene.add(accentSpot.target);
+  fillLight = new THREE.DirectionalLight(0xbfc4cc, 0.5); fillLight.position.set(-6, 5, 8); scene.add(fillLight);
+
+  /* floor — polished black marble */
+  const floor = new THREE.Mesh(
+    new THREE.CircleGeometry(26, 72),
+    new THREE.MeshStandardMaterial({ map:marbleTexture(), color:0xffffff, metalness:0.85, roughness:0.28, envMapIntensity:0.9 })
+  );
+  floor.rotation.x = -Math.PI/2; floor.receiveShadow = true; scene.add(floor);
+
+  /* platform */
+  platform = new THREE.Group();
+  const disc = new THREE.Mesh(new THREE.CylinderGeometry(3.4, 3.55, 0.14, 64),
+    new THREE.MeshStandardMaterial({ color:0x111216, metalness:0.9, roughness:0.32, envMapIntensity:0.8 }));
+  disc.position.y = 0.07; disc.receiveShadow = true; platform.add(disc);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(3.42, 0.025, 12, 90),
+    new THREE.MeshStandardMaterial({ color:0xc6a66a, metalness:1, roughness:0.25, emissive:0xc6a66a, emissiveIntensity:0.6 }));
+  ring.rotation.x = Math.PI/2; ring.position.y = 0.15; platform.add(ring);
+  scene.add(platform);
+
+  /* ceiling beams + light shafts */
+  const beamMat = mat(0x0e0f12, 0.6, 0.6);
+  for(let i=-3;i<=3;i++){
+    const beam = box(0.5, 0.35, 22, beamMat, i*2.6, 8.4, -2);
+    scene.add(beam);
+  }
+  const shaftMat = new THREE.MeshBasicMaterial({ color:0xfff2dd, transparent:true, opacity:0.045, side:THREE.DoubleSide, depthWrite:false });
+  [[-2.2,2],[2.2,-2],[0,4]].forEach(([x,z])=>{
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(1.7, 8.4, 24, 1, true), shaftMat);
+    cone.position.set(x, 4.2, z); scene.add(cone);
+  });
+  /* back wall glow strip */
+  const strip = box(20, 0.06, 0.06, new THREE.MeshStandardMaterial({ color:0x111111, emissive:0xc6a66a, emissiveIntensity:1.4 }), 0, 3.4, -11);
+  scene.add(strip);
+
+  /* cars */
+  CARS.forEach((spec, i)=>{
+    const car = buildCar(spec);
+    const rp = ROW(i);
+    car.position.set(rp.x, 0, rp.z); car.rotation.y = rp.ry;
+    car.userData.paint = car.userData.paint; 
+    scene.add(car); carGroups.push(car);
+    paintMats.push(car.userData.paint); rimMats.push(car.userData.rim); seatMats.push(car.userData.seat);
+  });
+  // selected car to centre
+  const c = carGroups[0]; c.position.set(CENTER.x, 0, CENTER.z); c.rotation.y = CENTER.ry;
+
+  clock = new THREE.Clock();
+  animate();
+  buildUI();
+  updateInfo(0, true);
+  applyLighting('studio');
+}
+
+/* ================= UI ================= */
+function buildUI(){
+  const dots = $('#dots'), strip = $('#carstrip');
+  CARS.forEach((c, i)=>{
+    const d = document.createElement('button'); d.textContent = String(i+1);
+    d.className = i===0 ? 'on' : ''; d.onclick = ()=>selectCar(i); dots.appendChild(d);
+    const s = document.createElement('button'); s.textContent = `${c.num} — ${c.short}`;
+    s.className = i===0 ? 'on' : ''; s.onclick = ()=>selectCar(i); strip.appendChild(s);
+  });
+  $('#prevBtn').onclick = ()=>selectCar((selected+6)%7);
+  $('#nextBtn').onclick = ()=>selectCar((selected+1)%7);
+  $('#exploreBtn').onclick = ()=>{ document.querySelector('#carstrip').scrollIntoView({behavior:'smooth', block:'nearest'}); selectCar((selected+1)%7); };
+  $('#brandHome').onclick = ()=>{ selectCar(0); setView('threequarter'); };
+  $$('nav a').forEach(a=>{
+    a.onclick = ()=>{
+      $$('nav a').forEach(x=>x.classList.remove('active')); a.classList.add('active');
+      const k = a.dataset.nav;
+      if(k==='home'){ selectCar(0); setView('threequarter'); }
+      if(k==='collection'){ $('#bottom').scrollIntoView(); }
+      if(k==='experience'){ toggleTour(); }
+      if(k==='about'){ openModal('aboutModal'); }
+    };
+  });
+  $$('#views button').forEach(b=>{ b.onclick = ()=>setView(b.dataset.view); });
+  $('#detailsBtn').onclick = ()=>openDetails();
+  $('#tourBtn').onclick = toggleTour;
+  $('#cfgBtn').onclick = ()=>{ $('#config').classList.toggle('hidden'); };
+  $$('.modal .close').forEach(b=>{ b.onclick = ()=>closeModal(b.dataset.close); });
+  $$('.modal').forEach(m=>{ m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('open'); }); });
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowRight') selectCar((selected+1)%7);
+    if(e.key==='ArrowLeft') selectCar((selected+6)%7);
+    if(e.key==='Escape'){ closeModal('detailsModal'); closeModal('aboutModal'); $('#config').classList.add('hidden'); }
+  });
+  // wheel navigation (debounced)
+  let wheelLock = 0;
+  $('#scene').addEventListener('wheel', e=>{
+    const now = Date.now();
+    if(now - wheelLock < 900) return;
+    if(Math.abs(e.deltaY) < 12) return;
+    wheelLock = now;
+    selectCar(e.deltaY > 0 ? (selected+1)%7 : (selected+6)%7);
+  }, { passive:true });
+  // touch swipe
+  let tx = 0, ty = 0;
+  $('#scene').addEventListener('touchstart', e=>{ tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive:true });
+  $('#scene').addEventListener('touchend', e=>{
+    const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+    if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)*1.4) selectCar(dx < 0 ? (selected+1)%7 : (selected+6)%7);
+  }, { passive:true });
+  // paint swatches
+  const ps = $('#paintSw');
+  PAINTS.forEach((p, i)=>{
+    const s = document.createElement('button'); s.className = 'sw' + (i===0 ? ' on' : '');
+    s.style.background = '#'+p.c.toString(16).padStart(6,'0'); s.title = p.n;
+    s.onclick = ()=>{
+      $$('#paintSw .sw').forEach(x=>x.classList.remove('on')); s.classList.add('on');
+      paintMats[selected].color.setHex(p.c);
+      $('#cfgCar').textContent = CARS[selected].maker.toUpperCase() + ' ' + CARS[selected].short.toUpperCase() + ' — ' + p.n.toUpperCase();
+    };
+    ps.appendChild(s);
+  });
+  $$('#wheelSw button').forEach(b=>{ b.onclick = ()=>{
+    $$('#wheelSw button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    rimMats[selected].color.setHex(WHEELS[b.dataset.wheel]);
+  };});
+  $$('#intSw button').forEach(b=>{ b.onclick = ()=>{
+    $$('#intSw button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    seatMats[selected].color.setHex(INTERIORS[b.dataset.int]);
+  };});
+  $$('#lightSw button').forEach(b=>{ b.onclick = ()=>{
+    $$('#lightSw button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    applyLighting(b.dataset.light);
+  };});
+  // enter showroom
+  $('#enterBtn').onclick = ()=>{
+    entered = true;
+    $('#intro').classList.add('hidden');
+    keySpot.intensity = 40; accentSpot.intensity = 30;
+    tweenCam([7.2, 2.6, 8.2], [0, 0.9, 0], 1800);
+    setTimeout(()=>{ keySpot.intensity = LIGHTING[lightMode].spotI; accentSpot.intensity = 200; }, 900);
+  };
+  // loading progress (procedural build is fast — animate honestly while scene builds)
+  let p = 0;
+  const bar = $('#loadbar i'), pct = $('#loadpct');
+  const iv = setInterval(()=>{
+    p = Math.min(100, p + Math.random()*22);
+    bar.style.width = p+'%'; pct.textContent = 'PREPARING SHOWROOM — ' + Math.round(p) + '%';
+    if(p >= 100){ clearInterval(iv); setTimeout(()=>$('#loader').classList.add('done'), 250); }
+  }, 120);
+}
+
+function applyLighting(mode){
+  lightMode = mode;
+  const L = LIGHTING[mode];
+  keySpot.color.setHex(L.spot);
+  keySpot.intensity = L.spotI;
+  ambLight.intensity = L.amb;
+  fillLight.intensity = mode==='night' ? 0.25 : 0.5;
+}
+
+function updateInfo(i, instant){
+  const c = CARS[i];
+  const info = $('#info');
+  const apply = ()=>{
+    $('#carIdx').textContent = c.num + ' / 07';
+    $('#carMaker').textContent = c.maker;
+    $('#carName').innerHTML = c.name.replace(/(\s+\S+)$/, ' <em>$1</em>');
+    $('#carDesc').textContent = c.desc;
+    $('#qPower').textContent = c.power;
+    $('#qAccel').textContent = c.accel;
+    $('#qSpeed').textContent = c.top;
+    $('#cfgCar').textContent = c.maker.toUpperCase() + ' ' + c.short.toUpperCase() + ' — ' + c.paintName.toUpperCase();
+    $$('#dots button').forEach((b,k)=>b.classList.toggle('on', k===i));
+    $$('#carstrip button').forEach((b,k)=>b.classList.toggle('on', k===i));
+  };
+  if(instant){ apply(); return; }
+  info.classList.add('fading');
+  setTimeout(()=>{ apply(); info.classList.remove('fading'); }, 320);
+}
+
+function selectCar(i){
+  if(i === selected && entered) { setView('threequarter'); return; }
+  const prev = selected; selected = i;
+  const prevCar = carGroups[prev], nextCar = carGroups[i];
+  const rp = ROW(prev), rc = ROW(i);
+  nextCar.userData.tx = CENTER.x; nextCar.userData.tz = CENTER.z; nextCar.userData.try = CENTER.ry;
+  prevCar.userData.tx = rp.x; prevCar.userData.tz = rp.z; prevCar.userData.try = rp.ry;
+  carGroups.forEach((g,k)=>{
+    if(k!==i && k!==prev){ const r = ROW(k); g.userData.tx = r.x; g.userData.tz = r.z; g.userData.try = r.ry; }
+  });
+  accentSpot.color.setHex(CARS[i].accent);
+  accentSpot.target.position.set(0, 1, 0);
+  updateInfo(i);
+  if(entered) tweenCam([7.2, 2.6, 8.2], [0, 0.9, 0], 1000);
+}
+
+const VIEWS = {
+  front:[9.6, 1.2, 0.8], threequarter:[7.2, 2.6, 8.2], side:[0.5, 1.4, 10.2],
+  rear:[-9.6, 1.6, -0.8], rearthree:[-7.4, 2.8, -7.6], reset:[7.2, 2.6, 8.2],
+};
+function setView(name){
+  $$('#views button').forEach(b=>b.classList.toggle('on', b.dataset.view===name || (name==='reset' && b.dataset.view==='reset')));
+  tweenCam(VIEWS[name] || VIEWS.threequarter, [0, 0.9, 0], 1100);
+  if(name==='reset') setTimeout(()=>$$('#views button').forEach(b=>b.classList.toggle('on', b.dataset.view==='threequarter')), 100);
+}
+
+function toggleTour(){
+  autoRotate = !autoRotate;
+  controls.autoRotate = autoRotate;
+  $('#tourBtn').classList.toggle('on', autoRotate);
+  $('#tourBtn').textContent = autoRotate ? 'Stop Rotation' : 'Explore 360°';
+}
+
+function openModal(id){ $('#'+id).classList.add('open'); }
+function closeModal(id){ $('#'+id).classList.remove('open'); }
+
+function openDetails(){
+  const c = CARS[selected];
+  $('#dName').innerHTML = c.name.replace(/(\s+\S+)$/, ' <em>$1</em>');
+  $('#dSub').textContent = `${c.maker} · ${c.year} · ${c.cat}`;
+  $('#dDesc').textContent = c.desc;
+  const rows = [
+    ['Model Year', c.year], ['Category', c.cat], ['Engine / Powertrain', c.engine],
+    ['Power', c.power], ['0–100 km/h', c.accel], ['Top Speed', c.top],
+    ['Transmission', c.trans], ['Drivetrain', c.drive],
+    ['Exterior', c.paintName], ['Paint Finish', 'Metallic clearcoat'],
+  ];
+  $('#dSpecs').innerHTML = rows.map(([k,v])=>`<div><span>${k}</span><b>${v}</b></div>`).join('');
+  $('#dFeat').innerHTML = c.feat.map(f=>`<li>${f}</li>`).join('');
+  openModal('detailsModal');
+}
+
+/* ================= LOOP ================= */
+function animate(){
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  const t = clock.elapsedTime;
+  if(camTween){
+    const k = Math.min(1, (performance.now() - camTween.s)/camTween.d);
+    const e = ease(k);
+    camera.position.lerpVectors(camTween.p0, camTween.p1, e);
+    controls.target.lerpVectors(camTween.t0, camTween.t1, e);
+    if(k >= 1) camTween = null;
+  }
+  // move cars toward targets
+  carGroups.forEach(g=>{
+    const u = g.userData;
+    if(u.tx !== undefined){
+      g.position.x += (u.tx - g.position.x) * Math.min(1, dt*2.2);
+      g.position.z += (u.tz - g.position.z) * Math.min(1, dt*2.2);
+      let dr = u.try - g.rotation.y;
+      while(dr > Math.PI) dr -= Math.PI*2; while(dr < -Math.PI) dr += Math.PI*2;
+      g.rotation.y += dr * Math.min(1, dt*2.2);
+    }
+  });
+  // platform + accent shimmer
+  if(!REDUCED) platform.rotation.y += dt * (autoRotate ? 0.35 : 0.08);
+  accentSpot.intensity = (lightMode==='night' ? 150 : 200) + Math.sin(t*0.8)*12;
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+addEventListener('resize', ()=>{
+  if(!renderer) return;
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+/* ================= BOOT ================= */
+try{
+  init();
+}catch(err){
+  console.error(err);
+  $('#loader').classList.add('done');
+  $('#fallback').style.display = 'flex';
+}
+</script>
+</body>
+</html>
