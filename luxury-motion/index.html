@@ -242,6 +242,27 @@ header{position:sticky;top:0}
   .hero-specs{margin:20px 0 22px}
   .hero-controls{position:static;padding:20px 20px 14px;max-width:none}
   .hero-dots button{width:32px;height:32px}
+/* ---------- Hero details modal (was missing — modal had no CSS) ---------- */
+.modal{position:fixed;inset:0;z-index:150;display:none;align-items:center;justify-content:center;
+  background:rgba(5,6,8,.82);backdrop-filter:blur(4px);padding:20px}
+.modal.open{display:flex}
+.modal .card{background:#101215;border:1px solid var(--border);max-width:640px;width:100%;
+  max-height:86vh;overflow:auto;padding:32px 34px;position:relative;text-align:left}
+.modal .close{position:absolute;top:12px;right:16px;cursor:pointer;background:none;border:none;
+  color:#9a9ea7;font-size:26px;line-height:1}
+.modal .close:hover{color:var(--gold)}
+.modal h3{font-family:var(--serif);font-weight:500;font-size:28px}
+.modal h3 em{color:var(--gold);font-style:normal}
+.modal .sub{font-size:11px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin:6px 0 16px}
+.modal p{color:#c6c9cf;font-size:14px;line-height:1.7;margin-bottom:14px}
+.modal .specgrid{margin:16px 0}
+.modal .feat{list-style:none;margin:10px 0 4px}
+.modal .feat li{padding:8px 0 8px 22px;border-bottom:1px solid #1e2025;color:#c6c9cf;font-size:13.5px;position:relative}
+.modal .feat li:before{content:"◆";position:absolute;left:0;color:var(--gold);font-size:10px;top:11px}
+.modal .note{font-size:12px;color:#8b8f98;line-height:1.6}
+/* soften the street-photo edges so background clutter fades into the theme */
+.hero-car:after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 64% 64% at 50% 46%,transparent 56%,rgba(5,6,8,.42) 88%)}
   .hero-arrow{width:46px;height:46px}
 }
 </style>
