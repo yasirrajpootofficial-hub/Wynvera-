@@ -777,7 +777,7 @@ function selectCar(i){
     ['In the Collection', 'No. ' + c.num + ' of 07'], ['Showcase', 'Photographic views × 3'],
   ];
   $('#fSpecs').innerHTML = rows.map(([k,v],idx)=>
-    `<div class="${idx===2?'full':''}"><span>${k}</span><b>${v}</b></div>`).join('');
+    `<div class="${(idx===2||idx===9)?'full':''}"><span>${k}</span><b>${v}</b></div>`).join('');
   renderChips(); renderViews();
 }
 function setView(v){
@@ -969,7 +969,7 @@ document.getElementById('heroDetails').addEventListener('click', ()=>{
     ['Model Year', c.year], ['Category', c.cat], ['Engine / Powertrain', c.engine],
     ['Power', c.power], ['0–100 km/h', c.accel], ['Top Speed', c.top],
     ['Transmission', c.trans], ['Drivetrain', c.drive],
-  ].map(([k,v],idx)=>`<div class="${idx===2?'full':''}"><span>${k}</span><b>${v}</b></div>`).join('');
+  ].map(([k,v],idx)=>`<div class="${(idx===2||idx===9)?'full':''}"><span>${k}</span><b>${v}</b></div>`).join('');
   document.getElementById('hmFeat').innerHTML = c.feat.map(f=>`<li>${f}</li>`).join('');
   document.getElementById('heroModal').classList.add('open');
 });
