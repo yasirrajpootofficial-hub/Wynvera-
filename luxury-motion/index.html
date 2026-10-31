@@ -129,6 +129,121 @@ nav a:hover,nav a.active{color:var(--gold);border-bottom-color:var(--gold)}
 .card .explore{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px}
 .card .explore i{transition:transform .3s}
 .card:hover .explore i{transform:translateX(6px)}
+<style>
+/* ---------- Announcement bar ---------- */
+#announce{background:#0a0a0c;border-bottom:1px solid var(--border);color:#c9ccd2;font-size:10.5px;
+  letter-spacing:.3em;text-transform:uppercase;text-align:center;padding:10px 16px;line-height:1.9}
+#announce b{color:var(--gold);font-weight:500}
+#announce a{color:var(--gold);cursor:pointer;margin-left:14px;white-space:nowrap}
+#announce a:hover{text-decoration:underline}
+header{position:sticky;top:0}
+
+/* ---------- Dynamic hero showcase ---------- */
+#hero.dynamic{height:86svh;min-height:660px;max-height:940px;overflow:hidden;background:#050506;
+  --acc:#4ade80;--acc2:#a7f3d0;--glow:rgba(74,222,128,.30)}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg .bg-layer{position:absolute;inset:0;opacity:0;transition:opacity .95s ease}
+.hero-bg .bg-layer.on{opacity:1}
+.hero-spot{position:absolute;top:-12%;left:56%;width:46%;height:82%;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.13),transparent 72%);
+  clip-path:polygon(42% 0,58% 0,100% 100%,0 100%)}
+.hero-vig{position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(120% 100% at 50% 42%,transparent 52%,rgba(0,0,0,.55) 100%)}
+.hero-particles{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none}
+.hero-particles i{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--acc);
+  opacity:0;animation:floatUp linear infinite}
+@keyframes floatUp{0%{transform:translateY(24px);opacity:0}18%{opacity:.55}100%{transform:translateY(-110px);opacity:0}}
+.hero-inner{position:relative;z-index:3;height:100%;max-width:1560px;margin:0 auto;padding:0 48px;
+  display:grid;grid-template-columns:minmax(350px,40%) 1fr;gap:24px;align-items:center}
+.hero-copy>*{transition:color .9s ease,border-color .9s ease}
+.hero-eyebrow{margin-bottom:14px}
+.hero-maker{font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:#c9ccd2;margin-bottom:6px}
+.hero-name{font-family:var(--serif);font-weight:500;font-size:clamp(48px,5.4vw,86px);line-height:.98;
+  text-transform:uppercase;letter-spacing:.01em}
+.hero-name em{color:var(--acc);font-style:normal;transition:color .9s ease}
+.hero-paint{margin-top:12px;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--acc);
+  transition:color .9s ease}
+.hero-paint:before{content:"";display:inline-block;width:26px;height:1px;background:var(--acc);
+  vertical-align:middle;margin-right:10px;transition:background .9s ease}
+.hero-desc{color:#d6d8dc;font-size:15.5px;margin-top:16px;max-width:440px}
+.hero-specs{display:grid;grid-template-columns:1fr 1fr;gap:14px 28px;margin:26px 0 28px;max-width:470px}
+.hero-specs div{border-top:1px solid var(--border);padding-top:10px}
+.hero-specs b{display:block;font-family:var(--serif);font-weight:500;font-size:25px;line-height:1.1}
+.hero-specs span{font-size:9px;letter-spacing:.26em;color:#9aa0a8;text-transform:uppercase}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+.hero-copy .btn{border-color:var(--acc);color:var(--acc);transition:all .9s ease,background-color .3s ease,color .3s ease}
+.hero-copy .btn.solid{background:var(--acc);color:#0a0a0a}
+.hero-copy .btn.solid:hover{background:transparent;color:var(--acc)}
+.hero-copy .btn.ghost:hover{border-color:var(--acc);color:var(--acc)}
+.hero-copy.swap>*{animation:fadeUp .7s ease both}
+.hero-copy.swap>*:nth-child(2){animation-delay:.05s}
+.hero-copy.swap>*:nth-child(3){animation-delay:.1s}
+.hero-copy.swap>*:nth-child(4){animation-delay:.15s}
+.hero-copy.swap>*:nth-child(5){animation-delay:.2s}
+.hero-copy.swap>*:nth-child(6){animation-delay:.25s}
+.hero-copy.swap>*:nth-child(7){animation-delay:.3s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.hero-stage{position:relative;height:100%}
+.hero-platform{position:absolute;left:50%;bottom:9%;transform:translateX(-50%);width:88%;height:118px;
+  background:radial-gradient(ellipse at 50% 28%,#1c1d21 0%,#0a0b0d 55%,#050506 100%);
+  border-radius:50%;
+  box-shadow:0 0 0 1px rgba(255,255,255,.06),0 0 90px 12px var(--glow),0 34px 60px rgba(0,0,0,.85);
+  transition:box-shadow .9s ease}
+.hero-platform:before{content:"";position:absolute;inset:7px;border-radius:50%;border:1px solid var(--acc);
+  opacity:.32;transition:border-color .9s ease}
+.hero-platform:after{content:"";position:absolute;left:13%;right:13%;top:36%;height:46px;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,.9),transparent 70%);filter:blur(6px)}
+.hero-car{position:absolute;left:0;right:0;bottom:calc(9% + 50px);z-index:2}
+.hero-car.pre{opacity:0}
+.hero-car img{width:100%;height:auto;
+  -webkit-mask-image:radial-gradient(ellipse 82% 88% at 50% 46%,#000 58%,transparent 82%);
+  mask-image:radial-gradient(ellipse 82% 88% at 50% 46%,#000 58%,transparent 82%);
+  filter:drop-shadow(0 26px 32px rgba(0,0,0,.55))}
+.hero-car.enter-right{animation:carInRight 1.15s cubic-bezier(.22,.75,.25,1) both}
+.hero-car.enter-right img{animation:lightIn 1.15s ease both}
+.hero-car.exit-left{animation:carOutLeft .55s cubic-bezier(.55,.06,.75,.4) both}
+@keyframes carInRight{0%{transform:translateX(56vw) scale(.94);opacity:0}55%{opacity:1}100%{transform:translateX(0) scale(1);opacity:1}}
+@keyframes carOutLeft{0%{transform:translateX(0) scale(1);opacity:1}100%{transform:translateX(-56vw) scale(.96);opacity:0}}
+@keyframes lightIn{0%{filter:brightness(.35) drop-shadow(0 26px 32px rgba(0,0,0,.55))}100%{filter:brightness(1) drop-shadow(0 26px 32px rgba(0,0,0,.55))}}
+.hero-reflect{position:absolute;left:5%;right:5%;top:calc(100% - 24px);height:104px;overflow:hidden;pointer-events:none;
+  -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.42),transparent 85%);
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.42),transparent 85%)}
+.hero-reflect img{transform:scaleY(-1);transform-origin:top;opacity:.55;filter:blur(1px);
+  -webkit-mask-image:radial-gradient(ellipse 82% 88% at 50% 46%,#000 58%,transparent 82%);
+  mask-image:radial-gradient(ellipse 82% 88% at 50% 46%,#000 58%,transparent 82%)}
+.hero-controls{position:absolute;left:0;right:0;bottom:0;z-index:4;max-width:1560px;margin:0 auto;
+  padding:0 48px 22px;display:flex;align-items:center;gap:22px}
+.hero-arrow{cursor:pointer;flex:none;width:52px;height:52px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.35);background:rgba(8,9,11,.55);color:var(--text);font-size:22px;
+  transition:all .3s}
+.hero-arrow:hover{border-color:var(--acc);color:var(--acc)}
+.hero-dots{display:flex;gap:8px;flex:1;justify-content:center;flex-wrap:wrap}
+.hero-dots button{cursor:pointer;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.3);
+  background:rgba(8,9,11,.5);color:#d6d8dc;font-size:11px;transition:all .3s}
+.hero-dots button:hover{border-color:var(--acc);color:var(--acc)}
+.hero-dots button.on{background:var(--acc);border-color:var(--acc);color:#0a0a0a}
+.hero-count{font-family:var(--serif);font-size:22px;letter-spacing:.12em;white-space:nowrap}
+.hero-count b{color:var(--acc);transition:color .9s ease}
+.hero-count span{color:#8b8f98;font-size:16px}
+@media (prefers-reduced-motion:reduce){
+  .hero-car.enter-right,.hero-car.exit-left,.hero-copy.swap>*{animation-duration:.01ms !important}
+  .hero-particles i{animation:none}
+}
+@media (max-width:900px){
+  #announce{font-size:9px;letter-spacing:.2em}
+  #announce a{display:block;margin:2px 0 0}
+  #hero.dynamic{height:auto;min-height:0;padding:0 0 8px}
+  .hero-inner{grid-template-columns:1fr;padding:24px 20px 0;gap:6px}
+  .hero-stage{order:-1;height:290px}
+  .hero-platform{bottom:5%;height:62px;width:94%}
+  .hero-car{bottom:calc(5% + 24px)}
+  .hero-reflect{height:64px;top:calc(100% - 16px)}
+  .hero-name{font-size:46px}
+  .hero-specs{margin:20px 0 22px}
+  .hero-controls{position:static;padding:20px 20px 14px;max-width:none}
+  .hero-dots button{width:32px;height:32px}
+  .hero-arrow{width:46px;height:46px}
+}
 </style>
 </head>
 <body>
@@ -138,6 +253,8 @@ nav a:hover,nav a.active{color:var(--gold);border-bottom-color:var(--gold)}
   <div class="tag">The Art of Automotive Excellence</div>
   <div id="loadbar"><i></i></div>
 </div>
+
+<div id="announce"><b>Luxury Motion</b> &nbsp;◆&nbsp; The Art of Automotive Excellence &nbsp;◆&nbsp; Seven Icons. Seven Machines. <a data-go="collection">Explore the Collection →</a></div>
 
 <header id="siteHeader">
   <div class="nav-in">
@@ -159,23 +276,55 @@ nav a:hover,nav a.active{color:var(--gold);border-bottom-color:var(--gold)}
   <a data-go="about">About</a>
 </div>
 
-<!-- ============ SECTION 01 · HERO ============ -->
-<section id="hero">
-  <div id="heroImg"></div>
-  <div class="shade"></div>
-  <div class="content">
-    <div class="kicker">An Exclusive Automotive Exhibition</div>
-    <h1>LUXURY<br><span>Motion</span></h1>
-    <div class="tagline">The Art of Automotive Excellence</div>
-    <p class="lead">Seven icons. Seven machines. One extraordinary experience. Real machines, photographed in the real world — presented the way they deserve to be seen.</p>
-    <div class="cta">
-      <button class="btn solid" data-go="collection">Explore Collection</button>
-      <button class="btn ghost" data-go="featured">Featured Vehicle</button>
+<!-- ============ SECTION 01 · DYNAMIC HERO SHOWCASE ============ -->
+<section id="hero" class="dynamic">
+  <div class="hero-bg"><div class="bg-layer a on"></div><div class="bg-layer b"></div></div>
+  <div class="hero-spot"></div>
+  <div class="hero-vig"></div>
+  <div class="hero-particles" id="heroParticles"></div>
+
+  <div class="hero-inner">
+    <div class="hero-copy" id="heroCopy">
+      <div class="eyebrow hero-eyebrow">Exclusive Automotive Collection</div>
+      <div class="hero-maker" id="heroMaker">Automobili Lamborghini</div>
+      <h2 class="hero-name" id="heroName">Revuelto</h2>
+      <div class="hero-paint" id="heroPaint">Metallic Green</div>
+      <p class="hero-desc" id="heroDesc">The V12, electrified. A flagship that rewrites what a Lamborghini can be.</p>
+      <div class="hero-specs" id="heroSpecs"></div>
+      <div class="hero-cta">
+        <button class="btn solid" id="heroExplore">Explore Vehicle</button>
+        <button class="btn ghost" id="heroDetails">View Details</button>
+      </div>
+    </div>
+
+    <div class="hero-stage">
+      <div class="hero-platform"></div>
+      <div class="hero-car pre" id="heroCar">
+        <img id="heroCarImg" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Rear_view_of_Green_Lamborghini_Revuelto.jpg/1920px-Rear_view_of_Green_Lamborghini_Revuelto.jpg" alt="Lamborghini Revuelto — Metallic Green">
+        <div class="hero-reflect"><img id="heroCarReflect" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Rear_view_of_Green_Lamborghini_Revuelto.jpg/1920px-Rear_view_of_Green_Lamborghini_Revuelto.jpg" alt="" aria-hidden="true"></div>
+      </div>
     </div>
   </div>
-  <div class="scroll"><span>Scroll</span><i></i></div>
-  <div class="hero-meta">Ferrari SF90 Stradale · <b>Rosso Corsa</b> · Mayfair, London</div>
+
+  <div class="hero-controls">
+    <button class="hero-arrow" id="heroPrev" aria-label="Previous vehicle">‹</button>
+    <div class="hero-dots" id="heroDots"></div>
+    <div class="hero-count"><b id="heroCount">01</b> <span>/ 07</span></div>
+    <button class="hero-arrow" id="heroNext" aria-label="Next vehicle">›</button>
+  </div>
 </section>
+
+<div class="modal" id="heroModal">
+  <div class="card">
+    <button class="close" id="heroModalClose">×</button>
+    <h3 id="hmName">Revuelto</h3>
+    <div class="sub" id="hmSub"></div>
+    <p id="hmDesc"></p>
+    <div class="specgrid" id="hmSpecs"></div>
+    <ul class="feat" id="hmFeat"></ul>
+    <p class="note">Figures are manufacturer-published figures for the model year shown. Photography: Wikimedia Commons contributors, CC licences.</p>
+  </div>
+</div>
 
 <div class="strip" aria-hidden="true">
   <div class="track" id="stripTrack"></div>
@@ -636,7 +785,7 @@ addEventListener('scroll', ()=>{
   header.classList.toggle('scrolled', scrollY > 40);
   toTop.classList.toggle('show', scrollY > 900);
   const heroImg = $('#heroImg');
-  if(scrollY < innerHeight) heroImg.style.transform = `translateY(${scrollY*0.22}px) scale(${1 + scrollY*0.00004})`;
+  if(heroImg && scrollY < innerHeight) heroImg.style.transform = `translateY(${scrollY*0.22}px) scale(${1 + scrollY*0.00004})`;
 }, {passive:true});
 toTop.addEventListener('click', ()=>scrollTo({top:0, behavior:'smooth'}));
 function go(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
@@ -694,9 +843,160 @@ document.addEventListener('keydown', e=>{
   const done = ()=>{ clearInterval(iv); bar.style.width='100%'; setTimeout(()=>$('#loader').classList.add('done'), 250); };
   const img = new Image();
   img.onload = img.onerror = ()=>setTimeout(done, 200);
-  img.src = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Ferrari_SF90_Stradale_Mayfair.jpg/1920px-Ferrari_SF90_Stradale_Mayfair.jpg';
+  img.src = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Rear_view_of_Green_Lamborghini_Revuelto.jpg/1920px-Rear_view_of_Green_Lamborghini_Revuelto.jpg';
   setTimeout(done, 2600);
 })();
+</script>
+<script>
+/* ============ DYNAMIC HERO SHOWCASE ============ */
+const HERO = [
+ { img:W+'6/6d/Rear_view_of_Green_Lamborghini_Revuelto.jpg/1920px-Rear_view_of_Green_Lamborghini_Revuelto.jpg',
+   paint:'Metallic Green', tag:'The V12, electrified. A flagship that rewrites what a Lamborghini can be.',
+   bg:'radial-gradient(120% 95% at 76% 16%, #166534 0%, #052e16 46%, #020a05 100%)', acc:'#4ade80', glow:'rgba(74,222,128,.30)' },
+ { img:W+'e/ef/Ferrari_SF90_Stradale_Mayfair.jpg/1920px-Ferrari_SF90_Stradale_Mayfair.jpg',
+   paint:'Rosso Corsa Red', tag:'Ferrari’s first plug-in hybrid — Maranello elegance at race-car pace.',
+   bg:'radial-gradient(120% 95% at 76% 16%, #991b1b 0%, #450a0a 46%, #0c0202 100%)', acc:'#f87171', glow:'rgba(239,68,68,.32)' },
+ { img:W+'a/a4/2024_Rolls-Royce_Spectre_in_Midnight_Sapphire_over_Silver%2C_front_right.jpg/1920px-2024_Rolls-Royce_Spectre_in_Midnight_Sapphire_over_Silver%2C_front_right.jpg',
+   paint:'Diamond Black', tag:'Silence, tailored. The electric coupé that redefines Rolls-Royce calm.',
+   bg:'radial-gradient(120% 95% at 76% 16%, #2e2e33 0%, #101012 48%, #050506 100%)', acc:'#C6A66A', glow:'rgba(198,166,106,.28)' },
+ { img:W+'b/b0/Bentley_Continental_GT_%284th_gen.%29_DSC_8517.jpg/1920px-Bentley_Continental_GT_%284th_gen.%29_DSC_8517.jpg',
+   paint:'British Racing Green', tag:'Grand touring, perfected — hand-stitched calm with 782 PS beneath it.',
+   bg:'radial-gradient(120% 95% at 76% 16%, #14532d 0%, #0b3d2e 40%, #03130c 100%)', acc:'#d4af37', glow:'rgba(212,175,55,.26)' },
+ { img:W+'7/71/Mercedes-AMG_GT_63_Pro_%28C192%29_IAA_2025_DSC_2092.jpg/1920px-Mercedes-AMG_GT_63_Pro_%28C192%29_IAA_2025_DSC_2092.jpg',
+   paint:'Obsidian Black', tag:'Affalterbach precision. A hand-built V8, sharpened for the circuit.',
+   bg:'radial-gradient(120% 95% at 76% 16%, #232529 0%, #0b0c0e 50%, #050506 100%)', acc:'#e5e7eb', glow:'rgba(191,196,204,.22)' },
+ { img:W+'d/d3/Porsche_911_GT3_RS_%282022%29_1X7A7164.jpg/1920px-Porsche_911_GT3_RS_%282022%29_1X7A7164.jpg',
+   paint:'Arctic Grey', tag:'A race car with number plates. Nine thousand rpm of intent.',
+   bg:'radial-gradient(120% 95% at 76% 16%, #4b5563 0%, #17191d 50%, #07080a 100%)', acc:'#cbd5e1', glow:'rgba(156,163,175,.26)' },
+ { img:W+'b/be/Bugatti_Chiron_Royal_Blue.jpg/1920px-Bugatti_Chiron_Royal_Blue.jpg',
+   paint:'Metallic Blue', tag:'Engineering excellence. Uncompromising performance.',
+   bg:'radial-gradient(120% 95% at 76% 16%, #1e40af 0%, #0a1e4d 46%, #020617 100%)', acc:'#60a5fa', glow:'rgba(59,130,246,.35)' },
+];
+let heroIdx = 0, heroBusy = false, bgFlip = false;
+
+const heroEl = document.getElementById('hero');
+const heroCar = document.getElementById('heroCar');
+const heroImg = document.getElementById('heroCarImg');
+const heroRefl = document.getElementById('heroCarReflect');
+
+function applyTheme(i, instant){
+  const t = HERO[i];
+  heroEl.style.setProperty('--acc', t.acc);
+  heroEl.style.setProperty('--glow', t.glow);
+  const layers = document.querySelectorAll('#hero .bg-layer');
+  const show = layers[bgFlip ? 1 : 0], hide = layers[bgFlip ? 0 : 1];
+  bgFlip = !bgFlip;
+  show.style.background = t.bg;
+  if(instant){
+    show.classList.add('on'); hide.classList.remove('on'); hide.style.background = t.bg;
+  } else {
+    show.classList.add('on');
+    setTimeout(()=>{ hide.classList.remove('on'); hide.style.background = t.bg; }, 980);
+  }
+}
+function renderHeroCopy(i){
+  const c = CARS[i], t = HERO[i];
+  document.getElementById('heroMaker').textContent = c.maker;
+  document.getElementById('heroName').innerHTML = c.name.replace(/(\s+\S+)$/, ' <em>$1</em>');
+  document.getElementById('heroPaint').textContent = t.paint;
+  document.getElementById('heroDesc').textContent = t.tag;
+  document.getElementById('heroSpecs').innerHTML = [
+    ['Engine / Powertrain', c.engine], ['Horsepower', c.power],
+    ['0–100 km/h', c.accel], ['Top Speed', c.top],
+  ].map(([k,v])=>`<div><b>${v}</b><span>${k}</span></div>`).join('');
+  document.getElementById('heroCount').textContent = c.num;
+  document.querySelectorAll('#heroDots button').forEach((b,k)=>b.classList.toggle('on', k===i));
+  const copy = document.getElementById('heroCopy');
+  copy.classList.remove('swap'); void copy.offsetWidth; copy.classList.add('swap');
+}
+function heroGo(i){
+  if(heroBusy || i === heroIdx) return;
+  heroBusy = true;
+  heroCar.classList.remove('enter-right','exit-left');
+  void heroCar.offsetWidth;
+  heroCar.classList.add('exit-left');          /* outgoing exits LEFT */
+  applyTheme(i);
+  setTimeout(()=>{
+    heroIdx = i;
+    heroImg.src = HERO[i].img;
+    heroRefl.src = HERO[i].img;
+    heroImg.alt = CARS[i].maker + ' ' + CARS[i].name + ' — ' + HERO[i].paint;
+    renderHeroCopy(i);
+    heroCar.classList.remove('exit-left');
+    void heroCar.offsetWidth;
+    heroCar.classList.add('enter-right');      /* incoming enters from RIGHT */
+    setTimeout(()=>{ heroCar.classList.remove('enter-right'); heroBusy = false; }, 1180);
+  }, 540);
+}
+const heroNext = ()=>heroGo((heroIdx+1)%7);
+const heroPrev = ()=>heroGo((heroIdx+6)%7);
+document.getElementById('heroNext').addEventListener('click', heroNext);
+document.getElementById('heroPrev').addEventListener('click', heroPrev);
+document.getElementById('heroDots').innerHTML = CARS.map((c,i)=>
+  `<button data-i="${i}" class="${i===0?'on':''}" aria-label="${c.name}">${c.num}</button>`).join('');
+document.querySelectorAll('#heroDots button').forEach(b=>
+  b.addEventListener('click', ()=>heroGo(+b.dataset.i)));
+document.getElementById('heroExplore').addEventListener('click', ()=>{
+  selectCar(heroIdx); document.getElementById('featured').scrollIntoView({behavior:'smooth'});
+});
+document.getElementById('heroDetails').addEventListener('click', ()=>{
+  const c = CARS[heroIdx];
+  document.getElementById('hmName').innerHTML = c.name.replace(/(\s+\S+)$/, ' <em>$1</em>');
+  document.getElementById('hmSub').textContent = c.maker + ' · ' + c.year + ' · ' + c.cat;
+  document.getElementById('hmDesc').textContent = c.desc;
+  document.getElementById('hmSpecs').innerHTML = [
+    ['Model Year', c.year], ['Category', c.cat], ['Engine / Powertrain', c.engine],
+    ['Power', c.power], ['0–100 km/h', c.accel], ['Top Speed', c.top],
+    ['Transmission', c.trans], ['Drivetrain', c.drive],
+  ].map(([k,v],idx)=>`<div class="${idx===2?'full':''}"><span>${k}</span><b>${v}</b></div>`).join('');
+  document.getElementById('hmFeat').innerHTML = c.feat.map(f=>`<li>${f}</li>`).join('');
+  document.getElementById('heroModal').classList.add('open');
+});
+document.getElementById('heroModalClose').addEventListener('click', ()=>document.getElementById('heroModal').classList.remove('open'));
+document.getElementById('heroModal').addEventListener('click', e=>{
+  if(e.target.id==='heroModal') e.target.classList.remove('open');
+});
+/* keyboard + swipe on the hero */
+document.addEventListener('keydown', e=>{
+  const r = heroEl.getBoundingClientRect();
+  if(r.top < innerHeight && r.bottom > 0){
+    if(e.key==='ArrowRight') heroNext();
+    if(e.key==='ArrowLeft') heroPrev();
+  }
+});
+let hx = 0;
+heroEl.addEventListener('touchstart', e=>{ hx = e.touches[0].clientX; }, {passive:true});
+heroEl.addEventListener('touchend', e=>{
+  const dx = e.changedTouches[0].clientX - hx;
+  if(Math.abs(dx) > 60) (dx < 0 ? heroNext : heroPrev)();
+}, {passive:true});
+/* ambient particles */
+(function(){
+  const box = document.getElementById('heroParticles');
+  for(let k=0;k<14;k++){
+    const d = document.createElement('i');
+    d.style.left = (4 + Math.random()*92) + '%';
+    d.style.bottom = (8 + Math.random()*70) + '%';
+    d.style.animationDuration = (7 + Math.random()*9) + 's';
+    d.style.animationDelay = (Math.random()*8) + 's';
+    box.appendChild(d);
+  }
+})();
+/* preload all seven hero images so switching is instant */
+HERO.forEach(t=>{ const im = new Image(); im.src = t.img; });
+/* init: theme + copy now, car drives in once the loader clears */
+applyTheme(0, true);
+renderHeroCopy(0);
+new MutationObserver((_, obs)=>{
+  if(document.getElementById('loader').classList.contains('done')){
+    obs.disconnect();
+    setTimeout(()=>{
+      heroCar.classList.remove('pre');
+      heroCar.classList.add('enter-right');
+      setTimeout(()=>heroCar.classList.remove('enter-right'), 1200);
+    }, 250);
+  }
+}).observe(document.getElementById('loader'), {attributes:true, attributeFilter:['class']});
 </script>
 </body>
 </html>
