@@ -142,7 +142,7 @@ header{position:sticky;top:0}
 #hero.dynamic{height:86svh;min-height:660px;max-height:940px;overflow:hidden;background:#050506;
   --acc:#4ade80;--acc2:#a7f3d0;--glow:rgba(74,222,128,.30)}
 .hero-bg{position:absolute;inset:0;z-index:0}
-.hero-bg .bg-layer{position:absolute;inset:0;opacity:0;transition:opacity .95s ease}
+.hero-bg .bg-layer{position:absolute;inset:0;opacity:0;transition:opacity .65s ease}
 .hero-bg .bg-layer.on{opacity:1}
 .hero-spot{position:absolute;top:-12%;left:56%;width:46%;height:82%;z-index:1;pointer-events:none;
   background:linear-gradient(180deg,rgba(255,255,255,.13),transparent 72%);
@@ -160,6 +160,7 @@ header{position:sticky;top:0}
 .hero-maker{font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:#c9ccd2;margin-bottom:6px}
 .hero-name{font-family:var(--serif);font-weight:500;font-size:clamp(48px,5.4vw,86px);line-height:.98;
   text-transform:uppercase;letter-spacing:.01em}
+.hero-name.long{font-size:clamp(36px,3.8vw,56px)}
 .hero-name em{color:var(--acc);font-style:normal;transition:color .9s ease}
 .hero-paint{margin-top:12px;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--acc);
   transition:color .9s ease}
@@ -183,7 +184,7 @@ header{position:sticky;top:0}
 .hero-copy.swap>*:nth-child(6){animation-delay:.25s}
 .hero-copy.swap>*:nth-child(7){animation-delay:.3s}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-.hero-stage{position:relative;height:100%}
+.hero-stage{position:relative;height:100%;touch-action:pan-y}
 .hero-photo{position:absolute;inset:0;display:flex;flex-direction:column;transition:transform .45s ease,opacity .45s ease}
 .hero-photo>img{flex:1;min-height:0;width:100%;object-fit:cover;border-radius:18px 18px 0 0;box-shadow:0 30px 80px rgba(0,0,0,.55);display:block}
 .hero-reflect{height:84px;overflow:hidden;flex:none}
@@ -212,7 +213,7 @@ header{position:sticky;top:0}
 .hero-count{font-family:var(--serif);font-size:22px;letter-spacing:.12em;white-space:nowrap}
 .hero-count b{color:var(--acc);transition:color .9s ease}
 .hero-count span{color:#8b8f98;font-size:16px}
-.hero-swipe-hint{position:absolute;left:0;right:0;bottom:98px;z-index:4;text-align:center;font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);pointer-events:none;transition:opacity .8s ease}
+.hero-swipe-hint{position:absolute;left:0;right:0;bottom:98px;z-index:4;width:max-content;margin:0 auto;text-align:center;font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);pointer-events:none;transition:opacity .8s ease;background:rgba(8,9,11,.68);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:9px 18px}
 .hero-swipe-hint b{color:var(--acc);font-weight:500}
 .hero-swipe-hint.used{opacity:0}
 @media (prefers-reduced-motion:reduce){
@@ -229,7 +230,7 @@ header{position:sticky;top:0}
   .hero-name{font-size:46px}
   .hero-specs{margin:20px 0 22px}
   .hero-controls{position:static;padding:20px 20px 14px;max-width:none}
-  .hero-swipe-hint{position:static;margin:2px 0 12px}
+  .hero-swipe-hint{position:static;margin:2px auto 12px}
   .hero-dots button{width:32px;height:32px}
   .hero-arrow{width:46px;height:46px}
 }
@@ -903,13 +904,14 @@ function applyTheme(i, instant){
     show.classList.add('on'); hide.classList.remove('on'); hide.style.background = t.bg;
   } else {
     show.classList.add('on');
-    setTimeout(()=>{ hide.classList.remove('on'); hide.style.background = t.bg; }, 980);
+    setTimeout(()=>{ hide.classList.remove('on'); hide.style.background = t.bg; }, 680);
   }
 }
 function renderHeroCopy(i){
   const c = CARS[i], t = HERO[i];
   document.getElementById('heroMaker').textContent = c.maker;
   document.getElementById('heroName').innerHTML = c.name.replace(/(\s+\S+)$/, ' <em>$1</em>');
+  document.getElementById('heroName').classList.toggle('long', c.name.length > 16);
   document.getElementById('heroPaint').textContent = t.paint;
   document.getElementById('heroDesc').textContent = t.tag;
   document.getElementById('heroSpecs').innerHTML = [
@@ -932,20 +934,18 @@ function heroGo(i){
   renderHeroCopy(i);
   swapPhoto(i, dir);
 }
-/* photo swap: old real photo slides out, new real photo slides in from the swipe direction */
+/* photo swap: preload the new real photo FIRST (no blank stage), then slide out/in */
 function swapPhoto(i, dir){
   const wrap = document.getElementById('heroPhoto');
   const img = document.getElementById('heroCarImg');
   const ref = document.getElementById('heroCarImgR');
-  const t0 = performance.now();
-  wrap.classList.remove('in-left','in-right');
-  wrap.classList.add(dir > 0 ? 'out-left' : 'out-right');
   const src = HERO[i].img;
   const pre = new Image();
   let done = false;
   const finish = ()=>{
     if(done) return; done = true;
-    const wait = Math.max(0, 350 - (performance.now() - t0));
+    wrap.classList.remove('in-left','in-right');
+    wrap.classList.add(dir > 0 ? 'out-left' : 'out-right');
     setTimeout(()=>{
       img.src = src;
       img.alt = CARS[i].maker + ' ' + CARS[i].name + ' — ' + HERO[i].paint;
@@ -953,7 +953,7 @@ function swapPhoto(i, dir){
       wrap.classList.remove('out-left','out-right');
       wrap.classList.add(dir > 0 ? 'in-right' : 'in-left');
       setTimeout(()=>{ wrap.classList.remove('in-left','in-right'); heroBusy = false; }, 600);
-    }, wait);
+    }, 380);
   };
   pre.onload = pre.onerror = ()=>setTimeout(finish, 60);
   pre.src = src;
@@ -1008,15 +1008,16 @@ heroEl.addEventListener('touchend', e=>{
   const dx = e.changedTouches[0].clientX - hx;
   if(Math.abs(dx) > 60) (dx < 0 ? heroNext : heroPrev)();
 }, {passive:true});
-/* flick on the car itself: a quick horizontal flick changes the car (mouse or touch) */
+/* flick / drag on the car itself: any clear horizontal drag changes the car (mouse or touch);
+   a mostly-vertical drag is a page scroll, not a car change */
 (function(){
   const cv = document.getElementById('heroStage');
-  let px = 0, pt = 0, pDown = false;
-  cv.addEventListener('pointerdown', e=>{ pDown = true; px = e.clientX; pt = performance.now(); });
+  let px = 0, py = 0, pDown = false;
+  cv.addEventListener('pointerdown', e=>{ pDown = true; px = e.clientX; py = e.clientY; });
   window.addEventListener('pointerup', e=>{
     if(!pDown) return; pDown = false;
-    const dx = e.clientX - px, dt = performance.now() - pt;
-    if(dt < 400 && Math.abs(dx) > 70){ dx < 0 ? heroNext() : heroPrev(); }
+    const dx = e.clientX - px, dy = e.clientY - py;
+    if(Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.5){ dx < 0 ? heroNext() : heroPrev(); }
   });
   window.addEventListener('pointercancel', ()=>{ pDown = false; });
 })();
