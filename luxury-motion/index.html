@@ -184,33 +184,19 @@ header{position:sticky;top:0}
 .hero-copy.swap>*:nth-child(7){animation-delay:.3s}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .hero-stage{position:relative;height:100%}
-.hero-platform{position:absolute;left:50%;bottom:9%;transform:translateX(-50%);width:88%;height:118px;
-  background:radial-gradient(ellipse at 50% 28%,#1c1d21 0%,#0a0b0d 55%,#050506 100%);
-  border-radius:50%;
-  box-shadow:0 0 0 1px rgba(255,255,255,.06),0 0 90px 12px var(--glow),0 34px 60px rgba(0,0,0,.85);
-  transition:box-shadow .9s ease}
-.hero-platform:before{content:"";position:absolute;inset:7px;border-radius:50%;border:1px solid var(--acc);
-  opacity:.32;transition:border-color .9s ease}
-.hero-platform:after{content:"";position:absolute;left:13%;right:13%;top:36%;height:46px;
-  background:radial-gradient(ellipse at center,rgba(0,0,0,.9),transparent 70%);filter:blur(6px)}
-.hero-car{position:absolute;left:0;right:0;bottom:calc(9% + 50px);z-index:2}
-.hero-car.pre{opacity:0}
-.hero-car img{width:100%;height:auto;
-  -webkit-mask-image:radial-gradient(ellipse 82% 88% at 50% 46%,#000 58%,transparent 82%);
-  mask-image:radial-gradient(ellipse 82% 88% at 50% 46%,#000 58%,transparent 82%);
-  filter:drop-shadow(0 26px 32px rgba(0,0,0,.55))}
-.hero-car.enter-right{animation:carInRight 1.15s cubic-bezier(.22,.75,.25,1) both}
-.hero-car.enter-right img{animation:lightIn 1.15s ease both}
-.hero-car.exit-left{animation:carOutLeft .55s cubic-bezier(.55,.06,.75,.4) both}
-@keyframes carInRight{0%{transform:translateX(56vw) scale(.94);opacity:0}55%{opacity:1}100%{transform:translateX(0) scale(1);opacity:1}}
-@keyframes carOutLeft{0%{transform:translateX(0) scale(1);opacity:1}100%{transform:translateX(-56vw) scale(.96);opacity:0}}
-@keyframes lightIn{0%{filter:brightness(.35) drop-shadow(0 26px 32px rgba(0,0,0,.55))}100%{filter:brightness(1) drop-shadow(0 26px 32px rgba(0,0,0,.55))}}
-.hero-reflect{position:absolute;left:5%;right:5%;top:calc(100% - 24px);height:104px;overflow:hidden;pointer-events:none;
-  -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.42),transparent 85%);
-  mask-image:linear-gradient(to bottom,rgba(0,0,0,.42),transparent 85%)}
-.hero-reflect img{transform:scaleY(-1);transform-origin:top;opacity:.55;filter:blur(1px);
-  -webkit-mask-image:radial-gradient(ellipse 82% 88% at 50% 46%,#000 58%,transparent 82%);
-  mask-image:radial-gradient(ellipse 82% 88% at 50% 46%,#000 58%,transparent 82%)}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#gl:active{cursor:grabbing}
+.hero-badge{position:absolute;left:14px;bottom:14px;z-index:3;pointer-events:none;
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#d6d8dc;
+  background:rgba(8,9,11,.55);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:7px 12px}
+.hero-badge b{color:var(--acc)}
+.hero-reset{position:absolute;right:14px;bottom:14px;z-index:3;cursor:pointer;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#d6d8dc;
+  background:rgba(8,9,11,.55);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:7px 12px;transition:all .3s}
+.hero-reset:hover{border-color:var(--acc);color:var(--acc)}
+.hero-loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;pointer-events:none;
+  font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#9a9ea7;white-space:nowrap}
+.hero-loading.hide{display:none}
 .hero-controls{position:absolute;left:0;right:0;bottom:0;z-index:4;max-width:1560px;margin:0 auto;
   padding:0 48px 22px;display:flex;align-items:center;gap:22px}
 .hero-arrow{cursor:pointer;flex:none;width:52px;height:52px;border-radius:50%;
@@ -226,7 +212,7 @@ header{position:sticky;top:0}
 .hero-count b{color:var(--acc);transition:color .9s ease}
 .hero-count span{color:#8b8f98;font-size:16px}
 @media (prefers-reduced-motion:reduce){
-  .hero-car.enter-right,.hero-car.exit-left,.hero-copy.swap>*{animation-duration:.01ms !important}
+  .hero-copy.swap>*{animation-duration:.01ms !important}
   .hero-particles i{animation:none}
 }
 @media (max-width:900px){
@@ -235,9 +221,7 @@ header{position:sticky;top:0}
   #hero.dynamic{height:auto;min-height:0;padding:0 0 8px}
   .hero-inner{grid-template-columns:1fr;padding:24px 20px 0;gap:6px}
   .hero-stage{order:-1;height:290px}
-  .hero-platform{bottom:5%;height:62px;width:94%}
-  .hero-car{bottom:calc(5% + 24px)}
-  .hero-reflect{height:64px;top:calc(100% - 16px)}
+  .hero-badge,.hero-reset{bottom:8px;padding:6px 10px;font-size:10px}
   .hero-name{font-size:46px}
   .hero-specs{margin:20px 0 22px}
   .hero-controls{position:static;padding:20px 20px 14px;max-width:none}
@@ -262,9 +246,6 @@ header{position:sticky;top:0}
 .modal .feat li{padding:8px 0 8px 22px;border-bottom:1px solid #1e2025;color:#c6c9cf;font-size:13.5px;position:relative}
 .modal .feat li:before{content:"◆";position:absolute;left:0;color:var(--gold);font-size:10px;top:11px}
 .modal .note{font-size:12px;color:#8b8f98;line-height:1.6}
-/* soften the street-photo edges so background clutter fades into the theme */
-.hero-car:after{content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse 64% 64% at 50% 46%,transparent 56%,rgba(5,6,8,.42) 88%)}
 </style>
 </head>
 <body>
@@ -319,11 +300,10 @@ header{position:sticky;top:0}
     </div>
 
     <div class="hero-stage">
-      <div class="hero-platform"></div>
-      <div class="hero-car pre" id="heroCar">
-        <img id="heroCarImg" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Rear_view_of_Green_Lamborghini_Revuelto.jpg/1920px-Rear_view_of_Green_Lamborghini_Revuelto.jpg" alt="Lamborghini Revuelto — Metallic Green">
-        <div class="hero-reflect"><img id="heroCarReflect" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Rear_view_of_Green_Lamborghini_Revuelto.jpg/1920px-Rear_view_of_Green_Lamborghini_Revuelto.jpg" alt="" aria-hidden="true"></div>
-      </div>
+      <canvas id="gl" aria-label="Interactive vehicle viewer — drag to rotate"></canvas>
+      <div class="hero-badge" id="heroBadge"><b>360°</b> · Drag to rotate</div>
+      <button class="hero-reset" id="heroReset" type="button">⟲ Reset view</button>
+      <div class="hero-loading" id="heroLoading">Loading 3D model…</div>
     </div>
   </div>
 
@@ -658,15 +638,16 @@ const CARS = [
      {u:W+'9/96/Lamborghini_Revuelto_IMG_0562.jpg/1920px-Lamborghini_Revuelto_IMG_0562.jpg', c:'Front three-quarter · <b>Bianco Monocerus</b>'},
      {u:W+'6/6d/Rear_view_of_Green_Lamborghini_Revuelto.jpg/1920px-Rear_view_of_Green_Lamborghini_Revuelto.jpg', c:'Rear three-quarter · <b>Verde Mantis</b>'},
      {u:W+'0/0a/Lamborghini_Revuelto_DSC_6987.jpg/1920px-Lamborghini_Revuelto_DSC_6987.jpg', c:'Rear view · <b>Detail study</b>'}] },
- { num:'02', maker:'Ferrari', name:'SF90 Stradale', cat:'Plug-in Hybrid Supercar', year:'2021',
-   power:'1,000 PS', accel:'2.5 s', top:'340 km/h',
-   engine:'4.0L twin-turbo V8 + 3 electric motors (PHEV)', trans:'8-speed dual-clutch', drive:'All-wheel drive',
-   desc:'Ferrari’s first series-production plug-in hybrid — a V8 and three electric motors working as one, with the elegance of Maranello and the pace of a race car.',
-   feat:['Matrix LED headlights and S-duct aero','Mid-rear V8 with electric front axle','Shut-off Gurney rear aero system','Carbon-fibre steering wheel with touch controls'],
+ { num:'02', maker:'Ferrari', name:'458 Italia', cat:'V8 Mid-Engine Supercar', year:'2011',
+   power:'570 PS', accel:'3.4 s', top:'325 km/h',
+   engine:'4.5L naturally aspirated V8', trans:'7-speed dual-clutch', drive:'Rear-wheel drive',
+   desc:'The last naturally aspirated mid-engine V8 Berlinetta — 9,000 rpm, a chassis that talks back, and the purest Ferrari driving feel of the modern era.',
+   feat:['Mid-rear 4.5-litre V8 revving to 9,000 rpm','F1-style steering wheel with manettino','Aluminium spaceframe chassis','Carbon-ceramic brakes'],
+   note:'Hero model: genuine 3D — Ferrari 458 Italia (three.js sample model, CC BY 4.0), shown in place of the SF90 Stradale. No free SF90 3D model exists. Gallery photography: Wikimedia Commons contributors, CC licences.',
    views:[
-     {u:W+'e/ef/Ferrari_SF90_Stradale_Mayfair.jpg/1920px-Ferrari_SF90_Stradale_Mayfair.jpg', c:'Front three-quarter · <b>Rosso Corsa</b>'},
-     {u:W+'8/88/2021_Ferrari_SF90_Stradale_3.jpg/1920px-2021_Ferrari_SF90_Stradale_3.jpg', c:'Rear three-quarter · <b>Nero</b>'},
-     {u:W+'6/68/Ferrari_SF90_Stradale_%28front%29.jpg/1920px-Ferrari_SF90_Stradale_%28front%29.jpg', c:'Front view · <b>Detail study</b>'}] },
+     {u:W+'b/b8/2014_Ferrari_458_Italia_Rosso_Scuderia_front_three_quarter.jpg/1920px-2014_Ferrari_458_Italia_Rosso_Scuderia_front_three_quarter.jpg', c:'Front three-quarter · <b>Rosso Scuderia</b>'},
+     {u:W+'c/c6/2011_Ferrari_458_Italia_DCT_S-A_4.5_Front.jpg/1920px-2011_Ferrari_458_Italia_DCT_S-A_4.5_Front.jpg', c:'Front view · <b>2011 458 Italia</b>'},
+     {u:W+'9/91/Ferrari_458_Italia_Back.jpg/1920px-Ferrari_458_Italia_Back.jpg', c:'Rear view · <b>Detail study</b>'}] },
  { num:'03', maker:'Rolls-Royce', name:'Spectre', cat:'Ultra-Luxury Electric Coupé', year:'2024',
    power:'584 hp', accel:'4.4 s', top:'250 km/h',
    engine:'Dual electric motors · 102 kWh battery', trans:'Single-speed, direct drive', drive:'All-wheel drive',
@@ -875,7 +856,7 @@ const HERO = [
    paint:'Metallic Green', tag:'The V12, electrified. A flagship that rewrites what a Lamborghini can be.',
    bg:'radial-gradient(120% 95% at 76% 16%, #166534 0%, #052e16 46%, #020a05 100%)', acc:'#4ade80', glow:'rgba(74,222,128,.30)' },
  { img:W+'e/ef/Ferrari_SF90_Stradale_Mayfair.jpg/1920px-Ferrari_SF90_Stradale_Mayfair.jpg',
-   paint:'Rosso Corsa Red', tag:'Ferrari’s first plug-in hybrid — Maranello elegance at race-car pace.',
+   paint:'Rosso Corsa Red', tag:'A real 3D Ferrari 458 Italia — drag it and spin it 360°. Shown in place of the SF90 Stradale.',
    bg:'radial-gradient(120% 95% at 76% 16%, #991b1b 0%, #450a0a 46%, #0c0202 100%)', acc:'#f87171', glow:'rgba(239,68,68,.32)' },
  { img:W+'a/a4/2024_Rolls-Royce_Spectre_in_Midnight_Sapphire_over_Silver%2C_front_right.jpg/1920px-2024_Rolls-Royce_Spectre_in_Midnight_Sapphire_over_Silver%2C_front_right.jpg',
    paint:'Diamond Black', tag:'Silence, tailored. The electric coupé that redefines Rolls-Royce calm.',
@@ -896,9 +877,6 @@ const HERO = [
 let heroIdx = 0, heroBusy = false, bgFlip = false;
 
 const heroEl = document.getElementById('hero');
-const heroCar = document.getElementById('heroCar');
-const heroImg = document.getElementById('heroCarImg');
-const heroRefl = document.getElementById('heroCarReflect');
 
 function applyTheme(i, instant){
   const t = HERO[i];
@@ -914,6 +892,7 @@ function applyTheme(i, instant){
     show.classList.add('on');
     setTimeout(()=>{ hide.classList.remove('on'); hide.style.background = t.bg; }, 980);
   }
+  if(window.__lm3d) window.__lm3d.setAccent(t.acc);
 }
 function renderHeroCopy(i){
   const c = CARS[i], t = HERO[i];
@@ -927,27 +906,24 @@ function renderHeroCopy(i){
   ].map(([k,v])=>`<div><b>${v}</b><span>${k}</span></div>`).join('');
   document.getElementById('heroCount').textContent = c.num;
   document.querySelectorAll('#heroDots button').forEach((b,k)=>b.classList.toggle('on', k===i));
+  document.getElementById('heroBadge').innerHTML = i===1
+    ? '<b>Real 3D</b> · Drag to rotate 360°'
+    : 'Photo cutout · Drag to tilt — full 360° on the Ferrari 458';
   const copy = document.getElementById('heroCopy');
   copy.classList.remove('swap'); void copy.offsetWidth; copy.classList.add('swap');
 }
 function heroGo(i){
   if(heroBusy || i === heroIdx) return;
   heroBusy = true;
-  heroCar.classList.remove('enter-right','exit-left');
-  void heroCar.offsetWidth;
-  heroCar.classList.add('exit-left');          /* outgoing exits LEFT */
   applyTheme(i);
-  setTimeout(()=>{
+  const swap = ()=>{
     heroIdx = i;
-    heroImg.src = HERO[i].img;
-    heroRefl.src = HERO[i].img;
-    heroImg.alt = CARS[i].maker + ' ' + CARS[i].name + ' — ' + HERO[i].paint;
     renderHeroCopy(i);
-    heroCar.classList.remove('exit-left');
-    void heroCar.offsetWidth;
-    heroCar.classList.add('enter-right');      /* incoming enters from RIGHT */
-    setTimeout(()=>{ heroCar.classList.remove('enter-right'); heroBusy = false; }, 1180);
-  }, 540);
+    if(window.__lm3d) window.__lm3d.showCar(i, ()=>{ heroBusy = false; });
+    else heroBusy = false;
+  };
+  if(window.__lm3d){ window.__lm3d.exitCar(swap); }
+  else setTimeout(swap, 200);
 }
 const heroNext = ()=>heroGo((heroIdx+1)%7);
 const heroPrev = ()=>heroGo((heroIdx+6)%7);
@@ -972,27 +948,36 @@ document.getElementById('heroDetails').addEventListener('click', ()=>{
     ['In the Collection', 'No. ' + c.num + ' of 07'], ['Showcase', 'Photographic views × 3'],
   ].map(([k,v],idx)=>`<div class="${(idx===2||idx===9)?'full':''}"><span>${k}</span><b>${v}</b></div>`).join('');
   document.getElementById('hmFeat').innerHTML = c.feat.map(f=>`<li>${f}</li>`).join('');
+  document.querySelector('#heroModal .note').textContent = c.note || 'Figures are manufacturer-published figures for the model year shown. Photography: Wikimedia Commons contributors, CC licences.';
   document.getElementById('heroModal').classList.add('open');
 });
 document.getElementById('heroModalClose').addEventListener('click', ()=>document.getElementById('heroModal').classList.remove('open'));
 document.getElementById('heroModal').addEventListener('click', e=>{
   if(e.target.id==='heroModal') e.target.classList.remove('open');
 });
-/* keyboard + swipe on the hero */
+/* keyboard + swipe on the hero (swipes starting on the 3D canvas rotate the car, not the page) */
 document.addEventListener('keydown', e=>{
   const r = heroEl.getBoundingClientRect();
   if(e.key==='Escape'){ document.getElementById('heroModal').classList.remove('open'); return; }
   if(r.top < innerHeight && r.bottom > 0){
     if(e.key==='ArrowRight') heroNext();
     if(e.key==='ArrowLeft') heroPrev();
+    if(e.key==='r' || e.key==='R'){ if(window.__lm3d) window.__lm3d.resetView(); }
   }
 });
-let hx = 0;
-heroEl.addEventListener('touchstart', e=>{ hx = e.touches[0].clientX; }, {passive:true});
+let hx = 0, hxOnCanvas = false;
+heroEl.addEventListener('touchstart', e=>{
+  hx = e.touches[0].clientX;
+  hxOnCanvas = !!e.target.closest('#gl');
+}, {passive:true});
 heroEl.addEventListener('touchend', e=>{
+  if(hxOnCanvas) return;
   const dx = e.changedTouches[0].clientX - hx;
   if(Math.abs(dx) > 60) (dx < 0 ? heroNext : heroPrev)();
 }, {passive:true});
+document.getElementById('heroReset').addEventListener('click', ()=>{
+  if(window.__lm3d) window.__lm3d.resetView();
+});
 /* ambient particles */
 (function(){
   const box = document.getElementById('heroParticles');
@@ -1005,21 +990,331 @@ heroEl.addEventListener('touchend', e=>{
     box.appendChild(d);
   }
 })();
-/* preload all seven hero images so switching is instant */
-HERO.forEach(t=>{ const im = new Image(); im.src = t.img; });
-/* init: theme + copy now, car drives in once the loader clears */
+/* init: theme + copy now, 3D car drives in once the loader clears */
 applyTheme(0, true);
 renderHeroCopy(0);
 new MutationObserver((_, obs)=>{
   if(document.getElementById('loader').classList.contains('done')){
     obs.disconnect();
-    setTimeout(()=>{
-      heroCar.classList.remove('pre');
-      heroCar.classList.add('enter-right');
-      setTimeout(()=>heroCar.classList.remove('enter-right'), 1200);
-    }, 250);
+    setTimeout(()=>{ if(window.__lm3d) window.__lm3d.intro(); }, 250);
   }
 }).observe(document.getElementById('loader'), {attributes:true, attributeFilter:['class']});
+/* if the 3D module failed to load (CDN blocked), say so instead of spinning forever */
+setTimeout(()=>{
+  if(!window.__lm3d){
+    const l = document.getElementById('heroLoading');
+    if(l){ l.textContent = 'Interactive viewer failed to load — please refresh.'; }
+  }
+}, 8000);
+</script>
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+<script type="module">
+/* ============ LUXURY MOTION · 3D HERO VIEWER (v4) ============
+   One real 3D car (Ferrari 458 Italia GLB, three.js sample, CC BY 4.0)
+   + six transparent-background cutouts, all on the same 3D platform,
+   against the site's own dynamic background (canvas is transparent).
+   No photo backgrounds anywhere in the hero. */
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const CUTOUTS = { 0:'revuelto', 2:'spectre', 3:'continental-gt', 4:'amg-gt', 5:'gt3-rs', 6:'chiron' };
+const FERRARI_GLB = 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/models/gltf/ferrari.glb';
+const SF90_FALLBACK = 'cutouts/sf90.png';
+/* Front-left three-quarter default. For the GLB the nose must point
+   toward the viewer's right so the front + left flank are visible.
+   Tune FERRARI_ALIGN_Y after a visual check if the nose points elsewhere. */
+const DEFAULT_ROT_Y = 0.62;
+const FERRARI_ALIGN_Y = 0;
+
+const canvas = document.getElementById('gl');
+const loadingEl = document.getElementById('heroLoading');
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+} catch(err) {
+  loadingEl.textContent = '3D viewer is not supported on this browser.';
+  throw err;
+}
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+camera.position.set(0, 1.55, 10.4);
+camera.lookAt(0, 0.85, 0);
+
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0x1a1a1c, 0.55));
+const key = new THREE.DirectionalLight(0xffffff, 1.7);
+key.position.set(4, 6, 5);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+key.shadow.camera.left = -6; key.shadow.camera.right = 6;
+key.shadow.camera.top = 6; key.shadow.camera.bottom = -6;
+key.shadow.bias = -0.0004;
+scene.add(key);
+const rim = new THREE.DirectionalLight(0xffffff, 0.5);
+rim.position.set(-5, 3, -4);
+scene.add(rim);
+const accentLight = new THREE.PointLight(0x4ade80, 12, 14, 1.8);
+accentLight.position.set(0, 0.4, -2.6);
+scene.add(accentLight);
+
+/* --- the black display platform (part of the scene, not of any image) --- */
+const platform = new THREE.Group();
+const disc = new THREE.Mesh(
+  new THREE.CylinderGeometry(3.35, 3.5, 0.18, 72),
+  new THREE.MeshPhysicalMaterial({ color:0x0b0c0e, metalness:0.55, roughness:0.28, clearcoat:1, clearcoatRoughness:0.25 })
+);
+disc.position.y = -0.09;
+disc.receiveShadow = true;
+platform.add(disc);
+const rimMat = new THREE.MeshBasicMaterial({ color:0x4ade80, toneMapped:false });
+const rimRing = new THREE.Mesh(new THREE.TorusGeometry(3.35, 0.018, 10, 128), rimMat);
+rimRing.rotation.x = Math.PI / 2;
+rimRing.position.y = 0.005;
+platform.add(rimRing);
+scene.add(platform);
+
+/* soft contact-shadow blob (shared by every car, GLB and cutout alike) */
+function blobTexture(){
+  const c = document.createElement('canvas'); c.width = c.height = 256;
+  const g = c.getContext('2d');
+  const grad = g.createRadialGradient(128,128,10,128,128,126);
+  grad.addColorStop(0,'rgba(0,0,0,0.85)'); grad.addColorStop(0.6,'rgba(0,0,0,0.45)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+  g.fillStyle = grad; g.fillRect(0,0,256,256);
+  return new THREE.CanvasTexture(c);
+}
+const blobTex = blobTexture();
+function addBlob(group, w){
+  const m = new THREE.Mesh(
+    new THREE.PlaneGeometry(w, w * 0.42),
+    new THREE.MeshBasicMaterial({ map:blobTex, transparent:true, depthWrite:false })
+  );
+  m.rotation.x = -Math.PI / 2;
+  m.position.y = 0.012;
+  group.add(m);
+  return m;
+}
+
+/* --- car rig: the thing that slides, rotates and resets --- */
+const rig = new THREE.Group();
+scene.add(rig);
+const carGroups = new Array(7).fill(null);
+let current = -1;
+let targetRotY = DEFAULT_ROT_Y;
+let rigX = 7;                 /* starts off-stage right; intro drives it in */
+rig.position.x = rigX;
+
+let dirty = true;
+function requestRender(){ dirty = true; }
+function renderLoop(){
+  requestAnimationFrame(renderLoop);
+  if(!dirty) return;
+  dirty = false;
+  rig.rotation.y += (targetRotY - rig.rotation.y) * 0.22;
+  if(Math.abs(targetRotY - rig.rotation.y) < 0.0005) rig.rotation.y = targetRotY;
+  else dirty = true;
+  rig.position.x = rigX;
+  renderer.render(scene, camera);
+}
+function resize(){
+  const st = canvas.parentElement;
+  const w = st.clientWidth, h = st.clientHeight;
+  if(!w || !h) return;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  requestRender();
+}
+new ResizeObserver(resize).observe(canvas.parentElement);
+resize();
+renderLoop();
+
+/* --- tiny tween helper --- */
+function tween(dur, onUpdate, onDone, ease){
+  const t0 = performance.now();
+  const easeFn = ease || (t=>t<0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2);
+  (function step(now){
+    const p = Math.min(1, (now - t0) / dur);
+    onUpdate(easeFn(p));
+    requestRender();
+    if(p < 1) requestAnimationFrame(step);
+    else if(onDone) onDone();
+  })(t0);
+}
+
+/* --- car builders --- */
+function placeholderTexture(name){
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 512;
+  const g = c.getContext('2d');
+  g.fillStyle = '#101215'; g.fillRect(0,0,1024,512);
+  g.strokeStyle = '#C6A66A'; g.lineWidth = 3; g.strokeRect(14,14,996,484);
+  g.fillStyle = '#e8e9eb'; g.font = '600 54px Georgia, serif'; g.textAlign = 'center';
+  g.fillText(name, 512, 230);
+  g.fillStyle = '#9a9ea7'; g.font = '28px Georgia, serif';
+  g.fillText('Transparent cutout in production', 512, 300);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+function buildCutout(i, done){
+  const slug = CUTOUTS[i];
+  const g = new THREE.Group();
+  addBlob(g, 4.6);
+  const tex = new THREE.TextureLoader().load(
+    'cutouts/' + slug + '.png',
+    t => { sizeCutoutPlane(g, t); done && done(true); },
+    undefined,
+    () => { sizeCutoutPlane(g, placeholderTexture(slug)); done && done(false); }
+  );
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  carGroups[i] = g;
+  rig.add(g);
+  g.visible = false;
+  return g;
+}
+function sizeCutoutPlane(g, tex){
+  const aspect = tex.image.width / tex.image.height;
+  const w = 4.4, h = w / aspect;
+  const mat = new THREE.MeshBasicMaterial({ map:tex, transparent:true, alphaTest:0.04, toneMapped:false, side:THREE.DoubleSide });
+  const plane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
+  plane.position.y = h / 2 + 0.02;
+  plane.castShadow = true;
+  plane.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking:THREE.RGBADepthPacking, map:tex, alphaTest:0.05 });
+  g.add(plane);
+  requestRender();
+}
+let ferrariReady = false, ferrariFailed = false;
+function buildFerrari(done){
+  const g = new THREE.Group();
+  addBlob(g, 4.8);
+  const draco = new DRACOLoader();
+  draco.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/gltf/');
+  const loader = new GLTFLoader();
+  loader.setDRACOLoader(draco);
+  loader.load(FERRARI_GLB, gltf => {
+    const model = gltf.scene;
+    const box = new THREE.Box3().setFromObject(model);
+    const size = box.getSize(new THREE.Vector3());
+    const len = Math.max(size.x, size.z);
+    const s = 4.6 / len;
+    model.scale.setScalar(s);
+    const box2 = new THREE.Box3().setFromObject(model);
+    const c = box2.getCenter(new THREE.Vector3());
+    model.position.set(-c.x, -box2.min.y, -c.z);
+    model.traverse(o => { if(o.isMesh){ o.castShadow = true; o.receiveShadow = false; } });
+    const wrap = new THREE.Group();
+    if(size.x > size.z) wrap.rotation.y = Math.PI / 2;   /* model is X-long: turn it Z-long */
+    wrap.add(model);
+    wrap.rotation.y += FERRARI_ALIGN_Y;
+    g.add(wrap);
+    ferrariReady = true;
+    done && done(true);
+    requestRender();
+  }, undefined, () => {
+    ferrariFailed = true;
+    /* fallback: SF90 photo cutout, labelled as such by the badge */
+    const tex = new THREE.TextureLoader().load(SF90_FALLBACK, t => {
+      sizeCutoutPlane(g, t); done && done(false);
+    }, undefined, () => {
+      sizeCutoutPlane(g, placeholderTexture('Ferrari 458 Italia')); done && done(false);
+    });
+    tex.colorSpace = THREE.SRGBColorSpace;
+    done && done(false);
+    requestRender();
+  });
+  carGroups[1] = g;
+  rig.add(g);
+  g.visible = false;
+  return g;
+}
+function ensureCar(i, done){
+  if(carGroups[i]){ done && done(); return; }
+  if(i === 1) buildFerrari(()=>done && done());
+  else buildCutout(i, ()=>done && done());
+}
+function showCarGroup(i){
+  carGroups.forEach((g, k)=>{ if(g) g.visible = (k === i); });
+  current = i;
+  targetRotY = DEFAULT_ROT_Y;
+  rig.rotation.y = DEFAULT_ROT_Y;
+  requestRender();
+}
+
+/* --- public API used by the page script --- */
+function enterCar(i, done){
+  ensureCar(i, ()=>{
+    showCarGroup(i);
+    rigX = 7; rig.position.x = 7;
+    tween(1000, p => { rigX = 7 * (1 - p); }, ()=>{ rigX = 0; requestRender(); if(done) done(); },
+      t => 1 - Math.pow(1 - t, 3));
+  });
+}
+window.__lm3d = {
+  intro(){
+    loadingEl.classList.add('hide');
+    enterCar(0);
+  },
+  showCar(i, done){ enterCar(i, done); },
+  exitCar(cb){
+    tween(480, p => { rigX = -7 * p; }, ()=>{ cb(); }, t => t * t * t);
+  },
+  resetView(){
+    const start = targetRotY;
+    const delta = ((DEFAULT_ROT_Y - start + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+    tween(600, p => { targetRotY = start + delta * p; });
+  },
+  setAccent(hex){
+    rimMat.color.set(hex);
+    accentLight.color.set(hex);
+    requestRender();
+  },
+  isFerrari3D(){ return ferrariReady && !ferrariFailed; }
+};
+
+/* drag to rotate: free 360° on the real 3D Ferrari, limited tilt on cutouts */
+let dragging = false, lastX = 0, moved = 0;
+canvas.addEventListener('pointerdown', e => {
+  dragging = true; lastX = e.clientX; moved = 0;
+  canvas.setPointerCapture(e.pointerId);
+});
+canvas.addEventListener('pointermove', e => {
+  if(!dragging) return;
+  const dx = e.clientX - lastX; lastX = e.clientX; moved += Math.abs(dx);
+  targetRotY += dx * 0.005;
+  if(current !== 1){
+    targetRotY = Math.max(DEFAULT_ROT_Y - 0.45, Math.min(DEFAULT_ROT_Y + 0.45, targetRotY));
+  }
+  requestRender();
+});
+function endDrag(){
+  if(!dragging) return;
+  dragging = false;
+  if(current !== 1){
+    const start = targetRotY;
+    tween(500, p => { targetRotY = start + (DEFAULT_ROT_Y - start) * p; });
+  }
+}
+canvas.addEventListener('pointerup', endDrag);
+canvas.addEventListener('pointercancel', endDrag);
+canvas.addEventListener('dblclick', ()=>window.__lm3d.resetView());
+
+/* preload the first cutout immediately so the intro is not empty */
+ensureCar(0, ()=>{ if(current === -1) loadingEl.classList.add('hide'); });
+ensureCar(1);
 </script>
 </body>
 </html>
