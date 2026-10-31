@@ -242,7 +242,9 @@ header{position:sticky;top:0}
   .hero-specs{margin:20px 0 22px}
   .hero-controls{position:static;padding:20px 20px 14px;max-width:none}
   .hero-dots button{width:32px;height:32px}
-/* ---------- Hero details modal (was missing — modal had no CSS) ---------- */
+  .hero-arrow{width:46px;height:46px}
+}
+/* ---------- Hero details modal (top-level: must apply on desktop too) ---------- */
 .modal{position:fixed;inset:0;z-index:150;display:none;align-items:center;justify-content:center;
   background:rgba(5,6,8,.82);backdrop-filter:blur(4px);padding:20px}
 .modal.open{display:flex}
@@ -263,8 +265,6 @@ header{position:sticky;top:0}
 /* soften the street-photo edges so background clutter fades into the theme */
 .hero-car:after{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(ellipse 64% 64% at 50% 46%,transparent 56%,rgba(5,6,8,.42) 88%)}
-  .hero-arrow{width:46px;height:46px}
-}
 </style>
 </head>
 <body>
@@ -969,6 +969,7 @@ document.getElementById('heroDetails').addEventListener('click', ()=>{
     ['Model Year', c.year], ['Category', c.cat], ['Engine / Powertrain', c.engine],
     ['Power', c.power], ['0–100 km/h', c.accel], ['Top Speed', c.top],
     ['Transmission', c.trans], ['Drivetrain', c.drive],
+    ['In the Collection', 'No. ' + c.num + ' of 07'], ['Showcase', 'Photographic views × 3'],
   ].map(([k,v],idx)=>`<div class="${(idx===2||idx===9)?'full':''}"><span>${k}</span><b>${v}</b></div>`).join('');
   document.getElementById('hmFeat').innerHTML = c.feat.map(f=>`<li>${f}</li>`).join('');
   document.getElementById('heroModal').classList.add('open');
@@ -980,6 +981,7 @@ document.getElementById('heroModal').addEventListener('click', e=>{
 /* keyboard + swipe on the hero */
 document.addEventListener('keydown', e=>{
   const r = heroEl.getBoundingClientRect();
+  if(e.key==='Escape'){ document.getElementById('heroModal').classList.remove('open'); return; }
   if(r.top < innerHeight && r.bottom > 0){
     if(e.key==='ArrowRight') heroNext();
     if(e.key==='ArrowLeft') heroPrev();
