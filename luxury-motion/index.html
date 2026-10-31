@@ -190,7 +190,7 @@ header{position:sticky;top:0}
   font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#d6d8dc;
   background:rgba(8,9,11,.55);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:7px 12px}
 .hero-badge b{color:var(--acc)}
-.hero-reset{position:absolute;right:14px;bottom:14px;z-index:3;cursor:pointer;
+.hero-reset{position:absolute;right:14px;top:14px;z-index:5;cursor:pointer;
   font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#d6d8dc;
   background:rgba(8,9,11,.55);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:7px 12px;transition:all .3s}
 .hero-reset:hover{border-color:var(--acc);color:var(--acc)}
@@ -221,7 +221,8 @@ header{position:sticky;top:0}
   #hero.dynamic{height:auto;min-height:0;padding:0 0 8px}
   .hero-inner{grid-template-columns:1fr;padding:24px 20px 0;gap:6px}
   .hero-stage{order:-1;height:290px}
-  .hero-badge,.hero-reset{bottom:8px;padding:6px 10px;font-size:10px}
+  .hero-badge{bottom:8px;padding:6px 10px;font-size:10px}
+  .hero-reset{top:8px;right:8px;padding:6px 10px;font-size:10px}
   .hero-name{font-size:46px}
   .hero-specs{margin:20px 0 22px}
   .hero-controls{position:static;padding:20px 20px 14px;max-width:none}
@@ -603,7 +604,7 @@ footer .f-brand b{color:var(--gold);font-weight:500}
         <div class="eyebrow">About — Luxury Motion</div>
         <h2>A private gallery,<br>built around <span class="gold">real machines.</span></h2>
         <p>LUXURY MOTION is a digital showroom in the form of an exhibition: seven production cars, each photographed in the real world, presented with the restraint their makers would recognise — large images, honest specifications, and nothing that pretends to be something it is not.</p>
-        <p>An honest note: this showcase uses real automotive photography. No 3D models are used here — the previous procedural 3D cars were removed because they could not meet the standard this collection demands. When a licensed, photorealistic 3D model of a specific car becomes available, it will replace that car's photographic gallery.</p>
+        <p>An honest note: the hero shows one genuine 3D model — the Ferrari 458 Spider — which you can drag to rotate a full 360°, and six transparent photo cutouts standing on the same 3D platform, with the site's own background visible behind them. No car here carries a photograph background. The cutouts cannot rotate; only the Ferrari is real 3D.</p>
       </div>
       <div class="reveal">
         <div class="fact"><b>07</b><span>Vehicles in the collection</span></div>
@@ -638,16 +639,16 @@ const CARS = [
      {u:W+'9/96/Lamborghini_Revuelto_IMG_0562.jpg/1920px-Lamborghini_Revuelto_IMG_0562.jpg', c:'Front three-quarter · <b>Bianco Monocerus</b>'},
      {u:W+'6/6d/Rear_view_of_Green_Lamborghini_Revuelto.jpg/1920px-Rear_view_of_Green_Lamborghini_Revuelto.jpg', c:'Rear three-quarter · <b>Verde Mantis</b>'},
      {u:W+'0/0a/Lamborghini_Revuelto_DSC_6987.jpg/1920px-Lamborghini_Revuelto_DSC_6987.jpg', c:'Rear view · <b>Detail study</b>'}] },
- { num:'02', maker:'Ferrari', name:'458 Italia', cat:'V8 Mid-Engine Supercar', year:'2011',
-   power:'570 PS', accel:'3.4 s', top:'325 km/h',
+ { num:'02', maker:'Ferrari', name:'458 Spider', cat:'V8 Mid-Engine Spider', year:'2011',
+   power:'570 PS', accel:'3.4 s', top:'320 km/h',
    engine:'4.5L naturally aspirated V8', trans:'7-speed dual-clutch', drive:'Rear-wheel drive',
-   desc:'The last naturally aspirated mid-engine V8 Berlinetta — 9,000 rpm, a chassis that talks back, and the purest Ferrari driving feel of the modern era.',
-   feat:['Mid-rear 4.5-litre V8 revving to 9,000 rpm','F1-style steering wheel with manettino','Aluminium spaceframe chassis','Carbon-ceramic brakes'],
-   note:'Hero model: genuine 3D — Ferrari 458 Italia (three.js sample model, CC BY 4.0), shown in place of the SF90 Stradale. No free SF90 3D model exists. Gallery photography: Wikimedia Commons contributors, CC licences.',
+   desc:'The last naturally aspirated mid-engine V8 Berlinetta, with the roof off — 9,000 rpm, a chassis that talks back, and the purest Ferrari driving feel of the modern era, open to the sky.',
+   feat:['Mid-rear 4.5-litre V8 revving to 9,000 rpm','Retractable aluminium hard top','F1-style steering wheel with manettino','Carbon-ceramic brakes'],
+   note:'Hero model: genuine 3D — Ferrari 458 Spider (three.js sample model, CC BY 4.0), shown in place of the SF90 Stradale. The 3D model is the open-top Spider, not the closed Italia coupé. No free SF90 3D model exists. Gallery photography: Wikimedia Commons contributors, CC licences.',
    views:[
-     {u:W+'b/b8/2014_Ferrari_458_Italia_Rosso_Scuderia_front_three_quarter.jpg/1920px-2014_Ferrari_458_Italia_Rosso_Scuderia_front_three_quarter.jpg', c:'Front three-quarter · <b>Rosso Scuderia</b>'},
-     {u:W+'c/c6/2011_Ferrari_458_Italia_DCT_S-A_4.5_Front.jpg/1920px-2011_Ferrari_458_Italia_DCT_S-A_4.5_Front.jpg', c:'Front view · <b>2011 458 Italia</b>'},
-     {u:W+'9/91/Ferrari_458_Italia_Back.jpg/1920px-Ferrari_458_Italia_Back.jpg', c:'Rear view · <b>Detail study</b>'}] },
+     {u:W+'6/64/2012_Ferrari_458_Spider_HT_front.jpg/1920px-2012_Ferrari_458_Spider_HT_front.jpg', c:'Front three-quarter · <b>2012 458 Spider</b>'},
+     {u:W+'3/3d/White_Ferrari_458_Italia_Spider%2C_front_-_2017-09-23.jpg/1920px-White_Ferrari_458_Italia_Spider%2C_front_-_2017-09-23.jpg', c:'Front view · <b>White 458 Spider</b>'},
+     {u:W+'c/cb/Tuned_Ferrari_458_SPIDER_%28ABA-F142%29_rear.jpg/1920px-Tuned_Ferrari_458_SPIDER_%28ABA-F142%29_rear.jpg', c:'Rear view · <b>Tuned Spider</b>'}] },
  { num:'03', maker:'Rolls-Royce', name:'Spectre', cat:'Ultra-Luxury Electric Coupé', year:'2024',
    power:'584 hp', accel:'4.4 s', top:'250 km/h',
    engine:'Dual electric motors · 102 kWh battery', trans:'Single-speed, direct drive', drive:'All-wheel drive',
@@ -856,19 +857,19 @@ const HERO = [
    paint:'Yellow', tag:'The V12, electrified. A flagship that rewrites what a Lamborghini can be.',
    bg:'radial-gradient(120% 95% at 76% 16%, #166534 0%, #052e16 46%, #020a05 100%)', acc:'#4ade80', glow:'rgba(74,222,128,.30)' },
  { img:W+'e/ef/Ferrari_SF90_Stradale_Mayfair.jpg/1920px-Ferrari_SF90_Stradale_Mayfair.jpg',
-   paint:'Rosso Corsa Red', tag:'A real 3D Ferrari 458 Italia — drag it and spin it 360°. Shown in place of the SF90 Stradale.',
+   paint:'Rosso Corsa Red', tag:'A real 3D Ferrari 458 Spider — drag it and spin it 360°. Shown in place of the SF90 Stradale.',
    bg:'radial-gradient(120% 95% at 76% 16%, #991b1b 0%, #450a0a 46%, #0c0202 100%)', acc:'#f87171', glow:'rgba(239,68,68,.32)' },
  { img:W+'a/a4/2024_Rolls-Royce_Spectre_in_Midnight_Sapphire_over_Silver%2C_front_right.jpg/1920px-2024_Rolls-Royce_Spectre_in_Midnight_Sapphire_over_Silver%2C_front_right.jpg',
-   paint:'Diamond Black', tag:'Silence, tailored. The electric coupé that redefines Rolls-Royce calm.',
+   paint:'Wittering Blue', tag:'Silence, tailored. The electric coupé that redefines Rolls-Royce calm.',
    bg:'radial-gradient(120% 95% at 76% 16%, #2e2e33 0%, #101012 48%, #050506 100%)', acc:'#C6A66A', glow:'rgba(198,166,106,.28)' },
  { img:W+'b/b0/Bentley_Continental_GT_%284th_gen.%29_DSC_8517.jpg/1920px-Bentley_Continental_GT_%284th_gen.%29_DSC_8517.jpg',
    paint:'British Racing Green', tag:'Grand touring, perfected — hand-stitched calm with 782 PS beneath it.',
    bg:'radial-gradient(120% 95% at 76% 16%, #14532d 0%, #0b3d2e 40%, #03130c 100%)', acc:'#d4af37', glow:'rgba(212,175,55,.26)' },
  { img:W+'7/71/Mercedes-AMG_GT_63_Pro_%28C192%29_IAA_2025_DSC_2092.jpg/1920px-Mercedes-AMG_GT_63_Pro_%28C192%29_IAA_2025_DSC_2092.jpg',
-   paint:'Obsidian Black', tag:'Affalterbach precision. A hand-built V8, sharpened for the circuit.',
+   paint:'Green', tag:'Affalterbach precision. A hand-built V8, sharpened for the circuit.',
    bg:'radial-gradient(120% 95% at 76% 16%, #232529 0%, #0b0c0e 50%, #050506 100%)', acc:'#e5e7eb', glow:'rgba(191,196,204,.22)' },
  { img:W+'d/d3/Porsche_911_GT3_RS_%282022%29_1X7A7164.jpg/1920px-Porsche_911_GT3_RS_%282022%29_1X7A7164.jpg',
-   paint:'Arctic Grey', tag:'A race car with number plates. Nine thousand rpm of intent.',
+   paint:'Blue', tag:'A race car with number plates. Nine thousand rpm of intent.',
    bg:'radial-gradient(120% 95% at 76% 16%, #4b5563 0%, #17191d 50%, #07080a 100%)', acc:'#cbd5e1', glow:'rgba(156,163,175,.26)' },
  { img:W+'b/be/Bugatti_Chiron_Royal_Blue.jpg/1920px-Bugatti_Chiron_Royal_Blue.jpg',
    paint:'Metallic Blue', tag:'Engineering excellence. Uncompromising performance.',
@@ -922,7 +923,7 @@ function heroGo(i){
     if(window.__lm3d) window.__lm3d.showCar(i, ()=>{ heroBusy = false; });
     else heroBusy = false;
   };
-  if(window.__lm3d){ window.__lm3d.exitCar(swap); }
+  if(window.__lm3d){ window.__lm3d.prepare(i, ()=>window.__lm3d.exitCar(swap)); }
   else setTimeout(swap, 200);
 }
 const heroNext = ()=>heroGo((heroIdx+1)%7);
@@ -1015,7 +1016,7 @@ setTimeout(()=>{
 </script>
 <script type="module">
 /* ============ LUXURY MOTION · 3D HERO VIEWER (v4) ============
-   One real 3D car (Ferrari 458 Italia GLB, three.js sample, CC BY 4.0)
+   One real 3D car (Ferrari 458 Spider GLB, three.js sample, CC BY 4.0)
    + six transparent-background cutouts, all on the same 3D platform,
    against the site's own dynamic background (canvas is transparent).
    No photo backgrounds anywhere in the hero. */
@@ -1030,7 +1031,7 @@ const FERRARI_GLB = 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examp
    toward the viewer's right so the front + left flank are visible.
    Tune FERRARI_ALIGN_Y after a visual check if the nose points elsewhere. */
 const DEFAULT_ROT_Y = 0.62;
-const FERRARI_ALIGN_Y = 0;
+const FERRARI_ALIGN_Y = Math.PI;   /* the GLB's nose points away at 0 — flip it to front-left three-quarter */
 
 const canvas = document.getElementById('gl');
 const loadingEl = document.getElementById('heroLoading');
@@ -1112,6 +1113,7 @@ function addBlob(group, w){
 const rig = new THREE.Group();
 scene.add(rig);
 const carGroups = new Array(7).fill(null);
+const carReady = new Array(7).fill(false);
 let current = -1;
 let targetRotY = DEFAULT_ROT_Y;
 let rigX = 7;                 /* starts off-stage right; intro drives it in */
@@ -1185,8 +1187,8 @@ function buildCutout(i, done){
   const g = new THREE.Group();
   addBlob(g, 4.6);
   loadCutoutTexture(slug,
-    t => { sizeCutoutPlane(g, t); done && done(true); },
-    () => { sizeCutoutPlane(g, placeholderTexture(slug)); done && done(false); });
+    t => { sizeCutoutPlane(g, t); carReady[i] = true; done && done(true); },
+    () => { sizeCutoutPlane(g, placeholderTexture(slug)); carReady[i] = true; done && done(false); });
   carGroups[i] = g;
   rig.add(g);
   g.visible = false;
@@ -1228,14 +1230,15 @@ function buildFerrari(done){
     wrap.rotation.y += FERRARI_ALIGN_Y;
     g.add(wrap);
     ferrariReady = true;
+    carReady[1] = true;
     done && done(true);
     requestRender();
   }, undefined, () => {
     ferrariFailed = true;
     /* fallback: SF90 photo cutout, labelled as such by the badge */
     loadCutoutTexture('sf90',
-      t => { sizeCutoutPlane(g, t); done && done(false); },
-      () => { sizeCutoutPlane(g, placeholderTexture('Ferrari 458 Italia')); done && done(false); });
+      t => { sizeCutoutPlane(g, t); carReady[1] = true; done && done(false); },
+      () => { sizeCutoutPlane(g, placeholderTexture('Ferrari 458 Spider')); carReady[1] = true; done && done(false); });
     requestRender();
   });
   carGroups[1] = g;
@@ -1248,6 +1251,17 @@ function ensureCar(i, done){
   if(i === 1) buildFerrari(()=>done && done());
   else buildCutout(i, ()=>done && done());
 }
+/* wait until the target car is actually displayable (texture/GLB loaded)
+   before the old car leaves — never show an empty platform mid-switch */
+function whenReady(i, cb){
+  if(carReady[i]){ cb(); return; }
+  const t0 = performance.now();
+  (function poll(){
+    if(carReady[i] || performance.now() - t0 > 9000) cb();
+    else setTimeout(poll, 100);
+  })();
+}
+function prepare(i, cb){ ensureCar(i, ()=>whenReady(i, cb)); }
 function showCarGroup(i){
   carGroups.forEach((g, k)=>{ if(g) g.visible = (k === i); });
   current = i;
@@ -1270,6 +1284,7 @@ window.__lm3d = {
     loadingEl.classList.add('hide');
     enterCar(0);
   },
+  prepare(i, cb){ prepare(i, cb); },
   showCar(i, done){ enterCar(i, done); },
   exitCar(cb){
     tween(480, p => { rigX = -7 * p; }, ()=>{ cb(); }, t => t * t * t);
@@ -1314,9 +1329,9 @@ canvas.addEventListener('pointerup', endDrag);
 canvas.addEventListener('pointercancel', endDrag);
 canvas.addEventListener('dblclick', ()=>window.__lm3d.resetView());
 
-/* preload the first cutout immediately so the intro is not empty */
-ensureCar(0, ()=>{ if(current === -1) loadingEl.classList.add('hide'); });
-ensureCar(1);
+/* preload every car at init so switching never waits on a download */
+for(let k = 0; k < 7; k++) ensureCar(k);
+ensureCar(0, ()=>loadingEl.classList.add('hide'));
 </script>
 </body>
 </html>
