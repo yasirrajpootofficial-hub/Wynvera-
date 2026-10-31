@@ -290,7 +290,7 @@ header{position:sticky;top:0}
       <div class="eyebrow hero-eyebrow">Exclusive Automotive Collection</div>
       <div class="hero-maker" id="heroMaker">Automobili Lamborghini</div>
       <h2 class="hero-name" id="heroName">Revuelto</h2>
-      <div class="hero-paint" id="heroPaint">Metallic Green</div>
+      <div class="hero-paint" id="heroPaint">Yellow</div>
       <p class="hero-desc" id="heroDesc">The V12, electrified. A flagship that rewrites what a Lamborghini can be.</p>
       <div class="hero-specs" id="heroSpecs"></div>
       <div class="hero-cta">
@@ -853,7 +853,7 @@ document.addEventListener('keydown', e=>{
 /* ============ DYNAMIC HERO SHOWCASE ============ */
 const HERO = [
  { img:W+'6/6d/Rear_view_of_Green_Lamborghini_Revuelto.jpg/1920px-Rear_view_of_Green_Lamborghini_Revuelto.jpg',
-   paint:'Metallic Green', tag:'The V12, electrified. A flagship that rewrites what a Lamborghini can be.',
+   paint:'Yellow', tag:'The V12, electrified. A flagship that rewrites what a Lamborghini can be.',
    bg:'radial-gradient(120% 95% at 76% 16%, #166534 0%, #052e16 46%, #020a05 100%)', acc:'#4ade80', glow:'rgba(74,222,128,.30)' },
  { img:W+'e/ef/Ferrari_SF90_Stradale_Mayfair.jpg/1920px-Ferrari_SF90_Stradale_Mayfair.jpg',
    paint:'Rosso Corsa Red', tag:'A real 3D Ferrari 458 Italia — drag it and spin it 360°. Shown in place of the SF90 Stradale.',
@@ -1026,7 +1026,6 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const CUTOUTS = { 0:'revuelto', 2:'spectre', 3:'continental-gt', 4:'amg-gt', 5:'gt3-rs', 6:'chiron' };
 const FERRARI_GLB = 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/models/gltf/ferrari.glb';
-const SF90_FALLBACK = 'cutouts/sf90.png';
 /* Front-left three-quarter default. For the GLB the nose must point
    toward the viewer's right so the front + left flank are visible.
    Tune FERRARI_ALIGN_Y after a visual check if the nose points elsewhere. */
@@ -1169,18 +1168,25 @@ function placeholderTexture(name){
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
   return t;
 }
+function loadCutoutTexture(slug, onOk, onFail){
+  /* Cutouts ship as base64 text files (the deploy tool only takes UTF-8 text),
+     fetched on demand so the first paint stays light. */
+  fetch('cutouts/' + slug + '.b64.txt')
+    .then(r => { if(!r.ok) throw new Error('cutout missing'); return r.text(); })
+    .then(b64 => {
+      new THREE.TextureLoader().load('data:image/webp;base64,' + b64.trim(),
+        t => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = renderer.capabilities.getMaxAnisotropy(); onOk(t); },
+        undefined, onFail);
+    })
+    .catch(onFail);
+}
 function buildCutout(i, done){
   const slug = CUTOUTS[i];
   const g = new THREE.Group();
   addBlob(g, 4.6);
-  const tex = new THREE.TextureLoader().load(
-    'cutouts/' + slug + '.png',
+  loadCutoutTexture(slug,
     t => { sizeCutoutPlane(g, t); done && done(true); },
-    undefined,
-    () => { sizeCutoutPlane(g, placeholderTexture(slug)); done && done(false); }
-  );
-  tex.colorSpace = THREE.SRGBColorSpace;
-  tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    () => { sizeCutoutPlane(g, placeholderTexture(slug)); done && done(false); });
   carGroups[i] = g;
   rig.add(g);
   g.visible = false;
@@ -1227,13 +1233,9 @@ function buildFerrari(done){
   }, undefined, () => {
     ferrariFailed = true;
     /* fallback: SF90 photo cutout, labelled as such by the badge */
-    const tex = new THREE.TextureLoader().load(SF90_FALLBACK, t => {
-      sizeCutoutPlane(g, t); done && done(false);
-    }, undefined, () => {
-      sizeCutoutPlane(g, placeholderTexture('Ferrari 458 Italia')); done && done(false);
-    });
-    tex.colorSpace = THREE.SRGBColorSpace;
-    done && done(false);
+    loadCutoutTexture('sf90',
+      t => { sizeCutoutPlane(g, t); done && done(false); },
+      () => { sizeCutoutPlane(g, placeholderTexture('Ferrari 458 Italia')); done && done(false); });
     requestRender();
   });
   carGroups[1] = g;
