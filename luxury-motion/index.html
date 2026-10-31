@@ -186,7 +186,7 @@ header{position:sticky;top:0}
 .hero-stage{position:relative;height:100%}
 #gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
 #gl:active{cursor:grabbing}
-.hero-badge{position:absolute;left:14px;bottom:14px;z-index:3;pointer-events:none;
+.hero-badge{position:absolute;left:14px;top:14px;z-index:3;pointer-events:none;
   font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#d6d8dc;
   background:rgba(8,9,11,.55);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:7px 12px}
 .hero-badge b{color:var(--acc)}
@@ -211,6 +211,9 @@ header{position:sticky;top:0}
 .hero-count{font-family:var(--serif);font-size:22px;letter-spacing:.12em;white-space:nowrap}
 .hero-count b{color:var(--acc);transition:color .9s ease}
 .hero-count span{color:#8b8f98;font-size:16px}
+.hero-swipe-hint{position:absolute;left:0;right:0;bottom:98px;z-index:4;text-align:center;font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);pointer-events:none;transition:opacity .8s ease}
+.hero-swipe-hint b{color:var(--acc);font-weight:500}
+.hero-swipe-hint.used{opacity:0}
 @media (prefers-reduced-motion:reduce){
   .hero-copy.swap>*{animation-duration:.01ms !important}
   .hero-particles i{animation:none}
@@ -221,11 +224,12 @@ header{position:sticky;top:0}
   #hero.dynamic{height:auto;min-height:0;padding:0 0 8px}
   .hero-inner{grid-template-columns:1fr;padding:24px 20px 0;gap:6px}
   .hero-stage{order:-1;height:290px}
-  .hero-badge{bottom:8px;padding:6px 10px;font-size:10px}
+  .hero-badge{top:8px;padding:6px 10px;font-size:10px}
   .hero-reset{top:8px;right:8px;padding:6px 10px;font-size:10px}
   .hero-name{font-size:46px}
   .hero-specs{margin:20px 0 22px}
   .hero-controls{position:static;padding:20px 20px 14px;max-width:none}
+  .hero-swipe-hint{position:static;margin:2px 0 12px}
   .hero-dots button{width:32px;height:32px}
   .hero-arrow{width:46px;height:46px}
 }
@@ -314,6 +318,7 @@ header{position:sticky;top:0}
     <div class="hero-count"><b id="heroCount">01</b> <span>/ 07</span></div>
     <button class="hero-arrow" id="heroNext" aria-label="Next vehicle">›</button>
   </div>
+  <div class="hero-swipe-hint" id="heroSwipeHint">←&nbsp; <b>Swipe</b> the car to change &nbsp;→</div>
 </section>
 
 <div class="modal" id="heroModal">
@@ -855,25 +860,25 @@ document.addEventListener('keydown', e=>{
 const HERO = [
  { img:W+'6/6d/Rear_view_of_Green_Lamborghini_Revuelto.jpg/1920px-Rear_view_of_Green_Lamborghini_Revuelto.jpg',
    paint:'Yellow', tag:'The V12, electrified. A flagship that rewrites what a Lamborghini can be.',
-   bg:'radial-gradient(120% 95% at 76% 16%, #166534 0%, #052e16 46%, #020a05 100%)', acc:'#4ade80', glow:'rgba(74,222,128,.30)' },
+   bg:'radial-gradient(120% 95% at 76% 16%, #854d0e 0%, #422006 46%, #0c0502 100%)', acc:'#facc15', glow:'rgba(250,204,21,.30)', page:'#0d0a02' },
  { img:W+'e/ef/Ferrari_SF90_Stradale_Mayfair.jpg/1920px-Ferrari_SF90_Stradale_Mayfair.jpg',
    paint:'Rosso Corsa Red', tag:'A real 3D Ferrari 458 Spider — drag it and spin it 360°. Shown in place of the SF90 Stradale.',
-   bg:'radial-gradient(120% 95% at 76% 16%, #991b1b 0%, #450a0a 46%, #0c0202 100%)', acc:'#f87171', glow:'rgba(239,68,68,.32)' },
+   bg:'radial-gradient(120% 95% at 76% 16%, #991b1b 0%, #450a0a 46%, #0c0202 100%)', acc:'#f87171', glow:'rgba(239,68,68,.32)', page:'#0d0202' },
  { img:W+'a/a4/2024_Rolls-Royce_Spectre_in_Midnight_Sapphire_over_Silver%2C_front_right.jpg/1920px-2024_Rolls-Royce_Spectre_in_Midnight_Sapphire_over_Silver%2C_front_right.jpg',
    paint:'Wittering Blue', tag:'Silence, tailored. The electric coupé that redefines Rolls-Royce calm.',
-   bg:'radial-gradient(120% 95% at 76% 16%, #2e2e33 0%, #101012 48%, #050506 100%)', acc:'#C6A66A', glow:'rgba(198,166,106,.28)' },
+   bg:'radial-gradient(120% 95% at 76% 16%, #1e3a5f 0%, #0f2038 46%, #050a12 100%)', acc:'#93c5fd', glow:'rgba(147,197,253,.30)', page:'#05080f' },
  { img:W+'b/b0/Bentley_Continental_GT_%284th_gen.%29_DSC_8517.jpg/1920px-Bentley_Continental_GT_%284th_gen.%29_DSC_8517.jpg',
    paint:'British Racing Green', tag:'Grand touring, perfected — hand-stitched calm with 782 PS beneath it.',
-   bg:'radial-gradient(120% 95% at 76% 16%, #14532d 0%, #0b3d2e 40%, #03130c 100%)', acc:'#d4af37', glow:'rgba(212,175,55,.26)' },
+   bg:'radial-gradient(120% 95% at 76% 16%, #064e3b 0%, #022c22 46%, #010a07 100%)', acc:'#34d399', glow:'rgba(52,211,153,.28)', page:'#020a06' },
  { img:W+'7/71/Mercedes-AMG_GT_63_Pro_%28C192%29_IAA_2025_DSC_2092.jpg/1920px-Mercedes-AMG_GT_63_Pro_%28C192%29_IAA_2025_DSC_2092.jpg',
    paint:'Green', tag:'Affalterbach precision. A hand-built V8, sharpened for the circuit.',
-   bg:'radial-gradient(120% 95% at 76% 16%, #232529 0%, #0b0c0e 50%, #050506 100%)', acc:'#e5e7eb', glow:'rgba(191,196,204,.22)' },
+   bg:'radial-gradient(120% 95% at 76% 16%, #3f6212 0%, #1a2e05 46%, #050802 100%)', acc:'#a3e635', glow:'rgba(163,230,53,.28)', page:'#070a02' },
  { img:W+'d/d3/Porsche_911_GT3_RS_%282022%29_1X7A7164.jpg/1920px-Porsche_911_GT3_RS_%282022%29_1X7A7164.jpg',
    paint:'Blue', tag:'A race car with number plates. Nine thousand rpm of intent.',
-   bg:'radial-gradient(120% 95% at 76% 16%, #4b5563 0%, #17191d 50%, #07080a 100%)', acc:'#cbd5e1', glow:'rgba(156,163,175,.26)' },
+   bg:'radial-gradient(120% 95% at 76% 16%, #075985 0%, #0c2d48 46%, #020617 100%)', acc:'#38bdf8', glow:'rgba(56,189,248,.30)', page:'#020810' },
  { img:W+'b/be/Bugatti_Chiron_Royal_Blue.jpg/1920px-Bugatti_Chiron_Royal_Blue.jpg',
    paint:'Metallic Blue', tag:'Engineering excellence. Uncompromising performance.',
-   bg:'radial-gradient(120% 95% at 76% 16%, #1e40af 0%, #0a1e4d 46%, #020617 100%)', acc:'#60a5fa', glow:'rgba(59,130,246,.35)' },
+   bg:'radial-gradient(120% 95% at 76% 16%, #1e40af 0%, #0a1e4d 46%, #020617 100%)', acc:'#60a5fa', glow:'rgba(59,130,246,.35)', page:'#020614' },
 ];
 let heroIdx = 0, heroBusy = false, bgFlip = false;
 
@@ -881,6 +886,13 @@ const heroEl = document.getElementById('hero');
 
 function applyTheme(i, instant){
   const t = HERO[i];
+  /* the whole site takes the car's colour: --gold drives every accent on the page,
+     --bg tints the page background to the car's darkest shade */
+  const root = document.documentElement;
+  root.style.setProperty('--acc', t.acc);
+  root.style.setProperty('--glow', t.glow);
+  root.style.setProperty('--gold', t.acc);
+  root.style.setProperty('--bg', t.page);
   heroEl.style.setProperty('--acc', t.acc);
   heroEl.style.setProperty('--glow', t.glow);
   const layers = document.querySelectorAll('#hero .bg-layer');
@@ -916,6 +928,7 @@ function renderHeroCopy(i){
 function heroGo(i){
   if(heroBusy || i === heroIdx) return;
   heroBusy = true;
+  document.getElementById('heroSwipeHint').classList.add('used');
   applyTheme(i);
   const swap = ()=>{
     heroIdx = i;
@@ -976,6 +989,19 @@ heroEl.addEventListener('touchend', e=>{
   const dx = e.changedTouches[0].clientX - hx;
   if(Math.abs(dx) > 60) (dx < 0 ? heroNext : heroPrev)();
 }, {passive:true});
+/* flick on the car itself: a quick horizontal flick changes the car (mouse or touch);
+   a slow drag still rotates / tilts it — the switch resets the angle anyway */
+(function(){
+  const cv = document.getElementById('gl');
+  let px = 0, pt = 0, pDown = false;
+  cv.addEventListener('pointerdown', e=>{ pDown = true; px = e.clientX; pt = performance.now(); });
+  window.addEventListener('pointerup', e=>{
+    if(!pDown) return; pDown = false;
+    const dx = e.clientX - px, dt = performance.now() - pt;
+    if(dt < 400 && Math.abs(dx) > 70){ dx < 0 ? heroNext() : heroPrev(); }
+  });
+  window.addEventListener('pointercancel', ()=>{ pDown = false; });
+})();
 document.getElementById('heroReset').addEventListener('click', ()=>{
   if(window.__lm3d) window.__lm3d.resetView();
 });
@@ -1026,7 +1052,7 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const CUTOUTS = { 0:'revuelto', 2:'spectre', 3:'continental-gt', 4:'amg-gt', 5:'gt3-rs', 6:'chiron' };
-const FERRARI_GLB = 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/models/gltf/ferrari.glb';
+const FERRARI_GLB = 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/examples/models/gltf/ferrari.glb';
 /* Front-left three-quarter default. For the GLB the nose must point
    toward the viewer's right so the front + left flank are visible.
    Tune FERRARI_ALIGN_Y after a visual check if the nose points elsewhere. */
