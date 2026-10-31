@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Working Volumes — Seven Tools for Making</title>
+<meta name="description" content="An immersive 3D digital bookshelf: seven hardcover volumes on the modern tools for making software and interfaces.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --accent:#b87333;
+  --ink:#f2ede4;
+  --ink-dim:rgba(242,237,228,.62);
+  --ink-faint:rgba(242,237,228,.38);
+  --panel:rgba(10,10,12,.72);
+  --panel-border:rgba(255,255,255,.09);
+  --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --sans:"Inter",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:#07080a;
+  color:var(--ink);
+  font-family:var(--sans);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+#scene{position:fixed;inset:0;display:block;touch-action:none;cursor:grab}
+#scene:active{cursor:grabbing}
+.vignette{position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(120% 90% at 50% 42%,transparent 55%,rgba(0,0,0,.55) 100%);}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:2;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");}
+
+/* ---------- Loader ---------- */
+#loader{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#07080a;transition:opacity .7s ease}
+#loader.done{opacity:0;pointer-events:none}
+#loader .l-title{font-family:var(--serif);font-size:clamp(30px,5vw,46px);letter-spacing:.34em;text-indent:.34em;font-weight:600}
+#loader .l-sub{font-size:11px;letter-spacing:.42em;text-indent:.42em;color:var(--ink-dim);text-transform:uppercase}
+#loaderBarWrap{width:min(280px,60vw);height:2px;background:rgba(255,255,255,.14);overflow:hidden;border-radius:2px}
+#loaderBar{height:100%;width:8%;background:var(--accent);transition:width .4s ease}
+#loader .l-note{font-size:11px;color:var(--ink-faint);letter-spacing:.08em}
+
+/* ---------- Brand ---------- */
+#brand{position:fixed;top:22px;left:26px;z-index:10;pointer-events:none;user-select:none}
+#brand h1{font-family:var(--serif);font-weight:600;font-size:clamp(21px,2.6vw,30px);letter-spacing:.30em;line-height:1}
+#brand p{margin-top:7px;font-size:10px;letter-spacing:.44em;text-indent:.1em;color:var(--ink-dim);text-transform:uppercase}
+#brand .rule{margin-top:12px;width:44px;height:2px;background:var(--accent);transition:background .8s ease}
+
+/* ---------- Top-right controls ---------- */
+#topControls{position:fixed;top:22px;right:26px;z-index:11;display:flex;gap:8px}
+.icon-btn{
+  appearance:none;border:1px solid var(--panel-border);background:var(--panel);color:var(--ink);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  height:38px;min-width:38px;padding:0 12px;border-radius:999px;cursor:pointer;
+  font-family:var(--sans);font-size:12px;letter-spacing:.06em;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  transition:border-color .25s,background .25s,transform .15s;
+}
+.icon-btn:hover{border-color:rgba(255,255,255,.35);background:rgba(30,30,34,.8)}
+.icon-btn:active{transform:scale(.96)}
+.icon-btn:focus-visible,.nav-btn:focus-visible,.marker:focus-visible,.text-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.icon-btn .glyph{font-size:16px;line-height:1}
+
+/* ---------- Detail panel ---------- */
+#panel{
+  position:fixed;z-index:10;right:26px;top:96px;width:378px;max-width:calc(100vw - 52px);
+  max-height:calc(100vh - 220px);overflow-y:auto;overscroll-behavior:contain;
+  background:var(--panel);border:1px solid var(--panel-border);border-radius:16px;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  padding:24px 24px 20px;box-shadow:0 24px 60px rgba(0,0,0,.5);
+  transition:opacity .35s ease,transform .35s ease;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.25) transparent;
+}
+#panel.hidden-panel{opacity:0;transform:translateX(16px);pointer-events:none}
+#panelClose{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:1px solid var(--panel-border);background:transparent;color:var(--ink-dim);cursor:pointer;font-size:15px;line-height:1}
+#panelClose:hover{color:var(--ink);border-color:rgba(255,255,255,.35)}
+#panel .kicker{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--accent);transition:color .8s ease;font-weight:600}
+#panel h2{font-family:var(--serif);font-size:38px;line-height:1.02;font-weight:600;margin:10px 0 2px}
+#panel .book-sub{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--ink-dim)}
+#panel .intro{margin-top:14px;font-size:13.5px;line-height:1.65;color:var(--ink)}
+#panel .desc{margin-top:10px;font-size:13px;line-height:1.7;color:var(--ink-dim)}
+.meta-grid{margin-top:18px;border-top:1px solid var(--panel-border);display:grid;grid-template-columns:1fr 1fr}
+.meta-grid div{padding:10px 0;border-bottom:1px solid var(--panel-border)}
+.meta-grid div:nth-child(odd){padding-right:12px}
+.meta-grid dt{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px}
+.meta-grid dd{font-size:12.5px;line-height:1.45}
+#features{margin:16px 0 0;padding-left:0;list-style:none}
+#features li{position:relative;padding:6px 0 6px 20px;font-size:12.5px;line-height:1.55;color:var(--ink-dim)}
+#features li::before{content:"";position:absolute;left:2px;top:12px;width:7px;height:7px;border:1.5px solid var(--accent);transform:rotate(45deg);transition:border-color .8s ease}
+#teaser{margin-top:16px;padding:14px 16px;border-left:2px solid var(--accent);background:rgba(255,255,255,.035);border-radius:0 10px 10px 0;transition:border-color .8s ease}
+#teaser p{font-family:var(--serif);font-style:italic;font-size:16.5px;line-height:1.5}
+#teaser span{display:block;margin-top:7px;font-family:var(--sans);font-style:normal;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-faint)}
+.panel-actions{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap}
+.text-btn{
+  appearance:none;border:0;cursor:pointer;border-radius:999px;padding:12px 20px;
+  font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  background:var(--accent);color:#0b0b0c;transition:filter .2s,transform .15s,background .8s ease;
+}
+.text-btn:hover{filter:brightness(1.12)}
+.text-btn:active{transform:scale(.97)}
+.text-btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--panel-border)}
+.text-btn.ghost:hover{border-color:rgba(255,255,255,.4);filter:none}
+#pageNav{margin-top:16px;padding-top:14px;border-top:1px solid var(--panel-border);display:none;align-items:center;justify-content:space-between;gap:10px}
+#pageNav.visible{display:flex}
+.page-btn{appearance:none;border:1px solid var(--panel-border);background:transparent;color:var(--ink);border-radius:999px;padding:9px 14px;font-size:12px;cursor:pointer;letter-spacing:.05em}
+.page-btn:hover:not(:disabled){border-color:rgba(255,255,255,.4)}
+.page-btn:disabled{opacity:.35;cursor:default}
+#pageCounter{font-size:11.5px;letter-spacing:.14em;color:var(--ink-dim);text-transform:uppercase;white-space:nowrap}
+
+/* ---------- Mini bar (panel collapsed) ---------- */
+#miniBar{
+  position:fixed;z-index:10;right:26px;top:96px;display:none;align-items:center;gap:12px;
+  background:var(--panel);border:1px solid var(--panel-border);border-radius:999px;padding:8px 8px 8px 18px;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 14px 40px rgba(0,0,0,.45);
+}
+#miniBar.visible{display:flex}
+#miniBar .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none;transition:background .8s ease}
+#miniTitle{font-family:var(--serif);font-size:18px;white-space:nowrap}
+
+/* ---------- Bottom navigation ---------- */
+#bottomNav{
+  position:fixed;z-index:10;left:50%;bottom:26px;transform:translateX(-50%);
+  display:flex;align-items:center;gap:6px;padding:7px;border-radius:999px;
+  background:var(--panel);border:1px solid var(--panel-border);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 16px 44px rgba(0,0,0,.5);
+  max-width:calc(100vw - 24px);
+}
+.nav-btn{
+  appearance:none;border:0;background:transparent;color:var(--ink);cursor:pointer;
+  height:38px;min-width:44px;padding:0 12px;border-radius:999px;font-size:13px;letter-spacing:.05em;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:background .2s;
+}
+.nav-btn:hover{background:rgba(255,255,255,.09)}
+.nav-btn .arrow{font-size:17px;line-height:1}
+#markers{display:flex;gap:4px}
+.marker{
+  appearance:none;border:0;background:transparent;color:var(--ink-dim);cursor:pointer;
+  height:38px;min-width:38px;padding:0 8px;border-radius:999px;font-family:var(--sans);font-size:11.5px;letter-spacing:.08em;
+  display:inline-flex;align-items:center;justify-content:center;transition:color .25s,background .25s;
+}
+.marker:hover{color:var(--ink)}
+.marker.active{color:#0b0b0c;background:var(--accent);font-weight:600;transition:background .8s ease,color .25s}
+.marker .m-title{display:none}
+
+/* ---------- Hints ---------- */
+#hints{position:fixed;z-index:9;left:26px;bottom:30px;font-size:11px;letter-spacing:.12em;color:var(--ink-faint);line-height:1.9;pointer-events:none;user-select:none}
+#hints b{color:var(--ink-dim);font-weight:500}
+#liveRegion{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- Fallback (no WebGL) ---------- */
+#fallback{display:none;position:fixed;inset:0;z-index:40;overflow-y:auto;background:#0b0b0d;padding:34px 22px 60px}
+#fallback.visible{display:block}
+#fallback h1{font-family:var(--serif);letter-spacing:.28em;font-size:clamp(24px,4vw,38px);text-align:center}
+#fallback .fb-sub{text-align:center;color:var(--ink-dim);letter-spacing:.3em;font-size:11px;text-transform:uppercase;margin-top:8px}
+#fallbackGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;max-width:1060px;margin:34px auto 0}
+.fb-card{border:1px solid var(--panel-border);border-radius:14px;overflow:hidden;background:#121214}
+.fb-cover{height:230px;display:flex;flex-direction:column;justify-content:space-between;padding:20px}
+.fb-cover .vol{font-size:10px;letter-spacing:.3em;opacity:.85}
+.fb-cover .ttl{font-family:var(--serif);font-size:30px;line-height:1.05}
+.fb-cover .motif{font-size:11px;letter-spacing:.2em;opacity:.85;text-transform:uppercase}
+.fb-body{padding:16px 18px 18px}
+.fb-body p{font-size:13px;line-height:1.65;color:var(--ink-dim)}
+.fb-body .fb-meta{margin-top:10px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+#fallback .fb-note{max-width:680px;margin:26px auto 0;text-align:center;font-size:12.5px;line-height:1.7;color:var(--ink-dim)}
+
+/* ---------- Responsive ---------- */
+@media (max-width:900px){
+  #panel{top:auto;bottom:96px;left:14px;right:14px;width:auto;max-height:44vh;padding:20px 20px 16px}
+  #panel h2{font-size:30px}
+  #miniBar{top:86px;right:14px}
+  #hints{display:none}
+  #brand{top:16px;left:18px}
+  #topControls{top:16px;right:18px}
+  #bottomNav{bottom:16px;gap:2px;padding:6px}
+  .marker{min-width:34px}
+  .nav-btn .lbl{display:none}
+}
+@media (max-width:420px){
+  .meta-grid{grid-template-columns:1fr 1fr}
+  #panel{max-height:48vh}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms !important;animation-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<canvas id="scene" aria-label="Interactive 3D bookshelf with seven books"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div id="loader" role="status" aria-label="Loading the bookshelf">
+  <div class="l-title">WORKING&nbsp;VOLUMES</div>
+  <div class="l-sub">Seven Tools for Making</div>
+  <div id="loaderBarWrap"><div id="loaderBar"></div></div>
+  <div class="l-note">Binding seven volumes&hellip;</div>
+</div>
+
+<header id="brand">
+  <h1>WORKING VOLUMES</h1>
+  <p>Seven Tools for Making</p>
+  <div class="rule" aria-hidden="true"></div>
+</header>
+
+<div id="topControls">
+  <button class="icon-btn" id="zoomOutBtn" type="button" aria-label="Zoom out"><span class="glyph">&minus;</span></button>
+  <button class="icon-btn" id="zoomInBtn" type="button" aria-label="Zoom in"><span class="glyph">+</span></button>
+  <button class="icon-btn" id="resetBtn" type="button" aria-label="Reset camera view">&#10227; <span>Reset view</span></button>
+</div>
+
+<aside id="panel" aria-label="Selected book details">
+  <button id="panelClose" type="button" aria-label="Hide book details">&times;</button>
+  <div class="kicker" id="bookKicker">Volume 01</div>
+  <h2 id="bookTitle">Codex</h2>
+  <div class="book-sub" id="bookSub">The Architecture of Code</div>
+  <p class="intro" id="bookIntro"></p>
+  <p class="desc" id="bookDesc"></p>
+  <dl class="meta-grid">
+    <div><dt>Discipline</dt><dd id="metaDiscipline"></dd></div>
+    <div><dt>Binding</dt><dd id="metaBinding"></dd></div>
+    <div><dt>Format</dt><dd id="metaFormat"></dd></div>
+    <div><dt>Theme</dt><dd id="metaTheme"></dd></div>
+    <div><dt>Motif</dt><dd id="metaMotif"></dd></div>
+    <div><dt>Pages</dt><dd id="metaPages"></dd></div>
+  </dl>
+  <ul id="features"></ul>
+  <div id="teaser"><p id="teaserText"></p><span>From the sample pages</span></div>
+  <div class="panel-actions">
+    <button class="text-btn" id="openBtn" type="button">Open the book</button>
+    <button class="text-btn ghost" id="closeBookBtn" type="button" style="display:none">Close the book</button>
+  </div>
+  <div id="pageNav" aria-label="Sample page navigation">
+    <button class="page-btn" id="pagePrev" type="button" aria-label="Previous page">&larr; Prev page</button>
+    <span id="pageCounter">Spread 1 / 8</span>
+    <button class="page-btn" id="pageNext" type="button" aria-label="Next page">Next page &rarr;</button>
+  </div>
+</aside>
+
+<div id="miniBar" role="status">
+  <span class="dot" aria-hidden="true"></span>
+  <span id="miniTitle">Codex</span>
+  <button class="text-btn ghost" id="detailsBtn" type="button" style="padding:9px 16px">Details</button>
+</div>
+
+<nav id="bottomNav" aria-label="Book navigation">
+  <button class="nav-btn" id="prevBtn" type="button" aria-label="Previous book"><span class="arrow">&larr;</span><span class="lbl">Prev</span></button>
+  <div id="markers" role="tablist" aria-label="Book index"></div>
+  <button class="nav-btn" id="nextBtn" type="button" aria-label="Next book"><span class="lbl">Next</span><span class="arrow">&rarr;</span></button>
+</nav>
+
+<div id="hints">
+  <b>Drag</b> to orbit &nbsp;&middot;&nbsp; <b>Scroll</b> to browse books &nbsp;&middot;&nbsp; <b>&larr; &rarr;</b> keys to move<br>
+  <b>Click a book</b> to focus it &nbsp;&middot;&nbsp; <b>+ / &minus;</b> buttons to zoom &nbsp;&middot;&nbsp; <b>Esc</b> to close
+</div>
+
+<div id="liveRegion" aria-live="polite"></div>
+
+<section id="fallback" aria-label="Static bookshelf">
+  <h1>WORKING VOLUMES</h1>
+  <div class="fb-sub">Seven Tools for Making</div>
+  <div id="fallbackGrid"></div>
+  <p class="fb-note" id="fallbackNote">Your browser could not start WebGL, so the bookshelf is shown as a static edition. The seven volumes, their themes and their sample pages are all listed above.</p>
+</section>
+
+<script>
+/* Book data shared by the 3D experience and the static fallback. */
+window.WV_BOOKS = [
+  {
+    id:"codex", title:"Codex", sub:"The Architecture of Code", vol:"Volume 01",
+    color:"#1d3fae", colorDark:"#12275f", foil:"#b87333", foilName:"Copper",
+    motif:"blueprint", motifName:"Architectural geometry",
+    discipline:"Software Engineering", binding:"Sewn hardcover", format:"186 × 262 mm",
+    themeName:"Ultramarine & Copper",
+    theme:{ bg:"#0a1226", glow:"#274b9e", hemi:"#8fa8e8", light:"#ffe2b8" },
+    intro:"A volume on building software the way architects raise buildings: with structure first, ornament last, and every load-bearing decision made visible.",
+    desc:"Codex treats a codebase as a physical place. It follows the journey from a blank repository to a system that teams can navigate for years: modules as rooms, interfaces as doors, and tests as the survey lines that keep every wall true. The argument is simple and demanding — clarity is a feature, and structure is the kindest thing one engineer can leave for the next.",
+    features:["Modular system design, drawn as floor plans","Refactoring as careful renovation, not demolition","Interfaces that read like well-marked doors"],
+    teaser:"“A codebase is a building people live in. Build the hallways wide.”",
+    chapters:[
+      { title:"Foundations", body:["Every durable system begins below the surface. Before a single feature is framed, Codex asks what the ground can hold: the domain, the data, and the decisions that will not change next quarter.","A foundation is not a framework. It is the small set of promises the rest of the system is allowed to trust."] },
+      { title:"Rooms and Hallways", body:["Modules are rooms. Each one should have a single purpose, a clear entrance, and no reason for strangers to wander through. Hallways are the public interfaces — kept short, well lit, and free of clutter.","When a room starts doing two jobs, it is time to build a wall. The cost of the wall is paid once; the cost of the confusion is paid forever."] },
+      { title:"Renovation", body:["Refactoring is renovation while the building is occupied. Codex shows how to shore up a wall, move a doorway, and rewire a floor without asking the residents to leave.","The rule is respect for what works. Replace the rotten timber, keep the good bones, and leave every room better than you found it."] },
+      { title:"The Long Occupancy", body:["Software is judged by its tenth year, not its first demo. Documentation is the building manual; tests are the inspection reports; onboarding is the guided tour for the next caretaker.","Build as though someone thoughtful will inherit your keys. One day, someone will — and they will know exactly who built the place."] }
+    ]
+  },
+  {
+    id:"claude-code", title:"Claude Code", sub:"Thinking in Systems", vol:"Volume 02",
+    color:"#c65a1e", colorDark:"#7e3410", foil:"#c9a227", foilName:"Antique gold",
+    motif:"nodes", motifName:"Structured computation",
+    discipline:"AI-Assisted Development", binding:"Sewn hardcover", format:"182 × 258 mm",
+    themeName:"Burnt Orange & Antique Gold",
+    theme:{ bg:"#170e06", glow:"#8a3a12", hemi:"#f0a868", light:"#ffd9a8" },
+    intro:"A thoughtful volume on working beside an intelligent machine: how to think clearly, ask precisely, and stay the author of what gets built.",
+    desc:"Claude Code is about the new partnership at the keyboard. It argues that an AI assistant rewards the same virtues good engineering always has: small steps, explicit intent, and relentless verification. The book moves from first prompts to full workflows — planning before generating, reviewing before accepting, and keeping the human firmly in the role of editor-in-chief.",
+    features:["Prompting as specification: intent before generation","Review habits that keep AI output trustworthy","Workflows for planning, building, and verifying"],
+    teaser:"“The machine writes quickly. The human decides slowly — and that is the whole job.”",
+    chapters:[
+      { title:"The Partnership", body:["A coding assistant is not a vending machine. It is a tireless junior colleague with total recall and no judgment. The partnership works when the human supplies the judgment and the machine supplies the speed.","Trust is earned in small increments: one verified change at a time, never a whole system on a single promise."] },
+      { title:"Saying What You Mean", body:["Vague instructions produce vague code. This chapter turns intent into specification — context first, constraints second, and the definition of done written before a line is generated.","The best prompt is a small design document. Write it as though a careful stranger will execute it, because one will."] },
+      { title:"The Editor's Eye", body:["Generated code is a draft, not a delivery. Read it the way an editor reads a manuscript: for structure, for hidden assumptions, and for the one line that quietly changes the meaning.","Every accepted change deserves a test that would catch it misbehaving. If you cannot verify it, you do not own it."] },
+      { title:"Systems That Last", body:["Speed without discipline is just faster decay. The final chapter builds durable habits: versioned decisions, reproducible setups, and reviews that treat AI output exactly like human output — with respect, and with scrutiny.","The goal was never to write less. It is to think more, and to let the machine carry the rest."] }
+    ]
+  },
+  {
+    id:"cursor", title:"Cursor", sub:"The Point of Making", vol:"Volume 03",
+    color:"#8fae1f", colorDark:"#5c7312", foil:"#3f3f46", foilName:"Dark metallic",
+    motif:"cursor", motifName:"Directional cursor",
+    discipline:"Code Editing", binding:"Sewn hardcover", format:"176 × 252 mm",
+    themeName:"Citron & Dark Metal",
+    theme:{ bg:"#0d1406", glow:"#557a12", hemi:"#c8e88a", light:"#efffbe" },
+    intro:"A clean, fast volume on the moment of contact between thought and text — the cursor as compass, and editing as a craft of small, exact moves.",
+    desc:"Cursor follows the blinking line where ideas become code. It is a book about flow: navigating without the mouse, selecting with intent, and letting the editor disappear so the work can stay in view. Short chapters, sharp diagrams, and a steady argument that speed in an editor is not about typing faster — it is about never losing your place.",
+    features:["Navigation without losing your place","Selection and multi-cursor technique","An editor configured to disappear"],
+    teaser:"“The cursor is a compass. Point it with intent, and the code follows.”",
+    chapters:[
+      { title:"The Blinking Line", body:["Everything in software passes through a single point of contact: the cursor. This chapter treats that point with respect — where it rests, what it remembers, and why losing it costs more than any slow keystroke.","Attention is the real budget. Every jump that returns you to the wrong line spends it."] },
+      { title:"Moving Without the Mouse", body:["The keyboard is a map. Jumps by word, by symbol, by definition — each one a shortcut through the territory of a file. Learn the map and the mouse becomes a visitor, not a resident.","Speed is not haste. It is the absence of hesitation between deciding and doing."] },
+      { title:"Selection as Intent", body:["To select is to declare what matters. Multiple cursors turn one decision into many simultaneous edits, and the discipline is knowing when one careful change beats ten clever ones.","Edit in the shape of the idea, not in the shape of the file. The file will follow."] },
+      { title:"The Invisible Editor", body:["A great editor is a room with good light: present, quiet, and out of the way. Configure once, deliberately, then stop configuring and start making.","The measure of a setup is simple — after an hour, did you notice the tool, or only the work?"] }
+    ]
+  },
+  {
+    id:"antigravity", title:"Antigravity", sub:"Design Beyond Weight", vol:"Volume 04",
+    color:"#1e4fd8", colorDark:"#122c7d", foil:"#c0c0c8", foilName:"Silver",
+    motif:"float", motifName:"Gravity-defying geometry",
+    discipline:"Spatial Interfaces", binding:"Sewn hardcover", format:"190 × 266 mm",
+    themeName:"Cobalt & Silver",
+    theme:{ bg:"#060d24", glow:"#2447c8", hemi:"#9db8ff", light:"#d8e8ff" },
+    intro:"An experimental volume on interfaces that float, fold, and defy the flat screen — designing for depth, motion, and the feeling of weightlessness.",
+    desc:"Antigravity imagines software freed from the page. It explores spatial canvases, floating panels, and objects that respond to gesture the way physical things respond to a hand. The book is deliberately strange and deliberately rigorous: every levitating panel must still answer the oldest questions — where am I, what can I do here, and how do I get back?",
+    features:["Spatial canvases and floating panels","Depth, parallax, and honest motion","Orientation cues when up stops meaning up"],
+    teaser:"“When nothing has weight, hierarchy must be built from light and motion alone.”",
+    chapters:[
+      { title:"Leaving the Page", body:["The screen spent decades pretending to be paper. Antigravity begins by letting go: panels that hover, canvases that extend past the frame, and content that arrives from a direction instead of a place.","Weightlessness is not chaos. It is a new physics, and new physics needs new rules."] },
+      { title:"The Physics of Attention", body:["In a floating interface, motion is meaning. A panel that drifts in from the left promises a return to the left. A card that rises is important; a card that sinks is done.","Every animation is a sentence. Write it so the user can read it at a glance — and never animate what the user must wait for."] },
+      { title:"Hands and Gestures", body:["When the interface has depth, the hand becomes the cursor. This chapter designs for reach, for grasp, and for the satisfying snap of an object finding its place.","The best gesture is the one nobody has to learn. It is already in the body, waiting for the interface to notice."] },
+      { title:"Coming Back Down", body:["Even the strangest interface must land. Anchors, home positions, and gentle gravity keep the user oriented when the novelty wears off — as it always does.","Wonder opens the door. Orientation is what lets people stay in the room."] }
+    ]
+  },
+  {
+    id:"figma", title:"Figma", sub:"The Modular Canvas", vol:"Volume 05",
+    color:"#c93a22", colorDark:"#7d2013", foil:"#b76e79", foilName:"Rose gold",
+    motif:"modular", motifName:"Modular interface shapes",
+    discipline:"Interface Design", binding:"Sewn hardcover", format:"182 × 258 mm",
+    themeName:"Vermilion & Rose Gold",
+    theme:{ bg:"#1a0806", glow:"#a32a18", hemi:"#f09a84", light:"#ffd0bd" },
+    intro:"A creative, contemporary volume on designing interfaces from parts: components, variants, and the quiet discipline of systems that stay playful.",
+    desc:"Figma is a book about building with pieces that fit. It follows a design system from its first lonely button to a living library shared by a whole team — tokens, components, variants, and the rituals that keep them honest. The tone is expressive and practical at once: joyful about colour and shape, strict about the rules that let joy scale.",
+    features:["Components and variants that stay consistent","Tokens: colour, type, and spacing as decisions","Collaboration rituals for shared libraries"],
+    teaser:"“A system is a promise: this button will behave, everywhere, every time.”",
+    chapters:[
+      { title:"Pieces That Fit", body:["Every interface is an assembly. This chapter begins with the smallest honest unit — the component — and the promise it makes: same input, same behaviour, everywhere it appears.","A component is a contract with the future. Break it carefully, and only on purpose."] },
+      { title:"The Living Library", body:["Libraries are gardens, not warehouses. They need pruning, naming, and someone willing to say no to the fifteenth near-identical card. This chapter is that gardener's manual.","If two components do the same job, one of them is a weed. Pull it kindly, and document why."] },
+      { title:"Colour, Type, Rhythm", body:["Tokens turn taste into infrastructure. Colour becomes a decision made once and kept everywhere; type becomes a scale, not a mood; spacing becomes a rhythm the whole product can dance to.","Consistency is not the enemy of expression. It is the stage expression stands on."] },
+      { title:"Designing Together", body:["A canvas shared is a canvas multiplied. Critique rituals, branching habits, and handoff manners turn solitary craft into team craft without sanding off the personality.","The file is the meeting room. Keep it tidy, keep it kind, and leave the door open."] }
+    ]
+  },
+  {
+    id:"framer", title:"Framer", sub:"Motion Is the Message", vol:"Volume 06",
+    color:"#e0574e", colorDark:"#8f2f28", foil:"#ec4899", foilName:"Pink",
+    motif:"motion", motifName:"Dynamic motion arcs",
+    discipline:"Interactive Prototyping", binding:"Sewn hardcover", format:"184 × 260 mm",
+    themeName:"Coral & Pink",
+    theme:{ bg:"#190709", glow:"#c22e3e", hemi:"#f49aa4", light:"#ffd9de" },
+    intro:"An elegant volume on prototypes that move: timing, easing, and the choreography that turns a static mock into something that feels alive.",
+    desc:"Framer argues that motion is not decoration — it is the message. A prototype that moves honestly teaches more in ten seconds than a hundred static screens. This book covers the grammar of movement: easing as tone of voice, duration as emphasis, and transitions as the sentences that connect one state to the next.",
+    features:["Easing as tone of voice","Duration, delay, and choreography","Prototypes that answer real questions"],
+    teaser:"“A static mock shows what it is. A moving prototype shows what it means.”",
+    chapters:[
+      { title:"The Grammar of Motion", body:["Motion has a grammar, and most interfaces speak it badly. This chapter teaches the parts of speech: the entrance, the exit, the emphasis, and the pause that lets meaning land.","If everything moves, nothing is moving. Choose the one thing that must travel, and let the rest hold still."] },
+      { title:"Easing Is Tone", body:["An ease is an accent. Linear is a metronome; ease-out is a confident arrival; spring is a smile. The same movement, timed three ways, tells three different stories.","Pick the tone before the curve. The curve is just how the tone is pronounced."] },
+      { title:"Choreography", body:["Great transitions are choreographed, not triggered. Stagger, overlap, and lead the eye the way a director leads a camera — one focal point at a time, never two.","The user should never wonder what just happened. If they do, the choreography failed, however beautiful it looked."] },
+      { title:"Prototypes That Decide", body:["A prototype exists to answer a question, not to impress a room. Build the smallest moving thing that can settle the argument, test it with real hands, and let the answer change the design.","Motion is research you can watch. Run the experiment, then keep what the hands believed."] }
+    ]
+  },
+  {
+    id:"xcode", title:"Xcode", sub:"Building for the Machine", vol:"Volume 07",
+    color:"#3fa8c4", colorDark:"#1f5d70", foil:"#d7dde3", foilName:"Aluminum",
+    motif:"grid", motifName:"Technical grid",
+    discipline:"Native Development", binding:"Sewn hardcover", format:"180 × 256 mm",
+    themeName:"Icy Cyan & Aluminum",
+    theme:{ bg:"#06141c", glow:"#17708c", hemi:"#a8dcee", light:"#dcf6ff" },
+    intro:"A precise, professional volume on building native software: the toolchain, the grid, and the craft of shipping something that feels inevitable on the device.",
+    desc:"Xcode is about the discipline of the native builder. It walks the full arc from an empty project to a shipped app: the IDE as workshop, the debugger as diagnostic bench, and the App Store as the final inspection. The book is exacting about process and generous about craft — because native software, at its best, disappears into the hand that holds it.",
+    features:["The IDE as a workshop, organised for flow","Debugging as diagnosis, not guesswork","Shipping: review, release, and the long tail"],
+    teaser:"“Native software, at its best, disappears into the hand that holds it.”",
+    chapters:[
+      { title:"The Workshop", body:["An IDE is a workshop, and every workshop rewards the builder who knows where the tools live. This chapter organises the bench: navigators, inspectors, and the quiet power of a project that opens the way it was left.","Order in the workshop is not fussiness. It is the difference between making and searching."] },
+      { title:"The Grid Beneath", body:["Native interfaces stand on a grid of constraints. This chapter makes layout physical: anchors, stacks, and the negotiations between what a view wants and what the screen allows.","A layout that only works at one size is a sketch. A layout that holds at every size is engineering."] },
+      { title:"Diagnosis", body:["Debugging is diagnosis. Read the symptom, form a hypothesis, run the smallest test that could prove it wrong. The breakpoint is a stethoscope; the log is the patient's own account.","Guesswork is expensive. A good diagnosis costs minutes and saves days."] },
+      { title:"Shipping", body:["Release is a ritual: review, archive, notes, and the held breath of the upload. Then the long tail — crashes, reviews, and the patient work of keeping a shipped thing loved.","Shipping is not the end of making. It is the moment making meets the world, and the world answers back."] }
+    ]
+  }
+];
+</script>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script>
+/* Static fallback: runs if WebGL fails or the 3D module never boots. */
+window.__wvShowFallback = function (reason) {
+  var fb = document.getElementById("fallback");
+  if (!fb || fb.classList.contains("visible")) return;
+  var grid = document.getElementById("fallbackGrid");
+  var books = window.WV_BOOKS || [];
+  grid.innerHTML = "";
+  books.forEach(function (b) {
+    var card = document.createElement("article");
+    card.className = "fb-card";
+    var cover = document.createElement("div");
+    cover.className = "fb-cover";
+    cover.style.background = "linear-gradient(160deg," + b.color + "," + b.colorDark + ")";
+    cover.style.color = "#f5f1e8";
+    cover.innerHTML = '<span class="vol">' + b.vol + '</span>' +
+      '<span class="ttl">' + b.title + '</span>' +
+      '<span class="motif">' + b.motifName + ' &middot; ' + b.foilName + ' foil</span>';
+    var body = document.createElement("div");
+    body.className = "fb-body";
+    var p = document.createElement("p");
+    p.textContent = b.intro + " " + b.desc;
+    var meta = document.createElement("div");
+    meta.className = "fb-meta";
+    meta.textContent = b.discipline + " · " + b.binding + " · " + b.format + " · " + b.themeName;
+    body.appendChild(p);
+    body.appendChild(meta);
+    card.appendChild(cover);
+    card.appendChild(body);
+    grid.appendChild(card);
+  });
+  var note = document.getElementById("fallbackNote");
+  if (reason && note) note.textContent = reason;
+  fb.classList.add("visible");
+  var loader = document.getElementById("loader");
+  if (loader) loader.classList.add("done");
+  var canvas = document.getElementById("scene");
+  if (canvas) canvas.style.display = "none";
+};
+window.addEventListener("load", function () {
+  setTimeout(function () {
+    if (!window.__wvBooted) {
+      window.__wvShowFallback("The interactive 3D bookshelf could not start in this browser, so the bookshelf is shown as a static edition. The seven volumes, their themes and their sample pages are all listed above.");
+    }
+  }, 9000);
+});
+</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+/* ================= Working Volumes — 3D bookshelf ================= */
+
+const BOOKS = window.WV_BOOKS || [];
+const DIMS = {
+  "codex":        { w: 1.06, h: 1.62, t: 0.40 },
+  "claude-code":  { w: 1.00, h: 1.56, t: 0.34 },
+  "cursor":       { w: 0.94, h: 1.50, t: 0.30 },
+  "antigravity":  { w: 1.10, h: 1.68, t: 0.38 },
+  "figma":        { w: 0.98, h: 1.54, t: 0.32 },
+  "framer":       { w: 1.02, h: 1.58, t: 0.36 },
+  "xcode":        { w: 0.96, h: 1.52, t: 0.44 }
+};
+const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const LEAF_COUNT = 8;
+
+const canvas = document.getElementById("scene");
+const loaderEl = document.getElementById("loader");
+const loaderBar = document.getElementById("loaderBar");
+
+let renderer, scene, camera, controls, clock;
+let hemi, keyLight, rimLight, accentLight;
+let dust;
+const books = [];
+const state = { index: 0, mode: "shelf", turning: false, leftCount: 0, lastWheel: 0, camTween: null };
+const themeCur = { bg: new THREE.Color("#07080a"), glow: new THREE.Color("#274b9e"), hemi: new THREE.Color("#8fa8e8") };
+const themeTgt = { bg: new THREE.Color("#0a1226"), glow: new THREE.Color("#274b9e"), hemi: new THREE.Color("#8fa8e8") };
+
+/* ---------------- canvas texture helpers ---------------- */
+
+function makeCanvas(w, h) {
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  return c;
+}
+function toTexture(c) {
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 8;
+  return t;
+}
+function spread(s) { return s.split("").join("  "); }
+function wrapText(ctx, text, x, y, maxW, lh) {
+  const words = text.split(" ");
+  let line = "";
+  for (const word of words) {
+    const test = line ? line + " " + word : word;
+    if (ctx.measureText(test).width > maxW && line) {
+      ctx.fillText(line, x, y);
+      line = word; y += lh;
+    } else line = test;
+  }
+  if (line) ctx.fillText(line, x, y);
+  return y + lh;
+}
+function hexToRgba(hex, a) {
+  const n = parseInt(hex.slice(1), 16);
+  return "rgba(" + ((n >> 16) & 255) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + a + ")";
+}
+
+/* Distinct decorative motif for each cover, drawn in foil + cream. */
+function drawMotif(x, motif, cx, cy, s, foil) {
+  const ink = "#f6f1e6";
+  x.save();
+  x.translate(cx, cy);
+  x.scale(s, s);
+  x.lineCap = "round";
+  x.lineJoin = "round";
+  if (motif === "blueprint") {
+    x.strokeStyle = foil; x.lineWidth = 4;
+    x.strokeRect(-140, -100, 280, 200);
+    x.lineWidth = 2; x.strokeRect(-108, -72, 216, 144);
+    x.beginPath(); x.moveTo(-140, -100); x.lineTo(140, 100); x.moveTo(140, -100); x.lineTo(-140, 100); x.stroke();
+    x.strokeStyle = ink; x.lineWidth = 2.5;
+    x.beginPath(); x.arc(0, 0, 46, 0, Math.PI * 2); x.stroke();
+    x.fillStyle = foil;
+    [[-140, -100], [140, -100], [-140, 100], [140, 100]].forEach(function (p) { x.fillRect(p[0] - 7, p[1] - 7, 14, 14); });
+    x.beginPath(); x.arc(0, 0, 10, 0, Math.PI * 2); x.fill();
+  } else if (motif === "nodes") {
+    x.strokeStyle = foil; x.lineWidth = 3;
+    const hex = function (r) {
+      x.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const a = Math.PI / 3 * i - Math.PI / 6;
+        const px = Math.cos(a) * r, py = Math.sin(a) * r;
+        if (i === 0) x.moveTo(px, py); else x.lineTo(px, py);
+      }
+      x.closePath(); x.stroke();
+    };
+    hex(105); hex(62);
+    x.strokeStyle = ink; x.lineWidth = 2;
+    for (let i = 0; i < 6; i++) {
+      const a = Math.PI / 3 * i - Math.PI / 6;
+      x.beginPath(); x.moveTo(Math.cos(a) * 62, Math.sin(a) * 62); x.lineTo(Math.cos(a) * 105, Math.sin(a) * 105); x.stroke();
+    }
+    x.fillStyle = foil;
+    for (let i = 0; i < 6; i++) {
+      const a = Math.PI / 3 * i - Math.PI / 6;
+      x.beginPath(); x.arc(Math.cos(a) * 105, Math.sin(a) * 105, 8, 0, Math.PI * 2); x.fill();
+    }
+    x.beginPath(); x.arc(0, 0, 12, 0, Math.PI * 2); x.fill();
+  } else if (motif === "cursor") {
+    x.strokeStyle = foil; x.lineWidth = 3; x.setLineDash([10, 9]);
+    x.beginPath(); x.moveTo(-120, 110); x.quadraticCurveTo(-40, 30, 96, -84); x.stroke();
+    x.setLineDash([]);
+    x.fillStyle = ink;
+    x.beginPath();
+    x.moveTo(-58, -118); x.lineTo(-58, 8); x.lineTo(-22, -30); x.lineTo(22, -30); x.lineTo(-12, -84); x.lineTo(-12, -118);
+    x.closePath(); x.fill();
+    x.strokeStyle = foil; x.lineWidth = 3; x.stroke();
+    x.strokeStyle = foil;
+    x.beginPath(); x.arc(96, -84, 26, 0, Math.PI * 2); x.stroke();
+    x.beginPath(); x.arc(96, -84, 44, 0, Math.PI * 2); x.stroke();
+  } else if (motif === "float") {
+    const cube = function (px, py, r, alpha) {
+      x.fillStyle = hexToRgba("#f6f1e6", alpha);
+      x.beginPath(); x.moveTo(px, py - r); x.lineTo(px + r * 0.87, py - r * 0.5); x.lineTo(px, py); x.lineTo(px - r * 0.87, py - r * 0.5); x.closePath(); x.fill();
+      x.fillStyle = hexToRgba("#000000", 0.28);
+      x.beginPath(); x.moveTo(px - r * 0.87, py - r * 0.5); x.lineTo(px, py); x.lineTo(px, py + r); x.lineTo(px - r * 0.87, py + r * 0.5); x.closePath(); x.fill();
+      x.fillStyle = hexToRgba("#ffffff", 0.16);
+      x.beginPath(); x.moveTo(px + r * 0.87, py - r * 0.5); x.lineTo(px, py); x.lineTo(px, py + r); x.lineTo(px + r * 0.87, py + r * 0.5); x.closePath(); x.fill();
+      x.strokeStyle = foil; x.lineWidth = 2.5;
+      x.beginPath(); x.moveTo(px, py - r); x.lineTo(px + r * 0.87, py - r * 0.5); x.lineTo(px, py + r); x.lineTo(px - r * 0.87, py + r * 0.5); x.lineTo(px, py - r); x.moveTo(px - r * 0.87, py - r * 0.5); x.lineTo(px, py); x.lineTo(px + r * 0.87, py - r * 0.5); x.stroke();
+    };
+    x.strokeStyle = foil; x.lineWidth = 2; x.setLineDash([3, 10]);
+    x.beginPath(); x.moveTo(0, -140); x.lineTo(0, 140); x.stroke();
+    x.setLineDash([]);
+    cube(-78, -46, 44, 0.92); cube(52, -96, 32, 0.85); cube(66, 52, 52, 0.95);
+    x.fillStyle = foil;
+    [[-118, 96], [104, 108]].forEach(function (p) {
+      x.beginPath(); x.moveTo(p[0], p[1] - 12); x.lineTo(p[0] + 11, p[1] + 8); x.lineTo(p[0] - 11, p[1] + 8); x.closePath(); x.fill();
+    });
+  } else if (motif === "modular") {
+    x.strokeStyle = foil; x.lineWidth = 3.5;
+    x.beginPath(); x.arc(-62, -58, 44, 0, Math.PI * 2); x.stroke();
+    x.strokeRect(24, -102, 82, 82);
+    x.beginPath(); x.moveTo(-62, 30); x.lineTo(-18, 104); x.lineTo(-106, 104); x.closePath(); x.stroke();
+    x.beginPath(); x.arc(66, 62, 40, Math.PI, 0); x.closePath(); x.stroke();
+    x.strokeStyle = ink; x.lineWidth = 2.5;
+    x.beginPath(); x.moveTo(-120, 130); x.bezierCurveTo(-50, 10, 60, 150, 120, -20); x.stroke();
+    x.fillStyle = foil;
+    [[-120, 130], [-30, 62], [52, 96], [120, -20]].forEach(function (p) {
+      x.fillRect(p[0] - 6, p[1] - 6, 12, 12);
+    });
+  } else if (motif === "motion") {
+    x.strokeStyle = foil;
+    [46, 78, 110].forEach(function (r, i) {
+      x.lineWidth = 5 - i;
+      x.beginPath(); x.arc(-30, 40, r, -Math.PI * 0.55, Math.PI * 0.28); x.stroke();
+    });
+    x.strokeStyle = ink; x.lineWidth = 2.5;
+    x.beginPath(); x.moveTo(-120, 96); x.lineTo(120, 96); x.moveTo(-120, 96); x.lineTo(-120, -110); x.stroke();
+    x.strokeStyle = foil; x.lineWidth = 4;
+    x.beginPath(); x.moveTo(-104, 78); x.bezierCurveTo(-30, 78, 20, -60, 108, -84); x.stroke();
+    x.fillStyle = foil;
+    x.beginPath(); x.arc(108, -84, 11, 0, Math.PI * 2); x.fill();
+    x.fillStyle = ink;
+    x.beginPath(); x.moveTo(-30, -118); x.lineTo(6, -96); x.lineTo(-30, -74); x.closePath(); x.fill();
+  } else { /* grid */
+    x.strokeStyle = hexToRgba("#f6f1e6", 0.35); x.lineWidth = 1.5;
+    for (let gx = -130; gx <= 130; gx += 26) { x.beginPath(); x.moveTo(gx, -120); x.lineTo(gx, 120); x.stroke(); }
+    for (let gy = -120; gy <= 120; gy += 26) { x.beginPath(); x.moveTo(-130, gy); x.lineTo(130, gy); x.stroke(); }
+    x.strokeStyle = foil; x.lineWidth = 5;
+    x.font = "600 150px Georgia, serif"; x.textAlign = "center"; x.textBaseline = "middle";
+    x.strokeText("{ }", 0, -6);
+    x.strokeStyle = ink; x.lineWidth = 2.5;
+    x.beginPath(); x.arc(0, 0, 96, 0, Math.PI * 2); x.stroke();
+    x.beginPath(); x.moveTo(0, -124); x.lineTo(0, -96); x.moveTo(0, 96); x.lineTo(0, 124); x.moveTo(-124, 0); x.lineTo(-96, 0); x.moveTo(96, 0); x.lineTo(124, 0); x.stroke();
+    x.fillStyle = foil;
+    x.fillRect(-118, -118, 16, 16); x.fillRect(102, 102, 16, 16);
+  }
+  x.restore();
+}
+
+function drawCover(def) {
+  const W = 640, H = 880, c = makeCanvas(W, H), x = c.getContext("2d");
+  const g = x.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, def.color); g.addColorStop(1, def.colorDark);
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  const sheen = x.createLinearGradient(0, 0, W, 0);
+  sheen.addColorStop(0, "rgba(255,255,255,0.06)"); sheen.addColorStop(0.5, "rgba(255,255,255,0)"); sheen.addColorStop(1, "rgba(0,0,0,0.14)");
+  x.fillStyle = sheen; x.fillRect(0, 0, W, H);
+  x.fillStyle = "rgba(255,255,255,0.05)";
+  for (let i = 0; i < 170; i++) x.fillRect(Math.random() * W, Math.random() * H, 1.4, 1.4);
+  x.strokeStyle = def.foil; x.lineWidth = 3; x.strokeRect(30, 30, W - 60, H - 60);
+  x.lineWidth = 1; x.strokeRect(42, 42, W - 84, H - 84);
+  x.fillStyle = def.foil; x.textAlign = "center"; x.textBaseline = "alphabetic";
+  x.font = "600 25px Inter, Arial, sans-serif";
+  x.fillText(spread("WORKING VOLUMES"), W / 2, 96);
+  x.font = "500 21px Inter, Arial, sans-serif";
+  x.fillText("·  VOL. " + def.vol.slice(-2) + "  ·", W / 2, 130);
+  drawMotif(x, def.motif, W / 2, 330, 1, def.foil);
+  let fs = 98;
+  x.font = "600 " + fs + "px \"Cormorant Garamond\", Georgia, serif";
+  while (x.measureText(def.title).width > W - 120 && fs > 56) {
+    fs -= 6;
+    x.font = "600 " + fs + "px \"Cormorant Garamond\", Georgia, serif";
+  }
+  x.fillStyle = "#f6f1e6";
+  x.fillText(def.title, W / 2, 636);
+  x.font = "italic 500 35px \"Cormorant Garamond\", Georgia, serif";
+  x.fillStyle = hexToRgba("#f6f1e6", 0.88);
+  x.fillText(def.sub, W / 2, 690);
+  x.strokeStyle = def.foil; x.lineWidth = 2;
+  x.beginPath(); x.moveTo(W / 2 - 70, 724); x.lineTo(W / 2 + 70, 724); x.stroke();
+  x.fillStyle = def.foil;
+  x.beginPath(); x.arc(W / 2, 724, 4, 0, Math.PI * 2); x.fill();
+  x.font = "500 20px Inter, Arial, sans-serif";
+  x.fillText(spread(def.motifName.toUpperCase()), W / 2, 766);
+  x.fillStyle = hexToRgba("#f6f1e6", 0.55);
+  x.font = "500 17px Inter, Arial, sans-serif";
+  x.fillText("WORKING VOLUMES PRESS", W / 2, 812);
+  return toTexture(c);
+}
+
+function drawSpine(def) {
+  const W = 160, H = 880, c = makeCanvas(W, H), x = c.getContext("2d");
+  const g = x.createLinearGradient(0, 0, W, 0);
+  g.addColorStop(0, "rgba(0,0,0,0.35)"); g.addColorStop(0.25, def.color); g.addColorStop(0.8, def.color); g.addColorStop(1, "rgba(0,0,0,0.35)");
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = def.foil; x.fillRect(0, 34, W, 4); x.fillRect(0, H - 38, W, 4);
+  x.save();
+  x.translate(W / 2, H / 2); x.rotate(-Math.PI / 2);
+  x.fillStyle = "#f6f1e6"; x.textAlign = "center"; x.textBaseline = "middle";
+  x.font = "600 52px \"Cormorant Garamond\", Georgia, serif";
+  x.fillText(def.title.toUpperCase(), 0, -6);
+  x.font = "500 24px Inter, Arial, sans-serif";
+  x.fillStyle = def.foil;
+  x.fillText("VOL. " + def.vol.slice(-2), 0, 52);
+  x.restore();
+  x.fillStyle = def.foil;
+  x.beginPath(); x.arc(W / 2, 96, 12, 0, Math.PI * 2); x.fill();
+  x.beginPath(); x.arc(W / 2, H - 96, 12, 0, Math.PI * 2); x.fill();
+  return toTexture(c);
+}
+
+function drawBack(def) {
+  const W = 640, H = 880, c = makeCanvas(W, H), x = c.getContext("2d");
+  const g = x.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, def.colorDark); g.addColorStop(1, "#0b0b0e");
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.strokeStyle = def.foil; x.lineWidth = 3; x.strokeRect(30, 30, W - 60, H - 60);
+  x.lineWidth = 1; x.strokeRect(42, 42, W - 84, H - 84);
+  x.fillStyle = def.foil; x.textAlign = "center";
+  x.font = "600 24px Inter, Arial, sans-serif";
+  x.fillText(spread("ABOUT THIS VOLUME"), W / 2, 108);
+  drawMotif(x, def.motif, W / 2, 218, 0.42, def.foil);
+  x.fillStyle = hexToRgba("#f6f1e6", 0.92);
+  x.font = "500 27px Georgia, serif"; x.textAlign = "left";
+  wrapText(x, def.intro, 84, 350, W - 168, 42);
+  x.font = "italic 500 30px \"Cormorant Garamond\", Georgia, serif";
+  x.fillStyle = def.foil; x.textAlign = "center";
+  const q = def.teaser.replace(/[“”]/g, "");
+  wrapText(x, "“" + q + "”", 84, 560, W - 168, 40);
+  x.fillStyle = "#ffffff"; x.fillRect(W / 2 - 90, 690, 180, 92);
+  x.fillStyle = "#111111";
+  let bx = W / 2 - 78;
+  while (bx < W / 2 + 78) {
+    const bw = 2 + Math.floor(Math.random() * 5);
+    if (Math.random() > 0.35) x.fillRect(bx, 700, bw, 62);
+    bx += bw + 2 + Math.floor(Math.random() * 3);
+  }
+  x.fillStyle = hexToRgba("#f6f1e6", 0.6); x.textAlign = "center";
+  x.font = "500 17px Inter, Arial, sans-serif";
+  x.fillText("WORKING VOLUMES PRESS  ·  " + def.format.toUpperCase(), W / 2, 820);
+  return toTexture(c);
+}
+
+function drawEndpaper(def) {
+  const W = 512, H = 704, c = makeCanvas(W, H), x = c.getContext("2d");
+  x.fillStyle = "#efe7d2"; x.fillRect(0, 0, W, H);
+  x.strokeStyle = hexToRgba(def.color, 0.16); x.lineWidth = 2;
+  x.strokeRect(18, 18, W - 36, H - 36);
+  drawMotif(x, def.motif, W / 2, H / 2, 0.85, hexToRgba(def.color, 0.35));
+  x.fillStyle = hexToRgba(def.color, 0.55); x.textAlign = "center";
+  x.font = "600 22px Inter, Arial, sans-serif";
+  x.fillText(spread("WORKING VOLUMES"), W / 2, H - 48);
+  return toTexture(c);
+}
+
+function drawPageEdge() {
+  const W = 256, H = 256, c = makeCanvas(W, H), x = c.getContext("2d");
+  x.fillStyle = "#f2ecd9"; x.fillRect(0, 0, W, H);
+  for (let y = 0; y < H; y += 3) {
+    x.fillStyle = "rgba(120,110,88," + (0.12 + Math.random() * 0.22) + ")";
+    x.fillRect(0, y, W, 1);
+  }
+  return toTexture(c);
+}
+
+function drawWood() {
+  const W = 512, H = 512, c = makeCanvas(W, H), x = c.getContext("2d");
+  x.fillStyle = "#43301f"; x.fillRect(0, 0, W, H);
+  for (let i = 0; i < 90; i++) {
+    const y = Math.random() * H;
+    x.strokeStyle = "rgba(" + (Math.random() > 0.5 ? "20,12,6" : "120,88,52") + "," + (0.08 + Math.random() * 0.16) + ")";
+    x.lineWidth = 1 + Math.random() * 3;
+    x.beginPath(); x.moveTo(-10, y);
+    x.bezierCurveTo(W * 0.3, y + (Math.random() - 0.5) * 14, W * 0.7, y + (Math.random() - 0.5) * 14, W + 10, y);
+    x.stroke();
+  }
+  for (let i = 0; i < 5; i++) {
+    const kx = Math.random() * W, ky = Math.random() * H;
+    x.strokeStyle = "rgba(20,12,6,0.35)"; x.lineWidth = 2;
+    x.beginPath(); x.ellipse(kx, ky, 10 + Math.random() * 14, 5 + Math.random() * 7, 0, 0, Math.PI * 2); x.stroke();
+  }
+  const t = toTexture(c);
+  t.wrapS = THREE.RepeatWrapping; t.wrapT = THREE.RepeatWrapping;
+  return t;
+}
+
+function drawGlow() {
+  const S = 128, c = makeCanvas(S, S), x = c.getContext("2d");
+  const g = x.createRadialGradient(S / 2, S / 2, 4, S / 2, S / 2, S / 2);
+  g.addColorStop(0, "rgba(255,255,255,0.85)");
+  g.addColorStop(0.4, "rgba(255,255,255,0.28)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  x.fillStyle = g; x.fillRect(0, 0, S, S);
+  return toTexture(c);
+}
+
+/* One sample page: chapter heading, body text, small diagram, folio. */
+function drawPage(def, pageNum) {
+  const W = 512, H = 672, c = makeCanvas(W, H), x = c.getContext("2d");
+  const ch = def.chapters[Math.floor((pageNum - 1) / 4) % def.chapters.length];
+  const section = ["I", "II", "III", "IV"][(pageNum - 1) % 4];
+  x.fillStyle = "#f6f0e2"; x.fillRect(0, 0, W, H);
+  x.fillStyle = "rgba(120,100,70,0.10)"; x.fillRect(0, 0, W, 10);
+  x.fillStyle = def.color; x.textAlign = "left"; x.textBaseline = "alphabetic";
+  x.font = "600 19px Inter, Arial, sans-serif";
+  x.fillText(spread("CHAPTER " + section), 48, 62);
+  x.strokeStyle = def.foil; x.lineWidth = 2;
+  x.beginPath(); x.moveTo(48, 78); x.lineTo(W - 48, 78); x.stroke();
+  x.fillStyle = "#1c1a16";
+  x.font = "600 44px \"Cormorant Garamond\", Georgia, serif";
+  wrapText(x, ch.title, 48, 132, W - 96, 48);
+  x.fillStyle = "#3d382e";
+  x.font = "400 21px Georgia, serif";
+  let y = 218;
+  ch.body.forEach(function (p) { y = wrapText(x, p, 48, y, W - 96, 32) + 12; });
+  if (pageNum % 2 === 0 && y < 470) {
+    x.strokeStyle = hexToRgba(def.color, 0.5); x.lineWidth = 2;
+    x.strokeRect(48, y + 6, W - 96, 130);
+    drawMotif(x, def.motif, W / 2, y + 72, 0.34, def.foil);
+  }
+  x.fillStyle = "#8a8272"; x.textAlign = "center";
+  x.font = "500 17px Inter, Arial, sans-serif";
+  x.fillText(def.title + "  ·  " + pageNum, W / 2, H - 30);
+  return toTexture(c);
+}
+
+/* ---------------- scene, lights, shelf ---------------- */
+
+function setupScene() {
+  renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.06;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+  scene = new THREE.Scene();
+  scene.background = themeCur.bg.clone();
+  scene.fog = new THREE.Fog(themeCur.bg.clone(), 13, 30);
+
+  camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 60);
+  camera.position.set(0, 2.7, 13.5);
+
+  controls = new OrbitControls(camera, renderer.domElement);
+  controls.target.set(0, 1.0, 0);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.06;
+  controls.enablePan = false;
+  controls.enableZoom = false; /* wheel is reserved for book browsing; zoom uses the + / − buttons and pinch via dolly */
+  controls.rotateSpeed = 0.7;
+  controls.minDistance = 3.4;
+  controls.maxDistance = 14;
+  controls.minPolarAngle = 0.62;
+  controls.maxPolarAngle = 1.53;
+
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+
+  hemi = new THREE.HemisphereLight(themeCur.hemi.clone(), new THREE.Color("#1a120c"), 0.55);
+  scene.add(hemi);
+
+  keyLight = new THREE.DirectionalLight(new THREE.Color("#fff1dd"), 2.3);
+  keyLight.position.set(4.5, 6.5, 5.5);
+  keyLight.castShadow = true;
+  keyLight.shadow.mapSize.set(2048, 2048);
+  keyLight.shadow.camera.left = -7; keyLight.shadow.camera.right = 7;
+  keyLight.shadow.camera.top = 7; keyLight.shadow.camera.bottom = -4;
+  keyLight.shadow.camera.near = 1; keyLight.shadow.camera.far = 20;
+  keyLight.shadow.bias = -0.0004;
+  scene.add(keyLight);
+
+  rimLight = new THREE.DirectionalLight(themeCur.glow.clone(), 0.9);
+  rimLight.position.set(-5, 3.5, -4);
+  scene.add(rimLight);
+
+  accentLight = new THREE.PointLight(themeCur.glow.clone(), 14, 13, 2);
+  accentLight.position.set(0, 2.3, 3.4);
+  scene.add(accentLight);
+
+  buildShelf();
+  buildDust();
+}
+
+function buildShelf() {
+  const woodTex = drawWood();
+  woodTex.repeat.set(3, 1);
+  const wood = new THREE.MeshStandardMaterial({ map: woodTex, roughness: 0.62, metalness: 0.05, envMapIntensity: 0.5 });
+  const woodDark = new THREE.MeshStandardMaterial({ color: "#241811", roughness: 0.7, metalness: 0.05 });
+
+  const add = function (w, h, d, px, py, pz, mat) {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat || wood);
+    m.position.set(px, py, pz);
+    m.castShadow = true; m.receiveShadow = true;
+    scene.add(m);
+    return m;
+  };
+  add(11.4, 3.4, 0.18, 0, 1.1, -1.02);            // back panel
+  add(11.0, 0.22, 1.5, 0, -0.11, -0.25);          // shelf board (top at y=0)
+  add(11.4, 0.22, 1.5, 0, 2.76, -0.25);           // top board
+  add(0.22, 3.4, 1.5, -5.6, 1.1, -0.25);          // left side
+  add(0.22, 3.4, 1.5, 5.6, 1.1, -0.25);           // right side
+  add(11.4, 0.5, 1.7, 0, -0.47, -0.25, woodDark); // plinth
+  add(11.8, 0.14, 1.7, 0, 2.94, -0.25);           // cornice
+  add(11.0, 0.1, 0.1, 0, 0.05, 0.48, woodDark);   // front lip trim
+
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(60, 60),
+    new THREE.MeshStandardMaterial({ color: "#0d0d10", roughness: 0.38, metalness: 0.12, envMapIntensity: 0.6 })
+  );
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.y = -0.72;
+  floor.receiveShadow = true;
+  scene.add(floor);
+}
+
+function buildDust() {
+  const N = 260;
+  const pos = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++) {
+    pos[i * 3] = -5.5 + Math.random() * 11;
+    pos[i * 3 + 1] = Math.random() * 3;
+    pos[i * 3 + 2] = -0.6 + Math.random() * 4;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  dust = new THREE.Points(geo, new THREE.PointsMaterial({
+    color: "#ffe9c4", size: 0.022, transparent: true, opacity: 0.32, depthWrite: false
+  }));
+  scene.add(dust);
+}
+
+/* ---------------- 3D book construction ---------------- */
+
+function foilEmblem(def) {
+  const grp = new THREE.Group();
+  const mat = new THREE.MeshStandardMaterial({ color: def.foil, metalness: 0.95, roughness: 0.28, envMapIntensity: 1.2 });
+  const add = function (mesh) { mesh.castShadow = true; grp.add(mesh); return mesh; };
+  if (def.motif === "blueprint") {
+    const ring = add(new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.012, 10, 40), mat));
+    ring.position.set(0, 0, 0);
+    const bar = add(new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.018, 0.012), mat));
+    bar.position.set(0, -0.2, 0);
+  } else if (def.motif === "nodes") {
+    const gem = add(new THREE.Mesh(new THREE.OctahedronGeometry(0.095, 0), mat));
+    gem.scale.set(1, 1, 0.45);
+  } else if (def.motif === "cursor") {
+    const shape = new THREE.Shape();
+    shape.moveTo(-0.09, 0.13); shape.lineTo(-0.09, -0.1); shape.lineTo(-0.03, -0.03);
+    shape.lineTo(0.05, -0.03); shape.lineTo(-0.02, 0.07); shape.lineTo(-0.02, 0.13);
+    shape.closePath();
+    const arrow = add(new THREE.Mesh(new THREE.ExtrudeGeometry(shape, { depth: 0.02, bevelEnabled: false }), mat));
+    arrow.position.z = -0.01;
+  } else if (def.motif === "float") {
+    [[-0.1, 0.05, 0.03], [0.08, -0.08, 0.05], [0.02, 0.14, 0.065]].forEach(function (p) {
+      const b = add(new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.07, 0.07), mat));
+      b.position.set(p[0], p[1], p[2]); b.rotation.set(0.4, 0.5, 0.2);
+    });
+  } else if (def.motif === "modular") {
+    const ring = add(new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.012, 10, 32), mat));
+    ring.position.set(-0.11, 0.06, 0);
+    const sq = add(new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 0.02), mat));
+    sq.position.set(0.11, 0.06, 0); sq.rotation.z = 0.3;
+    const triShape = new THREE.Shape();
+    triShape.moveTo(0, 0.07); triShape.lineTo(0.07, -0.05); triShape.lineTo(-0.07, -0.05); triShape.closePath();
+    const tri = add(new THREE.Mesh(new THREE.ExtrudeGeometry(triShape, { depth: 0.02, bevelEnabled: false }), mat));
+    tri.position.set(0, -0.12, -0.01);
+  } else if (def.motif === "motion") {
+    const arc = add(new THREE.Mesh(new THREE.TorusGeometry(0.11, 0.011, 10, 32, Math.PI * 0.75), mat));
+    arc.rotation.z = Math.PI * 0.15;
+    const dot = add(new THREE.Mesh(new THREE.SphereGeometry(0.028, 20, 16), mat));
+    dot.position.set(0.11, 0.1, 0);
+  } else {
+    for (let ix = 0; ix < 3; ix++) for (let iy = 0; iy < 3; iy++) {
+      const cell = add(new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.045, 0.014), mat));
+      cell.position.set((ix - 1) * 0.075, (iy - 1) * 0.075, 0);
+    }
+  }
+  return { group: grp, mats: [mat] };
+}
+
+function buildBook(def, dims, shelfX) {
+  const W = dims.w, H = dims.h, T = dims.t;
+  const group = new THREE.Group();
+  group.position.set(shelfX, 0, 0);
+  group.rotation.y = -0.14;
+
+  const edgeTex = drawPageEdge();
+  const edgeMat = new THREE.MeshStandardMaterial({ map: edgeTex, roughness: 0.9, metalness: 0 });
+  const creamMat = new THREE.MeshStandardMaterial({ color: "#f2ecd9", roughness: 0.9, metalness: 0 });
+  const coverEdgeMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(def.colorDark), roughness: 0.55, metalness: 0.1 });
+  const coverMat = new THREE.MeshStandardMaterial({ map: drawCover(def), roughness: 0.52, metalness: 0.18, envMapIntensity: 0.7 });
+  const backMat = new THREE.MeshStandardMaterial({ map: drawBack(def), roughness: 0.52, metalness: 0.18, envMapIntensity: 0.7 });
+  const insideMat = new THREE.MeshStandardMaterial({ map: drawEndpaper(def), roughness: 0.85, metalness: 0 });
+  const spineMat = new THREE.MeshStandardMaterial({ map: drawSpine(def), roughness: 0.55, metalness: 0.15, envMapIntensity: 0.6 });
+
+  const shadowed = function (m) { m.castShadow = true; m.receiveShadow = true; return m; };
+
+  /* page block (visible while the book is closed) */
+  const pagesBlock = shadowed(new THREE.Mesh(
+    new THREE.BoxGeometry(W * 0.94, H * 0.94, T * 0.78),
+    [edgeMat, creamMat, edgeMat, edgeMat, creamMat, creamMat]
+  ));
+  pagesBlock.position.set(W / 2, H / 2, 0);
+  group.add(pagesBlock);
+
+  /* back cover: outside art faces -z, endpaper faces the pages */
+  const backCover = shadowed(new THREE.Mesh(
+    new THREE.BoxGeometry(W, H, 0.045),
+    [coverEdgeMat, coverEdgeMat, coverEdgeMat, coverEdgeMat, insideMat, backMat]
+  ));
+  backCover.position.set(W / 2, H / 2, -T / 2 - 0.0225);
+  group.add(backCover);
+
+  /* spine */
+  const spine = shadowed(new THREE.Mesh(
+    new THREE.BoxGeometry(0.12, H, T + 0.04),
+    [coverEdgeMat, spineMat, coverEdgeMat, coverEdgeMat, coverEdgeMat, coverEdgeMat]
+  ));
+  spine.position.set(0.04, H / 2, 0);
+  group.add(spine);
+
+  /* front cover on a hinge at the spine edge */
+  const coverPivot = new THREE.Group();
+  coverPivot.position.set(0, H / 2, T / 2 + 0.024);
+  group.add(coverPivot);
+  const frontCover = shadowed(new THREE.Mesh(
+    new THREE.BoxGeometry(W, H, 0.045),
+    [coverEdgeMat, coverEdgeMat, coverEdgeMat, coverEdgeMat, coverMat, insideMat]
+  ));
+  frontCover.position.set(W / 2, 0, 0);
+  coverPivot.add(frontCover);
+  const emblem = foilEmblem(def);
+  emblem.group.position.set(W * 0.5, H * 0.17, 0.032);
+  coverPivot.add(emblem.group);
+
+  /* sample leaves: 8 leaves = 16 pages, hinged at the spine */
+  const leaves = [];
+  const pageTex = [];
+  for (let p = 1; p <= LEAF_COUNT * 2; p++) pageTex.push(drawPage(def, p));
+  for (let i = 0; i < LEAF_COUNT; i++) {
+    const pivot = new THREE.Group();
+    pivot.position.set(0, H / 2, 0);
+    const front = new THREE.MeshStandardMaterial({ map: pageTex[i * 2], roughness: 0.88, metalness: 0 });
+    const back = new THREE.MeshStandardMaterial({ map: pageTex[i * 2 + 1], roughness: 0.88, metalness: 0 });
+    const leaf = shadowed(new THREE.Mesh(
+      new THREE.BoxGeometry(W * 0.96, H * 0.93, 0.018),
+      [creamMat, creamMat, creamMat, creamMat, front, back]
+    ));
+    leaf.position.set(W * 0.48, 0, 0);
+    pivot.add(leaf);
+    pivot.visible = false;
+    group.add(pivot);
+    leaves.push({ pivot: pivot, mesh: leaf });
+  }
+
+  /* soft accent glow under the selected book */
+  const glow = new THREE.Mesh(
+    new THREE.PlaneGeometry(2.1, 2.1),
+    new THREE.MeshBasicMaterial({ map: drawGlow(), color: def.foil, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false })
+  );
+  glow.rotation.x = -Math.PI / 2;
+  glow.position.set(W / 2, 0.012, 0.1);
+  group.add(glow);
+
+  group.traverse(function (o) { o.userData.bookIndex = BOOKS.indexOf(def); });
+  scene.add(group);
+
+  const dimMats = [
+    { mat: coverMat, base: new THREE.Color("#ffffff") },
+    { mat: backMat, base: new THREE.Color("#ffffff") },
+    { mat: spineMat, base: new THREE.Color("#ffffff") },
+    { mat: insideMat, base: new THREE.Color("#ffffff") },
+    { mat: coverEdgeMat, base: new THREE.Color(def.colorDark) }
+  ].concat(emblem.mats.map(function (m) { return { mat: m, base: new THREE.Color(def.foil) }; }));
+
+  const book = {
+    def: def, dims: dims, group: group, coverPivot: coverPivot, pagesBlock: pagesBlock,
+    leaves: leaves, glow: glow, dimMats: dimMats, shelfX: shelfX, dim: 1
+  };
+  restackLeaves(book);
+  return book;
+}
+
+function restackLeaves(book) {
+  const n = state.leftCount;
+  book.leaves.forEach(function (leaf, i) {
+    if (i < n) {
+      leaf.pivot.rotation.y = -Math.PI;
+      leaf.pivot.position.z = -0.09 + i * 0.024;
+    } else {
+      leaf.pivot.rotation.y = 0;
+      leaf.pivot.position.z = 0.09 - (i - n) * 0.024;
+    }
+  });
+}
+
+function buildAllBooks() {
+  const gap = 0.3;
+  let total = 0;
+  BOOKS.forEach(function (def) { total += DIMS[def.id].w; });
+  total += gap * (BOOKS.length - 1);
+  let x = -total / 2;
+  BOOKS.forEach(function (def) {
+    const dims = DIMS[def.id];
+    const book = buildBook(def, dims, x);
+    books.push(book);
+    x += dims.w + gap;
+  });
+  /* three quiet filler volumes at the right end of the shelf */
+  const fillerCols = ["#3a3f45", "#4a4238", "#2e3a44"];
+  fillerCols.forEach(function (col, i) {
+    const m = new THREE.Mesh(
+      new THREE.BoxGeometry(0.24, 1.34 - i * 0.08, 0.3),
+      new THREE.MeshStandardMaterial({ color: col, roughness: 0.7, metalness: 0.05 })
+    );
+    m.position.set(4.72 + i * 0.28, (1.34 - i * 0.08) / 2, -0.1);
+    m.rotation.y = -0.06;
+    m.castShadow = true; m.receiveShadow = true;
+    m.userData.ignore = true;
+    scene.add(m);
+  });
+}
+
+/* ---------------- tweens, themes, poses ---------------- */
+
+const tweens = [];
+function easeInOutCubic(k) { return k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
+function easeOutCubic(k) { return 1 - Math.pow(1 - k, 3); }
+function addTween(dur, onUpdate, onDone, ease) {
+  if (REDUCED || dur <= 0) { onUpdate(1); if (onDone) onDone(); return; }
+  tweens.push({ t: 0, dur: dur, onUpdate: onUpdate, onDone: onDone, ease: ease || easeInOutCubic });
+}
+function stepTweens(dt) {
+  for (let i = tweens.length - 1; i >= 0; i--) {
+    const tw = tweens[i];
+    tw.t += dt;
+    const k = Math.min(1, tw.t / tw.dur);
+    tw.onUpdate(tw.ease(k));
+    if (k >= 1) { tweens.splice(i, 1); if (tw.onDone) tw.onDone(); }
+  }
+}
+
+function applyDim(book, f) {
+  book.dim = f;
+  const m = 0.35 + 0.65 * f;
+  book.dimMats.forEach(function (entry) {
+    entry.mat.color.copy(entry.base).multiplyScalar(m);
+  });
+}
+
+function setTheme(i) {
+  const th = BOOKS[i].theme;
+  themeTgt.bg.set(th.bg); themeTgt.glow.set(th.glow); themeTgt.hemi.set(th.hemi);
+  document.documentElement.style.setProperty("--accent", BOOKS[i].foil);
+  if (REDUCED) {
+    themeCur.bg.copy(themeTgt.bg); themeCur.glow.copy(themeTgt.glow); themeCur.hemi.copy(themeTgt.hemi);
+  }
+}
+
+function tweenCameraTo(pos, tgt, dur, onDone) {
+  const p0 = camera.position.clone(), t0 = controls.target.clone();
+  if (REDUCED || dur <= 0) {
+    camera.position.copy(pos); controls.target.copy(tgt); controls.update();
+    if (onDone) onDone();
+    return;
+  }
+  state.camTween = true;
+  controls.enabled = false;
+  addTween(dur, function (k) {
+    camera.position.lerpVectors(p0, pos, k);
+    controls.target.lerpVectors(t0, tgt, k);
+  }, function () {
+    state.camTween = false;
+    controls.enabled = true;
+    controls.update();
+    if (onDone) onDone();
+  });
+}
+
+function shelfPose(book, selectedExists) {
+  return { x: book.shelfX, z: selectedExists ? -0.35 : 0, rot: -0.14, scale: selectedExists ? 0.95 : 1, dim: selectedExists ? 0.45 : 1, glow: 0 };
+}
+function focusPose(book) {
+  const s = 1.22;
+  return { x: -book.dims.w * s / 2, z: 1.35, rot: 0, scale: s, dim: 1, glow: 0.45 };
+}
+function openPose(book) {
+  const s = 1.3;
+  return { x: -book.dims.w * s / 2, z: 1.15, rot: -0.04, scale: s, dim: 1, glow: 0.3 };
+}
+function tweenPose(book, pose, dur, onDone) {
+  const g = book.group;
+  const start = { x: g.position.x, z: g.position.z, rot: g.rotation.y, s: g.scale.x, dim: book.dim, glow: book.glow.material.opacity };
+  addTween(dur, function (k) {
+    g.position.x = start.x + (pose.x - start.x) * k;
+    g.position.z = start.z + (pose.z - start.z) * k;
+    g.rotation.y = start.rot + (pose.rot - start.rot) * k;
+    g.scale.setScalar(start.s + (pose.scale - start.s) * k);
+    applyDim(book, start.dim + (pose.dim - start.dim) * k);
+    book.glow.material.opacity = start.glow + (pose.glow - start.glow) * k;
+  }, onDone);
+}
+
+function overviewCam() {
+  const wide = window.innerWidth < 760;
+  return { pos: new THREE.Vector3(0, wide ? 2.1 : 1.9, wide ? 11.8 : 9.4), tgt: new THREE.Vector3(0, 1.0, 0) };
+}
+function focusCam() {
+  return { pos: new THREE.Vector3(0, 1.62, 6.9), tgt: new THREE.Vector3(0, 1.02, 0.9) };
+}
+function openCam() {
+  return { pos: new THREE.Vector3(0, 1.5, 5.9), tgt: new THREE.Vector3(0, 1.0, 0.9) };
+}
+
+/* ---------------- panel + markers ---------------- */
+
+const panelEl = document.getElementById("panel");
+const miniBarEl = document.getElementById("miniBar");
+const pageNavEl = document.getElementById("pageNav");
+const openBtn = document.getElementById("openBtn");
+const closeBookBtn = document.getElementById("closeBookBtn");
+const pagePrevBtn = document.getElementById("pagePrev");
+const pageNextBtn = document.getElementById("pageNext");
+const pageCounterEl = document.getElementById("pageCounter");
+const liveRegion = document.getElementById("liveRegion");
+let markerBtns = [];
+
+function announce(text) { if (liveRegion) liveRegion.textContent = text; }
+
+function updatePanel() {
+  const def = BOOKS[state.index];
+  document.getElementById("bookKicker").textContent = def.vol.toUpperCase() + "  ·  " + def.discipline.toUpperCase();
+  document.getElementById("bookTitle").textContent = def.title;
+  document.getElementById("bookSub").textContent = def.sub;
+  document.getElementById("bookIntro").textContent = def.intro;
+  document.getElementById("bookDesc").textContent = def.desc;
+  document.getElementById("metaDiscipline").textContent = def.discipline;
+  document.getElementById("metaBinding").textContent = def.binding;
+  document.getElementById("metaFormat").textContent = def.format;
+  document.getElementById("metaTheme").textContent = def.themeName;
+  document.getElementById("metaMotif").textContent = def.motifName + " · " + def.foilName + " foil";
+  document.getElementById("metaPages").textContent = "16 sample pages";
+  const ul = document.getElementById("features");
+  ul.innerHTML = "";
+  def.features.forEach(function (f) {
+    const li = document.createElement("li");
+    li.textContent = f;
+    ul.appendChild(li);
+  });
+  document.getElementById("teaserText").textContent = def.teaser;
+  document.getElementById("miniTitle").textContent = def.title;
+  updatePageUI();
+}
+
+function updatePageUI() {
+  const open = state.mode === "open";
+  pageNavEl.classList.toggle("visible", open);
+  openBtn.style.display = open ? "none" : "";
+  closeBookBtn.style.display = open ? "" : "none";
+  if (open) {
+    const n = state.leftCount;
+    pageCounterEl.textContent = n >= LEAF_COUNT
+      ? "End of sample · Spread 8 / 8"
+      : "Spread " + (n + 1) + " / 8 · Pages " + Math.max(1, n * 2) + "–" + Math.min(16, n * 2 + 1) + " of 16";
+    pagePrevBtn.disabled = n <= 0 || state.turning;
+    pageNextBtn.disabled = n >= LEAF_COUNT || state.turning;
+  }
+}
+
+function buildMarkers() {
+  const wrap = document.getElementById("markers");
+  wrap.innerHTML = "";
+  markerBtns = BOOKS.map(function (def, i) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "marker";
+    b.setAttribute("role", "tab");
+    b.textContent = String(i + 1).padStart(2, "0");
+    b.title = def.title;
+    b.setAttribute("aria-label", "Volume " + (i + 1) + ": " + def.title);
+    b.addEventListener("click", function () { navigateTo(i); });
+    wrap.appendChild(b);
+    return b;
+  });
+  updateMarkers();
+}
+function updateMarkers() {
+  markerBtns.forEach(function (b, i) {
+    b.classList.toggle("active", i === state.index);
+    b.setAttribute("aria-selected", i === state.index ? "true" : "false");
+  });
+  document.getElementById("prevBtn").disabled = state.index <= 0;
+  document.getElementById("nextBtn").disabled = state.index >= BOOKS.length - 1;
+}
+
+function showPanel(show) {
+  panelEl.classList.toggle("hidden-panel", !show);
+  miniBarEl.classList.toggle("visible", !show);
+}
+
+/* ---------------- navigation, opening, page turning ---------------- */
+
+function snapClose(book) {
+  book.coverPivot.rotation.y = 0;
+  book.pagesBlock.visible = true;
+  book.leaves.forEach(function (l) { l.pivot.visible = false; });
+  state.leftCount = 0;
+  restackLeaves(book);
+  state.mode = "focus";
+  updatePageUI();
+}
+
+function navigateTo(i) {
+  i = Math.max(0, Math.min(BOOKS.length - 1, i));
+  if (i === state.index && state.mode === "focus") return;
+  if (state.mode === "open" || state.mode === "opening" || state.mode === "closing") {
+    snapClose(books[state.index]);
+  }
+  state.index = i;
+  state.mode = "focus";
+  state.leftCount = 0;
+  setTheme(i);
+  updatePanel();
+  updateMarkers();
+  announce(BOOKS[i].title + ", " + BOOKS[i].sub);
+  const dur = REDUCED ? 0 : 1.05;
+  books.forEach(function (b, bi) {
+    tweenPose(b, bi === i ? focusPose(b) : shelfPose(b, true), dur);
+  });
+  const fc = focusCam();
+  tweenCameraTo(fc.pos, fc.tgt, dur);
+  showPanel(true);
+}
+
+function resetView() {
+  if (state.mode === "open" || state.mode === "opening" || state.mode === "closing") {
+    snapClose(books[state.index]);
+  }
+  state.mode = "shelf";
+  books.forEach(function (b) { tweenPose(b, shelfPose(b, false), REDUCED ? 0 : 0.9); });
+  const oc = overviewCam();
+  tweenCameraTo(oc.pos, oc.tgt, REDUCED ? 0 : 0.9);
+  showPanel(false);
+  announce("Shelf overview. " + BOOKS[state.index].title + " selected.");
+}
+
+function openBook() {
+  if (state.mode !== "focus") return;
+  const book = books[state.index];
+  state.mode = "opening";
+  book.leaves.forEach(function (l) { l.pivot.visible = true; });
+  restackLeaves(book);
+  addTween(REDUCED ? 0 : 1.15, function (k) {
+    book.coverPivot.rotation.y = -2.95 * k;
+    if (k > 0.4) book.pagesBlock.visible = false;
+  }, function () {
+    book.coverPivot.rotation.y = -2.95;
+    book.pagesBlock.visible = false;
+    state.mode = "open";
+    updatePageUI();
+    announce(BOOKS[state.index].title + " open. Sample pages ready.");
+  }, easeOutCubic);
+  tweenPose(book, openPose(book), REDUCED ? 0 : 1.15);
+  const oc = openCam();
+  tweenCameraTo(oc.pos, oc.tgt, REDUCED ? 0 : 1.15);
+  updatePageUI();
+}
+
+function closeBook() {
+  if (state.mode !== "open" && state.mode !== "opening") return;
+  const book = books[state.index];
+  state.mode = "closing";
+  addTween(REDUCED ? 0 : 0.9, function (k) {
+    book.coverPivot.rotation.y = -2.95 * (1 - k);
+    if (k > 0.55) book.pagesBlock.visible = true;
+  }, function () {
+    snapClose(book);
+    tweenPose(book, focusPose(book), REDUCED ? 0 : 0.6);
+    const fc = focusCam();
+    tweenCameraTo(fc.pos, fc.tgt, REDUCED ? 0 : 0.6);
+  }, easeInOutCubic);
+  updatePageUI();
+}
+
+function turnPage(dir) {
+  if (state.mode !== "open" || state.turning) return;
+  const book = books[state.index];
+  if (dir > 0 && state.leftCount >= LEAF_COUNT) return;
+  if (dir < 0 && state.leftCount <= 0) return;
+  state.turning = true;
+  updatePageUI();
+  const leaf = dir > 0 ? book.leaves[state.leftCount] : book.leaves[state.leftCount - 1];
+  const from = dir > 0 ? 0 : -Math.PI;
+  const to = dir > 0 ? -Math.PI : 0;
+  const zBase = leaf.pivot.position.z;
+  addTween(REDUCED ? 0 : 0.75, function (k) {
+    leaf.pivot.rotation.y = from + (to - from) * k;
+    leaf.pivot.position.z = zBase + Math.sin(k * Math.PI) * 0.07;
+  }, function () {
+    leaf.pivot.position.z = zBase;
+    state.leftCount += dir;
+    restackLeaves(book);
+    state.turning = false;
+    updatePageUI();
+    announce("Spread " + (state.leftCount + 1) + " of 8.");
+  }, easeInOutCubic);
+}
+
+/* ---------------- interaction ---------------- */
+
+const raycaster = new THREE.Raycaster();
+const pointerNDC = new THREE.Vector2();
+let downX = 0, downY = 0, downT = 0;
+let touchSX = 0, touchSY = 0, touchST = 0;
+
+function pickBook(clientX, clientY) {
+  const r = renderer.domElement.getBoundingClientRect();
+  pointerNDC.set(((clientX - r.left) / r.width) * 2 - 1, -((clientY - r.top) / r.height) * 2 + 1);
+  raycaster.setFromCamera(pointerNDC, camera);
+  const hits = raycaster.intersectObjects(scene.children, true);
+  for (const h of hits) {
+    let o = h.object;
+    while (o) {
+      if (o.userData && o.userData.ignore) break;
+      if (o.userData && typeof o.userData.bookIndex === "number") return o.userData.bookIndex;
+      o = o.parent;
+    }
+  }
+  return -1;
+}
+
+function dolly(factor) {
+  const dir = camera.position.clone().sub(controls.target);
+  const len = THREE.MathUtils.clamp(dir.length() * factor, controls.minDistance, controls.maxDistance);
+  const dest = controls.target.clone().add(dir.normalize().multiplyScalar(len));
+  tweenCameraTo(dest, controls.target.clone(), 0.4);
+}
+
+function bindEvents() {
+  document.getElementById("prevBtn").addEventListener("click", function () { navigateTo(state.index - 1); });
+  document.getElementById("nextBtn").addEventListener("click", function () { navigateTo(state.index + 1); });
+  document.getElementById("resetBtn").addEventListener("click", resetView);
+  document.getElementById("zoomInBtn").addEventListener("click", function () { dolly(0.82); });
+  document.getElementById("zoomOutBtn").addEventListener("click", function () { dolly(1.22); });
+  document.getElementById("openBtn").addEventListener("click", openBook);
+  document.getElementById("closeBookBtn").addEventListener("click", closeBook);
+  document.getElementById("pagePrev").addEventListener("click", function () { turnPage(-1); });
+  document.getElementById("pageNext").addEventListener("click", function () { turnPage(1); });
+  document.getElementById("panelClose").addEventListener("click", function () { showPanel(false); });
+  document.getElementById("detailsBtn").addEventListener("click", function () { showPanel(true); });
+
+  renderer.domElement.addEventListener("wheel", function (e) {
+    e.preventDefault();
+    const now = performance.now();
+    if (now - state.lastWheel < 750) return;
+    state.lastWheel = now;
+    const dir = e.deltaY > 0 ? 1 : -1;
+    if (state.mode === "open") turnPage(dir);
+    else navigateTo(state.index + dir);
+  }, { passive: false });
+
+  renderer.domElement.addEventListener("pointerdown", function (e) {
+    downX = e.clientX; downY = e.clientY; downT = performance.now();
+  });
+  renderer.domElement.addEventListener("pointerup", function (e) {
+    const moved = Math.hypot(e.clientX - downX, e.clientY - downY);
+    if (moved < 7 && performance.now() - downT < 400) {
+      const idx = pickBook(e.clientX, e.clientY);
+      if (idx >= 0 && state.mode !== "open" && state.mode !== "opening") navigateTo(idx);
+    }
+  });
+
+  renderer.domElement.addEventListener("touchstart", function (e) {
+    const t = e.changedTouches[0];
+    touchSX = t.clientX; touchSY = t.clientY; touchST = performance.now();
+  }, { passive: true });
+  renderer.domElement.addEventListener("touchend", function (e) {
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touchSX, dy = t.clientY - touchSY;
+    const dt = performance.now() - touchST;
+    if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.4 && dt < 600) {
+      const dir = dx < 0 ? 1 : -1;
+      if (state.mode === "open") turnPage(dir);
+      else navigateTo(state.index + dir);
+    }
+  }, { passive: true });
+
+  window.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      if (state.mode === "open") turnPage(1); else navigateTo(state.index + 1);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      if (state.mode === "open") turnPage(-1); else navigateTo(state.index - 1);
+    } else if (e.key === "Escape") {
+      if (state.mode === "open" || state.mode === "opening") closeBook();
+      else showPanel(false);
+    }
+  });
+
+  window.addEventListener("resize", function () {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  });
+}
+
+/* ---------------- loop + init ---------------- */
+
+function animate() {
+  const dt = Math.min(clock.getDelta(), 0.05);
+  stepTweens(dt);
+
+  const f = REDUCED ? 1 : 1 - Math.exp(-dt * 2.4);
+  themeCur.bg.lerp(themeTgt.bg, f);
+  themeCur.glow.lerp(themeTgt.glow, f);
+  themeCur.hemi.lerp(themeTgt.hemi, f);
+  scene.background.copy(themeCur.bg);
+  scene.fog.color.copy(themeCur.bg);
+  hemi.color.copy(themeCur.hemi);
+  rimLight.color.copy(themeCur.glow);
+  accentLight.color.copy(themeCur.glow);
+
+  if (dust && !REDUCED) {
+    dust.rotation.y += dt * 0.012;
+    dust.position.y = Math.sin(clock.elapsedTime * 0.18) * 0.05;
+  }
+  if (!state.camTween) controls.update();
+  renderer.render(scene, camera);
+  if (!window.__wvBooted) {
+    window.__wvBooted = true;
+    loaderEl.classList.add("done");
+  }
+}
+
+function init() {
+  clock = new THREE.Clock();
+  try {
+    setupScene();
+  } catch (err) {
+    window.__wvShowFallback("WebGL could not start in this browser, so the bookshelf is shown as a static edition. The seven volumes, their themes and their sample pages are all listed above.");
+    return;
+  }
+  loaderBar.style.width = "45%";
+  buildAllBooks();
+  loaderBar.style.width = "72%";
+  buildMarkers();
+  setTheme(0);
+  updatePanel();
+  updateMarkers();
+  bindEvents();
+  loaderBar.style.width = "88%";
+  renderer.setAnimationLoop(animate);
+  /* cinematic entrance: camera glides in and the first volume comes forward */
+  navigateTo(0);
+  loaderBar.style.width = "100%";
+}
+
+function boot() {
+  const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  const timeout = new Promise(function (res) { setTimeout(res, 1200); });
+  Promise.race([fontsReady, timeout]).then(function () {
+    try { init(); }
+    catch (err) {
+      window.__wvShowFallback("The interactive 3D bookshelf could not start in this browser, so the bookshelf is shown as a static edition. The seven volumes, their themes and their sample pages are all listed above.");
+    }
+  });
+}
+boot();
+</script>
+</body>
+</html>
