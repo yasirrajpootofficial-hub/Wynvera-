@@ -190,6 +190,45 @@
   .svc-link:hover{gap:11px}
   .svc-link{transition:gap .25s}
 
+  /* ---------- SELECTED WORK ---------- */
+  #work{background:var(--bg-2)}
+  .work-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media (max-width:860px){ .work-grid{grid-template-columns:1fr} }
+  .work-card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--card-shadow);text-decoration:none;transition:transform .35s ease,border-color .35s ease}
+  .work-card:hover{transform:translateY(-5px);border-color:var(--line-strong)}
+  .work-visual{position:relative;background:linear-gradient(155deg,var(--navy-700),var(--navy-950));padding:18px 18px 0;overflow:hidden}
+  .work-visual::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(227,200,136,.13) 1px,transparent 1px);background-size:22px 22px;mask-image:linear-gradient(to bottom,black,transparent 80%);pointer-events:none}
+  .work-visual.wv-sky{background:linear-gradient(155deg,#12325E,#050D1D)}
+  .work-visual.wv-warm{background:linear-gradient(155deg,#2A2118,#0B1220 70%)}
+  .work-visual.wv-blush{background:linear-gradient(155deg,#3A2A3E,#081630 72%)}
+  .work-visual.wv-carbon{background:linear-gradient(155deg,#101828,#050D1D)}
+  .work-visual.wv-clinic{background:linear-gradient(155deg,#0E4A56,#050D1D)}
+  .work-visual.wv-dental{background:linear-gradient(155deg,#1D4E6B,#050D1D)}
+  .work-browser{position:relative;background:rgba(255,255,255,.04);border:1px solid rgba(227,200,136,.35);border-bottom:none;border-radius:12px 12px 0 0;overflow:hidden}
+  .work-browser-bar{display:flex;align-items:center;gap:6px;padding:9px 12px;background:rgba(5,13,29,.55);border-bottom:1px solid rgba(227,200,136,.18)}
+  .work-browser-bar i{width:8px;height:8px;border-radius:50%;background:#2A4470;flex:none}
+  .work-browser-bar i:first-child{background:var(--gold)}
+  .work-browser-url{margin-left:6px;flex:1;background:rgba(255,255,255,.07);border-radius:6px;font-size:10.5px;color:#A9B8D4;padding:4px 10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .work-browser-body{padding:20px 20px 24px;min-height:118px}
+  .work-browser-body .wb-kicker{font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-2);display:block;margin-bottom:8px}
+  .work-browser-body .wb-title{font-family:var(--serif);font-size:24px;line-height:1.15;font-weight:700;color:#FBF6E9;display:block}
+  .work-browser-body .wb-line{display:block;height:6px;border-radius:3px;background:rgba(201,210,228,.35);margin-top:14px;max-width:78%}
+  .work-browser-body .wb-line.short{max-width:52%;background:rgba(198,161,91,.55)}
+  .work-body{padding:26px 28px 28px;display:flex;flex-direction:column;flex:1}
+  @media (max-width:560px){ .work-body{padding:22px 20px 24px} }
+  .work-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+  .work-type{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:6px 12px;border-radius:999px;background:var(--gold-soft);color:var(--gold-3);border:1px solid var(--line-strong)}
+  @media (prefers-color-scheme: dark){ .work-type{color:var(--gold-2)} }
+  .work-live{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+  .work-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#3ECF6E;flex:none}
+  .work-card h3{font-family:var(--serif);font-size:25px;margin:0 0 8px;font-weight:700;line-height:1.2}
+  .work-card p{color:var(--muted);margin:0 0 20px;font-size:15.5px;flex:1}
+  .work-link{font-weight:800;font-size:14.5px;color:var(--gold-3);display:inline-flex;gap:7px;align-items:center;transition:gap .25s}
+  @media (prefers-color-scheme: dark){ .work-link{color:var(--gold-2)} }
+  .work-card:hover .work-link{gap:11px}
+  .work-note{margin-top:26px;font-size:14px;color:var(--muted);max-width:52em}
+  .work-note b{color:var(--ink-2)}
+
   /* ---------- WHY ---------- */
   .why{background:linear-gradient(165deg,var(--navy-800),var(--navy-950));color:#E7DFC9;border-radius:28px;padding:56px 52px;position:relative;overflow:hidden}
   @media (max-width:700px){ .why{padding:40px 26px} }
@@ -409,6 +448,7 @@
     </a>
     <nav class="links" aria-label="Main">
       <a href="#services">Services</a>
+      <a href="#work">Work</a>
       <a href="#process">Process</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
@@ -421,6 +461,7 @@
   </div>
   <div class="mobile-menu" id="mobileMenu">
     <a href="#services">Services</a>
+    <a href="#work">Selected Work</a>
     <a href="#process">Process</a>
     <a href="#pricing">Pricing</a>
     <a href="#faq">FAQ</a>
@@ -584,6 +625,114 @@
           </div>
         </article>
       </div>
+    </div>
+  </section>
+
+  <!-- SELECTED WORK -->
+  <section id="work">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <span class="kicker">Selected work</span>
+        <h2>Recent work, <em>live</em> to visit.</h2>
+        <p class="lede">No mockups behind glass — every project below is a real, finished website you can open and explore right now. Click any card to see it live.</p>
+      </div>
+      <div class="work-grid">
+        <a class="work-card rv" href="https://yasirrajpootofficial-hub.github.io/Wynvera-/muhammad-sajwani/" target="_blank" rel="noopener noreferrer" aria-label="Visit the Muhammad Sajwani website (opens in a new tab)">
+          <div class="work-visual wv-sky">
+            <div class="work-browser">
+              <div class="work-browser-bar"><i></i><i></i><i></i><span class="work-browser-url">muhammad-sajwani — speaker website</span></div>
+              <div class="work-browser-body">
+                <span class="wb-kicker">Keynote Speaker</span>
+                <span class="wb-title">Muhammad Sajwani</span>
+                <span class="wb-line"></span><span class="wb-line short"></span>
+              </div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-meta"><span class="work-type">Premium speaker website</span><span class="work-live">Live site</span></div>
+            <h3>Muhammad Sajwani</h3>
+            <p>A premium personal website for keynote speaker Muhammad Sajwani, MD of Evolve HR Consulting — speaker profile, courses, articles and videos presented in a deep navy and sky-blue design.</p>
+            <span class="work-link">Visit live site <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="work-card rv" href="https://yasirrajpootofficial-hub.github.io/Wynvera-/wedding-tools/" target="_blank" rel="noopener noreferrer" aria-label="Visit the Wedding Tools website (opens in a new tab)">
+          <div class="work-visual wv-blush">
+            <div class="work-browser">
+              <div class="work-browser-bar"><i></i><i></i><i></i><span class="work-browser-url">wedding-tools — planners &amp; calculators</span></div>
+              <div class="work-browser-body">
+                <span class="wb-kicker">Wedding Planning Tools</span>
+                <span class="wb-title">Wedding Tools</span>
+                <span class="wb-line"></span><span class="wb-line short"></span>
+              </div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-meta"><span class="work-type">Tools website</span><span class="work-live">Live site</span></div>
+            <h3>Wedding Tools</h3>
+            <p>A free wedding planning website for brides — with a wedding budget calculator and a drinks calculator to help plan the day with real numbers, not guesswork.</p>
+            <span class="work-link">Visit live site <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="work-card rv rv-d1" href="https://yasirrajpootofficial-hub.github.io/Wynvera-/luxury-motion/" target="_blank" rel="noopener noreferrer" aria-label="Visit the LUXURY MOTION website (opens in a new tab)">
+          <div class="work-visual wv-carbon">
+            <div class="work-browser">
+              <div class="work-browser-bar"><i></i><i></i><i></i><span class="work-browser-url">luxury-motion — automotive showcase</span></div>
+              <div class="work-browser-body">
+                <span class="wb-kicker">Luxury Automotive</span>
+                <span class="wb-title">LUXURY MOTION</span>
+                <span class="wb-line"></span><span class="wb-line short"></span>
+              </div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-meta"><span class="work-type">Automotive showcase</span><span class="work-live">Live site</span></div>
+            <h3>LUXURY MOTION</h3>
+            <p>A luxury automotive showcase presenting seven cars one at a time on a fixed platform — swipe or drag to change the car, and the whole site&rsquo;s colour follows each car&rsquo;s paint.</p>
+            <span class="work-link">Visit live site <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="work-card rv" href="https://yasirrajpootofficial-hub.github.io/Wynvera-/demos/akhtar-children-clinic/" target="_blank" rel="noopener noreferrer" aria-label="Visit the Akhtar Children Clinic demo website (opens in a new tab)">
+          <div class="work-visual wv-clinic">
+            <div class="work-browser">
+              <div class="work-browser-bar"><i></i><i></i><i></i><span class="work-browser-url">akhtar-children-clinic — Sahiwal</span></div>
+              <div class="work-browser-body">
+                <span class="wb-kicker">Children&rsquo;s Clinic · Sahiwal</span>
+                <span class="wb-title">Akhtar Children Clinic</span>
+                <span class="wb-line"></span><span class="wb-line short"></span>
+              </div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-meta"><span class="work-type">Demo website</span><span class="work-live">Live demo</span></div>
+            <h3>Akhtar Children Clinic — Sahiwal</h3>
+            <p>A demo website designed for a children&rsquo;s clinic in Sahiwal — services, clinic timings and appointment contact in a clean, parent-friendly layout. Built as a concept demo for a local business.</p>
+            <span class="work-link">Visit live demo <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="work-card rv rv-d1" href="https://yasirrajpootofficial-hub.github.io/Wynvera-/demos/fine-dental-clinic/" target="_blank" rel="noopener noreferrer" aria-label="Visit the Fine Dental Clinic demo website (opens in a new tab)">
+          <div class="work-visual wv-dental">
+            <div class="work-browser">
+              <div class="work-browser-bar"><i></i><i></i><i></i><span class="work-browser-url">fine-dental-clinic — Sahiwal</span></div>
+              <div class="work-browser-body">
+                <span class="wb-kicker">Dental Clinic · Sahiwal</span>
+                <span class="wb-title">Fine Dental Clinic</span>
+                <span class="wb-line"></span><span class="wb-line short"></span>
+              </div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-meta"><span class="work-type">Demo website</span><span class="work-live">Live demo</span></div>
+            <h3>Fine Dental Clinic — Sahiwal</h3>
+            <p>A demo website designed for a dental clinic in Sahiwal — treatments, clinic timings and booking contact in a calm, professional layout. Built as a concept demo for a local business.</p>
+            <span class="work-link">Visit live demo <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      </div>
+      <p class="work-note rv"><b>Want something like these?</b> Every Wynvera build is quoted at a fixed price before work starts — <a href="#pricing" style="color:var(--gold-3);font-weight:700">see pricing</a> or <a href="#contact" style="color:var(--gold-3);font-weight:700">start your project</a>.</p>
     </div>
   </section>
 
@@ -815,6 +964,7 @@
       </div>
       <div>
         <h4>Explore</h4>
+        <a href="#work">Selected Work</a>
         <a href="#process">Our process</a>
         <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
