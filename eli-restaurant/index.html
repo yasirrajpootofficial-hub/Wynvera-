@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eli’s Restaurant | Mediterranean, Southern French Rotisserie & Algerian Couscous — London SW7</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cormorant Garamond & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        obsidian: {
+                            950: '#0B0D0C',
+                            900: '#101412',
+                            800: '#171D1A',
+                            700: '#212A25',
+                        },
+                        emeraldLux: {
+                            950: '#0A2219',
+                            900: '#113829',
+                            800: '#194D39',
+                            700: '#23664C',
+                        },
+                        gold: {
+                            200: '#FAF0CA',
+                            300: '#F3E5AB',
+                            400: '#E5C158',
+                            500: '#D4AF37',
+                            600: '#B08D26',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Luxury Styling & Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0D0C;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #113829;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+
+        .gold-ring {
+            background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #9E7B1C 100%);
+        }
+
+        .emerald-medallion {
+            background: radial-gradient(circle at center, #194D39 0%, #0A2219 100%);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes progressFill {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+        .story-progress-active {
+            animation: progressFill 5s linear forwards;
+        }
+    </style>
+</head>
+<body class="bg-obsidian-950 text-stone-200 font-sans antialiased selection:bg-gold-500 selection:text-obsidian-950 overflow-x-hidden">
+
+    <!-- Top Announcement & Address Strip -->
+    <div class="bg-emeraldLux-950 border-b border-gold-500/20 text-stone-300 text-xs py-2.5 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 text-center sm:text-left">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-location-dot text-gold-400"></i>
+                <span>6-8 Bute Street, South Kensington, London, United Kingdom SW7 3EX</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="https://www.instagram.com/elisrestaurant" target="_blank" rel="noopener noreferrer" class="hover:text-gold-400 transition-colors flex items-center gap-1.5">
+                    <i class="fa-brands fa-instagram text-gold-400"></i>
+                    <span>@elisrestaurant</span>
+                </a>
+                <span class="text-stone-600 hidden sm:inline">|</span>
+                <span class="text-gold-300 font-medium hidden sm:inline">www.elisrestaurant.co.uk</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sticky Navigation Header -->
+    <header class="sticky top-0 z-40 bg-obsidian-950/90 backdrop-blur-md border-b border-stone-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Brand Monogram SVG + Title -->
+            <a href="#" class="flex items-center gap-3.5 group">
+                <!-- Circular Black & Gold Monogram Logo ("E" with script "Eli's") -->
+                <div class="w-12 h-12 rounded-full bg-black border border-gold-500/70 flex items-center justify-center shadow-lg shadow-gold-500/15 group-hover:scale-105 transition-transform flex-shrink-0">
+                    <svg viewBox="0 0 100 100" class="w-10 h-10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Eli's Restaurant Monogram">
+                        <circle cx="50" cy="50" r="46" stroke="#D4AF37" stroke-width="1.2" stroke-opacity="0.55"/>
+                        <!-- Outer & Inner Golden Crescent 'E' -->
+                        <path d="M58 22C40 22 26 34.5 26 50C26 65.5 40 78 58 78" stroke="#D4AF37" stroke-width="3.2" stroke-linecap="round"/>
+                        <path d="M55 29C41.5 29 32 38.2 32 50C32 61.8 41.5 71 55 71" stroke="#F3E5AB" stroke-width="1.4" stroke-linecap="round"/>
+                        <!-- Double Horizontal Bars -->
+                        <line x1="33" y1="46.5" x2="57" y2="46.5" stroke="#D4AF37" stroke-width="2.8" stroke-linecap="round"/>
+                        <line x1="33" y1="53.5" x2="57" y2="53.5" stroke="#D4AF37" stroke-width="2.8" stroke-linecap="round"/>
+                        <!-- Script "Eli's" -->
+                        <text x="45" y="76" fill="#D4AF37" font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-weight="700" font-size="23">Eli’s</text>
+                    </svg>
+                </div>
+                <div>
+                    <span class="font-serif text-2xl sm:text-3xl font-semibold tracking-wide text-white block leading-none">
+                        Eli’s <span class="text-gold-400 italic font-normal">Restaurant</span>
+                    </span>
+                    <span class="text-[10px] uppercase tracking-[0.26em] text-stone-400 block mt-1">
+                        South Kensington • London
+                    </span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden lg:flex items-center gap-8 text-xs uppercase tracking-[0.2em] font-medium text-stone-300">
+                <a href="#highlights" class="hover:text-gold-400 transition-colors">Highlights</a>
+                <a href="#founders" class="hover:text-gold-400 transition-colors">Our Story</a>
+                <a href="#menu" class="hover:text-gold-400 transition-colors">Menu</a>
+                <a href="#signature-feed" class="hover:text-gold-400 transition-colors">Signature Dishes</a>
+                <a href="#location" class="hover:text-gold-400 transition-colors">Visit Us</a>
+            </nav>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-3">
+                <a href="https://www.instagram.com/elisrestaurant" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hidden sm:flex w-10 h-10 rounded-full border border-stone-700 hover:border-gold-400 text-stone-300 hover:text-gold-400 items-center justify-center transition-colors">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <button onclick="openBookingModal()" class="bg-gold-500 hover:bg-gold-400 text-obsidian-950 font-semibold text-xs uppercase tracking-[0.18em] px-5 sm:px-6 py-3 rounded-full shadow-lg shadow-gold-500/20 transition-all transform hover:-translate-y-0.5">
+                    Book a Table
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Full-Bleed Luxury Hero Section -->
+    <section class="relative min-h-[88vh] flex items-center overflow-hidden">
+        <!-- High-Res Atmospheric Dining Background -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=1920&q=85" 
+                 alt="Eli's Restaurant Candlelit Dining & Cocktails in South Kensington" 
+                 onerror="this.src='https://placehold.co/1920x1080/113829/D4AF37?text=Eli%27s+Restaurant+South+Kensington'"
+                 class="w-full h-full object-cover object-center scale-105 opacity-45">
+            <div class="absolute inset-0 bg-gradient-to-r from-obsidian-950 via-obsidian-950/90 to-emeraldLux-950/75"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-transparent to-obsidian-950/60"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
+            <div class="max-w-3xl">
+                <!-- Location & Domain Badge -->
+                <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emeraldLux-900/80 border border-gold-500/40 text-gold-300 text-xs tracking-[0.2em] uppercase mb-6 backdrop-blur-sm">
+                    <span class="w-1.5 h-1.5 rounded-full bg-gold-400 animate-pulse"></span>
+                    6-8 Bute Street • London SW7 3EX
+                </div>
+
+                <h1 class="font-serif text-5xl sm:text-6xl lg:text-7xl font-semibold text-white leading-[1.06] tracking-tight">
+                    Mediterranean Soul, <br class="hidden sm:block">
+                    <span class="italic text-gold-400 font-normal">Southern French</span> Rotisserie &amp; Royal Couscous.
+                </h1>
+
+                <p class="mt-6 text-base sm:text-lg text-stone-300 leading-relaxed max-w-2xl font-light">
+                    Welcome to <strong class="text-white font-medium">Eli’s Restaurant</strong> in the heart of South Kensington. A refined culinary sanctuary celebrating sun-drenched Mediterranean flavors, golden spit-roasted French rotisserie, traditional Algerian couscous, and curated wines &amp; signature cocktails.
+                </p>
+
+                <!-- 4 Cuisine Pillars from Instagram Bio -->
+                <div class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl">
+                    <div class="bg-obsidian-900/85 border border-stone-800 hover:border-gold-500/40 rounded-2xl p-3.5 backdrop-blur-sm transition-colors">
+                        <span class="text-base block mb-1">🌿</span>
+                        <p class="text-xs font-semibold text-white">Mediterranean</p>
+                        <p class="text-[11px] text-stone-400 mt-0.5">Vibrant Flavors</p>
+                    </div>
+                    <div class="bg-obsidian-900/85 border border-stone-800 hover:border-gold-500/40 rounded-2xl p-3.5 backdrop-blur-sm transition-colors">
+                        <span class="text-base block mb-1">🍗</span>
+                        <p class="text-xs font-semibold text-white">Southern French</p>
+                        <p class="text-[11px] text-stone-400 mt-0.5">Artisan Rotisserie</p>
+                    </div>
+                    <div class="bg-obsidian-900/85 border border-stone-800 hover:border-gold-500/40 rounded-2xl p-3.5 backdrop-blur-sm transition-colors">
+                        <span class="text-base block mb-1">🥘</span>
+                        <p class="text-xs font-semibold text-white">Algerian Heritage</p>
+                        <p class="text-[11px] text-stone-400 mt-0.5">Royal Couscous</p>
+                    </div>
+                    <div class="bg-obsidian-900/85 border border-stone-800 hover:border-gold-500/40 rounded-2xl p-3.5 backdrop-blur-sm transition-colors">
+                        <span class="text-base block mb-1">🍷</span>
+                        <p class="text-xs font-semibold text-white">Wines &amp; Cocktails</p>
+                        <p class="text-[11px] text-stone-400 mt-0.5">Curated Cellar</p>
+                    </div>
+                </div>
+
+                <!-- Hero CTAs -->
+                <div class="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                    <button onclick="openBookingModal()" class="bg-gold-500 hover:bg-gold-400 text-obsidian-950 font-semibold text-xs uppercase tracking-[0.2em] px-8 py-4 rounded-full shadow-xl shadow-gold-500/20 transition-all text-center">
+                        Reserve Your Table
+                    </button>
+                    <a href="#menu" class="border border-gold-500/50 hover:border-gold-400 bg-emeraldLux-950/60 hover:bg-emeraldLux-900/80 text-gold-300 font-semibold text-xs uppercase tracking-[0.2em] px-8 py-4 rounded-full transition-all text-center">
+                        Explore Culinary Menu
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Instagram Story Highlights Section (#highlights) -->
+    <section id="highlights" class="py-12 bg-obsidian-900 border-y border-stone-800/80">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
+                
+                <!-- Left Profile Metadata -->
+                <div class="text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 text-gold-400 text-xs font-semibold uppercase tracking-[0.2em]">
+                        <i class="fa-brands fa-instagram"></i> @elisrestaurant
+                    </div>
+                    <h2 class="font-serif text-3xl sm:text-4xl text-white font-semibold mt-1">
+                        Curated Story Highlights
+                    </h2>
+                    <p class="text-xs sm:text-sm text-stone-400 mt-1.5">
+                        <strong class="text-stone-200">314</strong> Culinary Posts • <strong class="text-stone-200">984</strong> Community Followers • Tap any medallion to view story
+                    </p>
+                </div>
+
+                <!-- 4 Emerald & Gold Circular Medallions ("Food", "Drinks", "Chef", "Ambience") -->
+                <div class="flex items-center justify-center gap-5 sm:gap-8">
+                    <!-- Story 1: Food -->
+                    <button onclick="openStoryViewer(0)" class="group flex flex-col items-center gap-2.5 focus:outline-none">
+                        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full p-[3px] gold-ring shadow-lg shadow-gold-500/15 group-hover:scale-105 transition-transform">
+                            <div class="w-full h-full rounded-full emerald-medallion border-2 border-obsidian-950 flex items-center justify-center p-1.5">
+                                <div class="w-full h-full rounded-full border border-dashed border-gold-400/70 flex items-center justify-center">
+                                    <span class="font-serif italic text-gold-300 text-sm sm:text-base font-semibold tracking-wide">Food</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-xs font-medium tracking-wider uppercase text-stone-300 group-hover:text-gold-400 transition-colors">Food</span>
+                    </button>
+
+                    <!-- Story 2: Drinks -->
+                    <button onclick="openStoryViewer(1)" class="group flex flex-col items-center gap-2.5 focus:outline-none">
+                        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full p-[3px] gold-ring shadow-lg shadow-gold-500/15 group-hover:scale-105 transition-transform">
+                            <div class="w-full h-full rounded-full emerald-medallion border-2 border-obsidian-950 flex items-center justify-center p-1.5">
+                                <div class="w-full h-full rounded-full border border-dashed border-gold-400/70 flex items-center justify-center">
+                                    <span class="font-serif italic text-gold-300 text-sm sm:text-base font-semibold tracking-wide">Drinks</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-xs font-medium tracking-wider uppercase text-stone-300 group-hover:text-gold-400 transition-colors">Drinks</span>
+                    </button>
+
+                    <!-- Story 3: Chef -->
+                    <button onclick="openStoryViewer(2)" class="group flex flex-col items-center gap-2.5 focus:outline-none">
+                        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full p-[3px] gold-ring shadow-lg shadow-gold-500/15 group-hover:scale-105 transition-transform">
+                            <div class="w-full h-full rounded-full emerald-medallion border-2 border-obsidian-950 flex items-center justify-center p-1.5">
+                                <div class="w-full h-full rounded-full border border-dashed border-gold-400/70 flex items-center justify-center">
+                                    <span class="font-serif italic text-gold-300 text-sm sm:text-base font-semibold tracking-wide">Chef</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-xs font-medium tracking-wider uppercase text-stone-300 group-hover:text-gold-400 transition-colors">Chef</span>
+                    </button>
+
+                    <!-- Story 4: Ambience -->
+                    <button onclick="openStoryViewer(3)" class="group flex flex-col items-center gap-2.5 focus:outline-none">
+                        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full p-[3px] gold-ring shadow-lg shadow-gold-500/15 group-hover:scale-105 transition-transform">
+                            <div class="w-full h-full rounded-full emerald-medallion border-2 border-obsidian-950 flex items-center justify-center p-1.5">
+                                <div class="w-full h-full rounded-full border border-dashed border-gold-400/70 flex items-center justify-center">
+                                    <span class="font-serif italic text-gold-300 text-xs sm:text-sm font-semibold tracking-wide">Ambience</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-xs font-medium tracking-wider uppercase text-stone-300 group-hover:text-gold-400 transition-colors">Ambience</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Founders & Chefs Welcome Story Section (#founders) -->
+    <section id="founders" class="py-20 sm:py-28 reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Editorial Frame (Inspired by the Pinned Founders Welcome Post) -->
+                <div class="lg:col-span-6 relative">
+                    <div class="relative rounded-3xl overflow-hidden border border-gold-500/35 shadow-2xl bg-obsidian-900">
+                        <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=950&q=85" 
+                             alt="Eli's Restaurant Founders & Hospitality in South Kensington London" 
+                             onerror="this.src='https://placehold.co/850x950/113829/D4AF37?text=Eli%27s+Founders+%26+Hosts'"
+                             class="w-full h-[480px] object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/25 to-transparent"></div>
+                        
+                        <!-- Pinned Story Badge -->
+                        <div class="absolute top-5 left-5 bg-obsidian-950/85 backdrop-blur-md border border-gold-500/40 text-gold-300 text-[11px] uppercase tracking-[0.2em] px-3.5 py-1.5 rounded-full flex items-center gap-2">
+                            <i class="fa-solid fa-thumbtack text-gold-400"></i> Founders’ Welcome
+                        </div>
+
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <p class="font-serif text-2xl sm:text-3xl text-white italic leading-snug">
+                                “We wanted to create a home in South Kensington where North African generosity meets French culinary precision.”
+                            </p>
+                            <div class="mt-3 flex items-center justify-between text-xs text-gold-300 uppercase tracking-widest">
+                                <span>The Founders &amp; Culinary Team</span>
+                                <span>Bute Street, SW7</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Story Narrative -->
+                <div class="lg:col-span-6 space-y-6">
+                    <span class="text-gold-400 text-xs font-semibold uppercase tracking-[0.25em] block">
+                        Our Heritage &amp; Hospitality
+                    </span>
+                    <h2 class="font-serif text-4xl sm:text-5xl text-white font-semibold leading-tight">
+                        Three Culinary Traditions, <span class="italic text-gold-400 font-normal">One Table</span> in London.
+                    </h2>
+                    <p class="text-stone-300 leading-relaxed font-light text-base">
+                        Tucked along picturesque <strong class="text-white font-medium">6-8 Bute Street in South Kensington</strong>, Eli’s Restaurant was born from a shared family passion: uniting the sunlit olive groves of the Mediterranean, the slow-turning rotisseries of Southern France, and the centuries-old art of traditional Algerian couscous.
+                    </p>
+                    <p class="text-stone-400 leading-relaxed font-light text-sm sm:text-base">
+                        Every morning, our kitchen hand-rolls fine semolina for <em class="text-gold-300">Eli’s Royal Couscous</em>, marinates free-range poultry in Provençal herbs, sears Cypriot halloumi over open flame, and prepares our signature <em class="text-gold-300">Tiramisu Martini</em> for candlelit London evenings.
+                    </p>
+
+                    <div class="pt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-stone-800">
+                        <div class="bg-obsidian-900/70 border border-stone-800 rounded-2xl p-4">
+                            <p class="font-serif text-2xl text-gold-400 font-semibold">Hand-Rolled</p>
+                            <p class="text-xs text-stone-400 mt-1">Traditional steamed Algerian semolina &amp; saffron broth.</p>
+                        </div>
+                        <div class="bg-obsidian-900/70 border border-stone-800 rounded-2xl p-4">
+                            <p class="font-serif text-2xl text-gold-400 font-semibold">Spit-Roasted</p>
+                            <p class="text-xs text-stone-400 mt-1">Crisp-skinned Southern French herb rotisserie.</p>
+                        </div>
+                        <div class="bg-obsidian-900/70 border border-stone-800 rounded-2xl p-4">
+                            <p class="font-serif text-2xl text-gold-400 font-semibold">Curated Bar</p>
+                            <p class="text-xs text-stone-400 mt-1">Fine Mediterranean wines &amp; signature dessert martinis.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Signature Dishes Showcase (Inspired by the 5 Featured Instagram Feed Posts) (#signature-feed) -->
+    <section id="signature-feed" class="py-20 sm:py-28 bg-obsidian-900 border-y border-stone-800/80 reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+                <div>
+                    <span class="text-gold-400 text-xs font-semibold uppercase tracking-[0.25em]">
+                        From @elisrestaurant Feed
+                    </span>
+                    <h2 class="font-serif text-4xl sm:text-5xl text-white font-semibold mt-1">
+                        Our Five Signature Creations
+                    </h2>
+                </div>
+                <a href="https://www.instagram.com/elisrestaurant" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2.5 border border-gold-500/50 hover:bg-gold-500 hover:text-obsidian-950 text-gold-300 text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-full transition-all self-start md:self-auto">
+                    <i class="fa-brands fa-instagram text-sm"></i> View All 314 Posts
+                </a>
+            </div>
+
+            <!-- Asymmetric Editorial Grid of the 5 Featured Specialties -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6">
+                
+                <!-- 1. Eli's Royal Couscous (Large Feature Card) -->
+                <div class="lg:col-span-7 group relative rounded-3xl overflow-hidden bg-obsidian-950 border border-stone-800 hover:border-gold-500/50 transition-all shadow-2xl min-h-[380px]">
+                    <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=1000&q=85" 
+                         alt="Eli's Royal Couscous" 
+                         onerror="this.src='https://placehold.co/900x600/113829/D4AF37?text=Eli%27s+Royal+Couscous'"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-85">
+                    <div class="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/40 to-transparent"></div>
+                    <span class="absolute top-5 left-5 bg-emeraldLux-900/90 border border-gold-500/40 text-gold-300 text-[10px] uppercase tracking-[0.2em] px-3.5 py-1.5 rounded-full">
+                        🥘 Traditional Algerian Couscous
+                    </span>
+                    <div class="absolute bottom-6 left-6 right-6">
+                        <div class="flex items-baseline justify-between gap-4">
+                            <h3 class="font-serif text-3xl sm:text-4xl text-white font-semibold">Eli’s Royal Couscous</h3>
+                            <span class="font-serif text-2xl text-gold-400 font-semibold">£26.00</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-stone-300 mt-2 max-w-xl font-light">
+                            Delicate hand-steamed semolina crowned with slow-braised lamb shank, spiced merguez sausage, tender rotisserie chicken, chickpeas, and fragrant seven-vegetable saffron broth.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 2. Tiramisu Martini -->
+                <div class="lg:col-span-5 group relative rounded-3xl overflow-hidden bg-obsidian-950 border border-stone-800 hover:border-gold-500/50 transition-all shadow-2xl min-h-[380px]">
+                    <img src="https://images.unsplash.com/photo-1545438102-799c3991ffb2?auto=format&fit=crop&w=800&q=85" 
+                         alt="Tiramisu Martini" 
+                         onerror="this.src='https://placehold.co/700x600/113829/D4AF37?text=Tiramisu+Martini'"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-85">
+                    <div class="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/35 to-transparent"></div>
+                    <span class="absolute top-5 left-5 bg-obsidian-950/85 border border-gold-500/40 text-gold-300 text-[10px] uppercase tracking-[0.2em] px-3.5 py-1.5 rounded-full">
+                        🍸 Signature Cocktail
+                    </span>
+                    <div class="absolute bottom-6 left-6 right-6">
+                        <div class="flex items-baseline justify-between gap-4">
+                            <h3 class="font-serif text-3xl text-white font-semibold">Tiramisu Martini</h3>
+                            <span class="font-serif text-2xl text-gold-400 font-semibold">£14.50</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-stone-300 mt-2 font-light">
+                            Freshly pulled Italian espresso shaken with velvety mascarpone cream, dark Valrhona cocoa dusting, and three roasted espresso beans.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 3. Cheesy, Saucy, Golden Baked Aubergine / Halloumi Gratin -->
+                <div class="lg:col-span-4 group relative rounded-3xl overflow-hidden bg-obsidian-950 border border-stone-800 hover:border-gold-500/50 transition-all shadow-xl min-h-[340px]">
+                    <img src="https://images.unsplash.com/photo-1572453800999-e8d2d1589b7c?auto=format&fit=crop&w=750&q=85" 
+                         alt="Cheesy Saucy Golden Baked Aubergine Gratin" 
+                         onerror="this.src='https://placehold.co/600x500/113829/D4AF37?text=Golden+Baked+Aubergine'"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-85">
+                    <div class="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/40 to-transparent"></div>
+                    <span class="absolute top-4 left-4 bg-obsidian-950/85 border border-gold-500/40 text-gold-300 text-[10px] uppercase tracking-[0.2em] px-3 py-1 rounded-full">
+                        🍆 “Happiness in a Dish”
+                    </span>
+                    <div class="absolute bottom-5 left-5 right-5">
+                        <div class="flex items-baseline justify-between gap-2">
+                            <h3 class="font-serif text-2xl text-white font-semibold">Golden Baked Aubergine</h3>
+                            <span class="font-serif text-xl text-gold-400 font-semibold">£16.50</span>
+                        </div>
+                        <p class="text-xs text-stone-300 mt-1.5 font-light">
+                            Cheesy, saucy, golden layers of roasted aubergine, San Marzano tomato ragù, melted halloumi &amp; aged parmesan.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 4. Chargrilled Cypriot Halloumi -->
+                <div class="lg:col-span-4 group relative rounded-3xl overflow-hidden bg-obsidian-950 border border-stone-800 hover:border-gold-500/50 transition-all shadow-xl min-h-[340px]">
+                    <img src="https://images.unsplash.com/photo-1529042410759-befb1204b468?auto=format&fit=crop&w=750&q=85" 
+                         alt="Chargrilled Cypriot Halloumi" 
+                         onerror="this.src='https://placehold.co/600x500/113829/D4AF37?text=Chargrilled+Halloumi'"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-85">
+                    <div class="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/40 to-transparent"></div>
+                    <span class="absolute top-4 left-4 bg-obsidian-950/85 border border-gold-500/40 text-gold-300 text-[10px] uppercase tracking-[0.2em] px-3 py-1 rounded-full">
+                        🌿 Mediterranean Grill
+                    </span>
+                    <div class="absolute bottom-5 left-5 right-5">
+                        <div class="flex items-baseline justify-between gap-2">
+                            <h3 class="font-serif text-2xl text-white font-semibold">Chargrilled Halloumi</h3>
+                            <span class="font-serif text-xl text-gold-400 font-semibold">£12.50</span>
+                        </div>
+                        <p class="text-xs text-stone-300 mt-1.5 font-light">
+                            Seared over open flame with sweet pomegranate molasses glaze, wild Mediterranean oregano, and heirloom tomatoes.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 5. Southern French Rotisserie -->
+                <div class="lg:col-span-4 group relative rounded-3xl overflow-hidden bg-obsidian-950 border border-stone-800 hover:border-gold-500/50 transition-all shadow-xl min-h-[340px]">
+                    <img src="https://images.unsplash.com/photo-1598103442097-8b74394b95c6?auto=format&fit=crop&w=750&q=85" 
+                         alt="Southern French Herb Rotisserie Chicken" 
+                         onerror="this.src='https://placehold.co/600x500/113829/D4AF37?text=French+Rotisserie'"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-85">
+                    <div class="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/40 to-transparent"></div>
+                    <span class="absolute top-4 left-4 bg-obsidian-950/85 border border-gold-500/40 text-gold-300 text-[10px] uppercase tracking-[0.2em] px-3 py-1 rounded-full">
+                        🍗 French Rotisserie
+                    </span>
+                    <div class="absolute bottom-5 left-5 right-5">
+                        <div class="flex items-baseline justify-between gap-2">
+                            <h3 class="font-serif text-2xl text-white font-semibold">Provençal Rotisserie</h3>
+                            <span class="font-serif text-xl text-gold-400 font-semibold">£22.50</span>
+                        </div>
+                        <p class="text-xs text-stone-300 mt-1.5 font-light">
+                            Herb-crusted free-range chicken slow-turned on our spit with roasted garlic confit, baby potatoes &amp; pan jus.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Filterable Interactive Culinary Menu (#menu) -->
+    <section id="menu" class="py-20 sm:py-28 reveal">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto">
+                <span class="text-gold-400 text-xs font-semibold uppercase tracking-[0.25em]">
+                    6-8 Bute Street • London
+                </span>
+                <h2 class="font-serif text-4xl sm:text-5xl text-white font-semibold mt-2">
+                    À La Carte &amp; Cellar Menu
+                </h2>
+                <p class="text-stone-400 text-sm sm:text-base mt-3 font-light">
+                    Filter by culinary tradition to explore our Mediterranean plates, French rotisserie, Algerian couscous, and wines &amp; cocktails.
+                </p>
+            </div>
+
+            <!-- Category Filter Pills -->
+            <div class="mt-10 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+                <button onclick="filterMenu('all')" data-cat="all" class="menu-filter-btn bg-gold-500 text-obsidian-950 font-semibold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all">
+                    All Offerings
+                </button>
+                <button onclick="filterMenu('mediterranean')" data-cat="mediterranean" class="menu-filter-btn bg-obsidian-900 hover:bg-emeraldLux-900 text-stone-300 border border-stone-800 font-semibold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all">
+                    🌿 Mediterranean
+                </button>
+                <button onclick="filterMenu('rotisserie')" data-cat="rotisserie" class="menu-filter-btn bg-obsidian-900 hover:bg-emeraldLux-900 text-stone-300 border border-stone-800 font-semibold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all">
+                    🍗 French Rotisserie
+                </button>
+                <button onclick="filterMenu('couscous')" data-cat="couscous" class="menu-filter-btn bg-obsidian-900 hover:bg-emeraldLux-900 text-stone-300 border border-stone-800 font-semibold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all">
+                    🥘 Algerian Couscous
+                </button>
+                <button onclick="filterMenu('drinks')" data-cat="drinks" class="menu-filter-btn bg-obsidian-900 hover:bg-emeraldLux-900 text-stone-300 border border-stone-800 font-semibold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all">
+                    🍷 Wines &amp; Cocktails
+                </button>
+            </div>
+
+            <!-- Menu List Grid -->
+            <div id="menu-list" class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Dynamically rendered via JS -->
+            </div>
+
+            <div class="mt-12 text-center">
+                <button onclick="openBookingModal()" class="inline-flex items-center gap-3 bg-emeraldLux-900 hover:bg-emeraldLux-800 border border-gold-500/40 text-gold-300 font-semibold text-xs uppercase tracking-[0.2em] px-8 py-4 rounded-full transition-all">
+                    <span>Reserve Your Table to Experience Eli’s</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location, Hours & Direct Contact Section (#location) -->
+    <section id="location" class="py-20 bg-emeraldLux-950 border-t border-gold-500/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-obsidian-950/90 border border-gold-500/30 rounded-3xl p-8 sm:p-12 shadow-2xl">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                    
+                    <div class="lg:col-span-7 space-y-5">
+                        <span class="text-gold-400 text-xs font-semibold uppercase tracking-[0.25em]">
+                            South Kensington Dining
+                        </span>
+                        <h2 class="font-serif text-4xl sm:text-5xl text-white font-semibold">
+                            6-8 Bute Street, London <span class="text-gold-400">SW7 3EX</span>
+                        </h2>
+                        <p class="text-stone-300 text-sm sm:text-base font-light leading-relaxed">
+                            Located moments from South Kensington Underground Station and the museum quarter, Eli’s Restaurant welcomes you for sun-lit lunches, intimate candlelit dinners, and evening cocktails.
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                            <div class="bg-obsidian-900 border border-stone-800 rounded-2xl p-5">
+                                <p class="text-xs uppercase tracking-widest text-gold-400 font-semibold mb-2">Opening Hours</p>
+                                <p class="text-sm text-stone-200">Tuesday – Saturday: 12:00 PM – 11:00 PM</p>
+                                <p class="text-sm text-stone-200 mt-1">Sunday: 12:00 PM – 10:00 PM</p>
+                                <p class="text-xs text-stone-400 mt-1.5">Monday: Closed</p>
+                            </div>
+                            <div class="bg-obsidian-900 border border-stone-800 rounded-2xl p-5">
+                                <p class="text-xs uppercase tracking-widest text-gold-400 font-semibold mb-2">Connect &amp; Concierge</p>
+                                <p class="text-sm text-stone-200">Website: <span class="text-gold-300">www.elisrestaurant.co.uk</span></p>
+                                <p class="text-sm text-stone-200 mt-1">Instagram: <a href="https://www.instagram.com/elisrestaurant" target="_blank" rel="noopener noreferrer" class="text-gold-300 underline">@elisrestaurant</a></p>
+                                <p class="text-xs text-stone-400 mt-1.5">Private Events &amp; Group Dining Available</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5">
+                        <div class="bg-emeraldLux-900/60 border border-gold-500/35 rounded-3xl p-7 text-center space-y-4">
+                            <div class="w-12 h-12 rounded-full bg-obsidian-950 border border-gold-500/50 text-gold-400 flex items-center justify-center mx-auto">
+                                <i class="fa-solid fa-wine-glass"></i>
+                            </div>
+                            <h3 class="font-serif text-3xl text-white font-semibold">Dine With Us Tonight</h3>
+                            <p class="text-xs sm:text-sm text-stone-300 font-light">
+                                Secure your table in our main dining room, rotisserie counter, or intimate wine corner.
+                            </p>
+                            <button onclick="openBookingModal()" class="w-full bg-gold-500 hover:bg-gold-400 text-obsidian-950 font-semibold text-xs uppercase tracking-[0.2em] py-4 rounded-full shadow-lg transition-all">
+                                Book a Table Online
+                            </button>
+                            <div class="grid grid-cols-2 gap-3 pt-1">
+                                <a href="https://maps.google.com/?q=6-8+Bute+Street,+London+SW7+3EX" target="_blank" rel="noopener noreferrer" class="border border-stone-700 hover:border-gold-400 text-stone-200 hover:text-gold-300 text-[11px] uppercase tracking-wider py-3 rounded-full transition-all flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-map-pin text-gold-400"></i> Directions
+                                </a>
+                                <a href="https://www.instagram.com/elisrestaurant" target="_blank" rel="noopener noreferrer" class="border border-stone-700 hover:border-gold-400 text-stone-200 hover:text-gold-300 text-[11px] uppercase tracking-wider py-3 rounded-full transition-all flex items-center justify-center gap-1.5">
+                                    <i class="fa-brands fa-instagram text-gold-400"></i> Message Us
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-obsidian-950 border-t border-stone-800/80 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-full bg-black border border-gold-500/70 flex items-center justify-center">
+                    <span class="font-serif italic text-gold-400 font-bold text-lg">Eli’s</span>
+                </div>
+                <div>
+                    <p class="font-serif text-lg text-white font-semibold">Eli’s Restaurant</p>
+                    <p class="text-xs text-stone-400">6-8 Bute Street, London, United Kingdom SW7 3EX</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center gap-5 text-xs text-stone-400">
+                <a href="https://www.instagram.com/elisrestaurant" target="_blank" rel="noopener noreferrer" class="hover:text-gold-400 transition-colors">
+                    @elisrestaurant
+                </a>
+                <span>•</span>
+                <span>www.elisrestaurant.co.uk</span>
+                <span>•</span>
+                <span>© 2026 Eli’s Restaurant London</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Full-Screen Interactive Story Highlight Viewer Modal -->
+    <div id="story-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+        <div class="relative w-full max-w-md aspect-[9/15] max-h-[85vh] rounded-3xl overflow-hidden border border-gold-500/40 bg-obsidian-900 shadow-2xl flex flex-col justify-between">
+            <!-- Background Story Photo -->
+            <img id="story-img" src="" alt="Eli's Story Highlight" class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-b from-obsidian-950/80 via-transparent to-obsidian-950/95"></div>
+
+            <!-- Top Progress Bars & Header -->
+            <div class="relative z-10 p-4 space-y-3">
+                <div class="grid grid-cols-4 gap-1.5">
+                    <div class="h-1 bg-white/25 rounded-full overflow-hidden"><div id="prog-0" class="h-full bg-gold-400 w-0"></div></div>
+                    <div class="h-1 bg-white/25 rounded-full overflow-hidden"><div id="prog-1" class="h-full bg-gold-400 w-0"></div></div>
+                    <div class="h-1 bg-white/25 rounded-full overflow-hidden"><div id="prog-2" class="h-full bg-gold-400 w-0"></div></div>
+                    <div class="h-1 bg-white/25 rounded-full overflow-hidden"><div id="prog-3" class="h-full bg-gold-400 w-0"></div></div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-full bg-black border border-gold-400 flex items-center justify-center">
+                            <span class="font-serif italic text-gold-400 text-xs font-bold">Eli’s</span>
+                        </div>
+                        <div>
+                            <p id="story-category" class="text-xs font-semibold text-white uppercase tracking-wider">Food</p>
+                            <p class="text-[10px] text-gold-300">@elisrestaurant • London SW7</p>
+                        </div>
+                    </div>
+                    <button onclick="closeStoryViewer()" aria-label="Close Story" class="w-8 h-8 rounded-full bg-black/60 text-white hover:text-gold-400 flex items-center justify-center">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Left / Right Invisible Tap Navigation Zones -->
+            <div class="relative z-10 flex-1 grid grid-cols-2">
+                <button onclick="prevStory()" aria-label="Previous Story" class="w-full h-full focus:outline-none"></button>
+                <button onclick="nextStory()" aria-label="Next Story" class="w-full h-full focus:outline-none"></button>
+            </div>
+
+            <!-- Bottom Caption & CTA -->
+            <div class="relative z-10 p-6">
+                <span id="story-badge" class="inline-block bg-emeraldLux-900/90 border border-gold-500/40 text-gold-300 text-[10px] uppercase tracking-widest px-3 py-1 rounded-full mb-2">
+                    Highlight
+                </span>
+                <h3 id="story-title" class="font-serif text-3xl text-white font-semibold"></h3>
+                <p id="story-caption" class="text-xs sm:text-sm text-stone-300 mt-1.5 font-light leading-relaxed"></p>
+                <div class="mt-4 flex items-center gap-3">
+                    <button onclick="closeStoryViewer(); openBookingModal();" class="flex-1 bg-gold-500 hover:bg-gold-400 text-obsidian-950 font-semibold text-xs uppercase tracking-widest py-3 rounded-full transition-colors">
+                        Book a Table
+                    </button>
+                    <button onclick="nextStory()" class="px-4 py-3 rounded-full border border-stone-600 text-xs text-white hover:border-gold-400">
+                        Next <i class="fa-solid fa-chevron-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Table Reservation Drawer / Modal -->
+    <div id="booking-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+        <div class="bg-obsidian-900 border border-gold-500/40 max-w-lg w-full rounded-3xl overflow-hidden shadow-2xl">
+            <div class="bg-emeraldLux-950 px-6 py-5 border-b border-gold-500/20 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] uppercase tracking-[0.22em] text-gold-400 font-semibold">6-8 Bute Street • South Kensington SW7</span>
+                    <h3 class="font-serif text-2xl sm:text-3xl text-white font-semibold">Reserve a Table at Eli’s</h3>
+                </div>
+                <button onclick="closeBookingModal()" aria-label="Close Reservation Modal" class="w-9 h-9 rounded-full bg-obsidian-900 text-stone-300 hover:text-gold-400 flex items-center justify-center border border-stone-700">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="reservation-form" onsubmit="handleBookingSubmit(event)" class="p-6 space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-wider text-stone-400 mb-1.5">Preferred Date *</label>
+                        <input type="date" id="book-date" required class="w-full bg-obsidian-950 border border-stone-700 focus:border-gold-400 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-wider text-stone-400 mb-1.5">Seating Time *</label>
+                        <select id="book-time" class="w-full bg-obsidian-950 border border-stone-700 focus:border-gold-400 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none">
+                            <option value="12:30 PM">12:30 PM — Lunch Service</option>
+                            <option value="02:00 PM">02:00 PM — Afternoon Lunch</option>
+                            <option value="06:30 PM">06:30 PM — Early Evening</option>
+                            <option value="08:00 PM" selected>08:00 PM — Prime Dinner</option>
+                            <option value="09:30 PM">09:30 PM — Late Dining &amp; Cocktails</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-wider text-stone-400 mb-1.5">Party Size *</label>
+                        <select id="book-guests" class="w-full bg-obsidian-950 border border-stone-700 focus:border-gold-400 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none">
+                            <option value="2 Guests">2 Guests</option>
+                            <option value="3 Guests">3 Guests</option>
+                            <option value="4 Guests" selected>4 Guests</option>
+                            <option value="6 Guests">6 Guests</option>
+                            <option value="8+ Guests">8+ Guests (Private Table)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-wider text-stone-400 mb-1.5">Dining Experience</label>
+                        <select id="book-area" class="w-full bg-obsidian-950 border border-stone-700 focus:border-gold-400 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none">
+                            <option value="Main Dining Room">Main Dining Room</option>
+                            <option value="Rotisserie Counter">Rotisserie View Table</option>
+                            <option value="Cocktail & Wine Lounge">Cocktail &amp; Wine Corner</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-wider text-stone-400 mb-1.5">Full Name *</label>
+                        <input type="text" id="book-name" required placeholder="e.g. Camille Laurent" class="w-full bg-obsidian-950 border border-stone-700 focus:border-gold-400 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-wider text-stone-400 mb-1.5">Email or UK Mobile *</label>
+                        <input type="text" id="book-contact" required placeholder="+44 7700 900412" class="w-full bg-obsidian-950 border border-stone-700 focus:border-gold-400 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] uppercase tracking-wider text-stone-400 mb-1.5">Special Requests (Optional)</label>
+                    <input type="text" id="book-notes" placeholder="e.g. Birthday celebration, pre-ordering Eli's Royal Couscous" class="w-full bg-obsidian-950 border border-stone-700 focus:border-gold-400 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none">
+                </div>
+
+                <!-- Confirmation Box (No alert() used) -->
+                <div id="booking-confirmation" class="hidden rounded-2xl p-4 text-xs leading-relaxed"></div>
+
+                <button type="submit" class="w-full bg-gold-500 hover:bg-gold-400 text-obsidian-950 font-semibold text-xs uppercase tracking-[0.2em] py-4 rounded-full shadow-lg transition-all">
+                    Confirm Table Reservation
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // 1. Story Highlights Data ("Food", "Drinks", "Chef", "Ambience")
+        const storiesData = [
+            {
+                category: 'Food',
+                badge: 'Signature Kitchen',
+                title: 'Eli’s Royal Couscous & Gratin',
+                caption: 'Hand-rolled steamed Algerian couscous, golden baked aubergine gratin, and flame-charred halloumi crafted fresh every day.',
+                img: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=900&q=85'
+            },
+            {
+                category: 'Drinks',
+                badge: 'Bar & Cellar',
+                title: 'The Viral Tiramisu Martini',
+                caption: 'Velvety mascarpone cream, freshly pulled espresso, cocoa dusting, and curated Southern French wines.',
+                img: 'https://images.unsplash.com/photo-1545438102-799c3991ffb2?auto=format&fit=crop&w=900&q=85'
+            },
+            {
+                category: 'Chef',
+                badge: 'Founders & Culinary Team',
+                title: 'Crafted With Heart at Bute Street',
+                caption: 'Bringing authentic North African hospitality and Southern French rotisserie mastery to South Kensington, London.',
+                img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=900&q=85'
+            },
+            {
+                category: 'Ambience',
+                badge: '6-8 Bute Street SW7',
+                title: 'Intimate Candlelit Evenings',
+                caption: 'Emerald velvet, warm golden lighting, and welcoming hospitality in the heart of South Kensington.',
+                img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=900&q=85'
+            }
+        ];
+
+        let currentStoryIndex = 0;
+        let storyTimer = null;
+
+        function openStoryViewer(index) {
+            currentStoryIndex = index;
+            const modal = document.getElementById('story-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            renderStorySlide();
+        }
+
+        function closeStoryViewer() {
+            const modal = document.getElementById('story-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            clearTimeout(storyTimer);
+        }
+
+        function renderStorySlide() {
+            const story = storiesData[currentStoryIndex];
+            document.getElementById('story-img').src = story.img;
+            document.getElementById('story-category').textContent = story.category;
+            document.getElementById('story-badge').textContent = story.badge;
+            document.getElementById('story-title').textContent = story.title;
+            document.getElementById('story-caption').textContent = story.caption;
+
+            // Update progress bars
+            for (let i = 0; i < storiesData.length; i++) {
+                const bar = document.getElementById(`prog-${i}`);
+                bar.classList.remove('story-progress-active');
+                if (i < currentStoryIndex) {
+                    bar.style.width = '100%';
+                } else if (i === currentStoryIndex) {
+                    bar.style.width = '0%';
+                    void bar.offsetWidth; // trigger reflow
+                    bar.classList.add('story-progress-active');
+                } else {
+                    bar.style.width = '0%';
+                }
+            }
+
+            clearTimeout(storyTimer);
+            storyTimer = setTimeout(() => {
+                nextStory();
+            }, 5000);
+        }
+
+        function nextStory() {
+            if (currentStoryIndex < storiesData.length - 1) {
+                currentStoryIndex++;
+                renderStorySlide();
+            } else {
+                closeStoryViewer();
+            }
+        }
+
+        function prevStory() {
+            if (currentStoryIndex > 0) {
+                currentStoryIndex--;
+                renderStorySlide();
+            } else {
+                renderStorySlide();
+            }
+        }
+
+        // 2. Filterable Menu Data
+        const menuItems = [
+            {
+                category: 'couscous',
+                tag: 'Algerian Heritage',
+                title: 'Eli’s Royal Couscous',
+                price: '£26.00',
+                desc: 'Hand-steamed fine semolina, slow-braised lamb shank, spiced merguez, rotisserie chicken, chickpeas & seven-vegetable saffron broth.'
+            },
+            {
+                category: 'couscous',
+                tag: 'Algerian Classic',
+                title: 'Couscous Agneau Confit',
+                price: '£23.50',
+                desc: 'Melt-in-the-mouth braised shoulder of lamb with caramelized raisins, roasted root vegetables, and aromatic harissa jus.'
+            },
+            {
+                category: 'rotisserie',
+                tag: 'Southern French Rotisserie',
+                title: 'Herb-Crusted Provençal Rotisserie Chicken',
+                price: '£22.50',
+                desc: 'Half free-range chicken slow-roasted on our Southern French spit with Herbes de Provence, garlic confit & golden potatoes.'
+            },
+            {
+                category: 'rotisserie',
+                tag: 'Rotisserie Feast',
+                title: 'Whole Sharing Rotisserie Poulet (For Two)',
+                price: '£42.00',
+                desc: 'Whole golden spit-roasted free-range chicken carved tableside with truffle-herb jus, Mediterranean salad & warm flatbread.'
+            },
+            {
+                category: 'mediterranean',
+                tag: 'House Favorite',
+                title: 'Cheesy, Saucy, Golden Baked Aubergine',
+                price: '£16.50',
+                desc: 'Roasted Mediterranean aubergine layered with rich San Marzano tomato ragù, melted halloumi & golden parmesan crust.'
+            },
+            {
+                category: 'mediterranean',
+                tag: 'Open-Flame Grill',
+                title: 'Chargrilled Cypriot Halloumi',
+                price: '£12.50',
+                desc: 'Thick-cut halloumi seared over open flame, drizzled with pomegranate molasses, wild oregano & heirloom cherry tomatoes.'
+            },
+            {
+                category: 'drinks',
+                tag: 'Signature Cocktail',
+                title: 'Eli’s Tiramisu Martini',
+                price: '£14.50',
+                desc: 'Freshly pulled espresso, premium vodka, coffee liqueur, velvety mascarpone cream foam & dark Valrhona cocoa.'
+            },
+            {
+                category: 'drinks',
+                tag: 'Wines & Cellar',
+                title: 'Southern French & Mediterranean Wine Flight',
+                price: '£11.50 / Glass',
+                desc: 'Curated selection of Languedoc reds, crisp Côtes de Provence rosés, and mineral-driven Mediterranean whites.'
+            }
+        ];
+
+        function renderMenuList(filter = 'all') {
+            const container = document.getElementById('menu-list');
+            const filtered = filter === 'all' ? menuItems : menuItems.filter(item => item.category === filter);
+
+            container.innerHTML = filtered.map(item => `
+                <div class="bg-obsidian-900/90 border border-stone-800 hover:border-gold-500/45 rounded-2xl p-6 flex flex-col justify-between transition-all">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <span class="text-[10px] uppercase tracking-[0.2em] text-gold-400 font-semibold">${item.tag}</span>
+                            <span class="font-serif text-xl text-gold-300 font-semibold">${item.price}</span>
+                        </div>
+                        <h3 class="font-serif text-2xl text-white font-semibold">${item.title}</h3>
+                        <p class="text-xs sm:text-sm text-stone-400 mt-2 font-light leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterMenu(category) {
+            document.querySelectorAll('.menu-filter-btn').forEach(btn => {
+                if (btn.dataset.cat === category) {
+                    btn.className = 'menu-filter-btn bg-gold-500 text-obsidian-950 font-semibold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all';
+                } else {
+                    btn.className = 'menu-filter-btn bg-obsidian-900 hover:bg-emeraldLux-900 text-stone-300 border border-stone-800 font-semibold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all';
+                }
+            });
+            renderMenuList(category);
+        }
+
+        // 3. Table Reservation Modal Controls
+        function openBookingModal() {
+            const modal = document.getElementById('booking-modal');
+            document.getElementById('booking-confirmation').classList.add('hidden');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeBookingModal() {
+            const modal = document.getElementById('booking-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function handleBookingSubmit(event) {
+            event.preventDefault();
+            const date = document.getElementById('book-date').value;
+            const time = document.getElementById('book-time').value;
+            const guests = document.getElementById('book-guests').value;
+            const area = document.getElementById('book-area').value;
+            const name = document.getElementById('book-name').value.trim();
+
+            const box = document.getElementById('booking-confirmation');
+            box.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-circle-check text-gold-400 text-lg mt-0.5"></i>
+                    <div>
+                        <p class="font-semibold text-white text-sm">Reservation Confirmed, ${name}!</p>
+                        <p class="text-stone-300 mt-1">
+                            We look forward to welcoming <strong>${guests}</strong> on <strong>${date}</strong> at <strong>${time}</strong> (${area}) at <strong>Eli’s Restaurant, 6-8 Bute Street, London SW7 3EX</strong>.
+                        </p>
+                    </div>
+                </div>
+            `;
+            box.className = 'rounded-2xl p-4 text-xs leading-relaxed bg-emeraldLux-900/90 border border-gold-500/50 text-stone-200 block';
+        }
+
+        // 4. Scroll Reveal Observer & Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            renderMenuList('all');
+
+            // Default reservation date to tomorrow
+            const dateInput = document.getElementById('book-date');
+            if (dateInput) {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                dateInput.value = tomorrow.toISOString().split('T')[0];
+            }
+
+            // Smooth reveal on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.12 });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
